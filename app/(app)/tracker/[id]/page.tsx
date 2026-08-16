@@ -16,6 +16,7 @@ import { accuracy } from "@/lib/analytics";
 import { CHAPTER_STATUSES, SUBJECT_COLORS, labelFor, DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
 import { PageHeader, StatCard, ProgressRing, LinkButton } from "@/components/ui";
 import ChapterDetailControls, { ScheduleRevision } from "@/components/tracker/ChapterDetailControls";
+import { CONCEPT_CONTENT } from "@/lib/concept-content";
 
 export const dynamic = "force-dynamic";
 
@@ -48,9 +49,16 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
         title={chapter.name}
         subtitle={`${chapter.subject}${chapter.branch ? ` · ${chapter.branch}` : ""} · Difficulty ${chapter.difficulty}/5`}
         action={
-          <LinkButton href="/syllabus" variant="outlined" size="small">
-            Back to syllabus
-          </LinkButton>
+          <Stack direction="row" spacing={1}>
+            {chapter.subject === "Physics" && CONCEPT_CONTENT[chapter.slug] && (
+              <LinkButton href={`/concepts/${chapter.slug}`} variant="contained" size="small">
+                Concept lab
+              </LinkButton>
+            )}
+            <LinkButton href="/syllabus" variant="outlined" size="small">
+              Back to syllabus
+            </LinkButton>
+          </Stack>
         }
       />
 

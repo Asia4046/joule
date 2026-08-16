@@ -42,6 +42,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BoltIcon from "@mui/icons-material/Bolt";
+import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import SearchCommand from "@/components/SearchCommand";
 import NotificationBell from "@/components/NotificationBell";
 import { useThemeMode } from "@/components/Providers";
@@ -55,6 +56,7 @@ const NAV = [
     section: "Preparation",
     items: [
       { href: "/syllabus", label: "Syllabus", icon: MenuBookOutlinedIcon },
+      { href: "/concepts", label: "Concept Labs", icon: ScienceOutlinedIcon },
       { href: "/tracker", label: "Tracker", icon: TrackChangesOutlinedIcon },
       { href: "/sessions", label: "Study Sessions", icon: TimerOutlinedIcon },
       { href: "/revision", label: "Revision", icon: AutorenewOutlinedIcon },
