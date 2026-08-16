@@ -132,7 +132,7 @@ export default function MockTestTable({ tests }: { tests: TestRow[] }) {
         ) : (
           <Stack spacing={1.5}>
             {tests.map((t) => (
-              <Box key={t.id} sx={{ p: 1.5, borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}>
+              <Box key={t.id} sx={{ p: 1.5, border: `1px solid ${theme.palette.divider}` }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                   <Typography variant="subtitle2">{t.name}</Typography>
                   <form action={deleteMockTestAction}>

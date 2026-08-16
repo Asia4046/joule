@@ -32,8 +32,9 @@ type TrendPoint = {
 
 const tooltipStyle = (theme: Theme) => ({
   background: theme.palette.background.paper,
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 8,
+  border: `1.5px solid ${theme.palette.text.primary}`,
+  boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+  borderRadius: 0,
   fontSize: 12,
 });
 
@@ -131,7 +132,7 @@ export default function MockAnalyticsCharts({
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="correct" name="Correct" stackId="a" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={26} />
                   <Bar dataKey="incorrect" name="Incorrect" stackId="a" fill={theme.palette.error.main} maxBarSize={26} />
-                  <Bar dataKey="skipped" name="Skipped" stackId="a" fill={theme.palette.action.disabled} radius={[3, 3, 0, 0]} maxBarSize={26} />
+                  <Bar dataKey="skipped" name="Skipped" stackId="a" fill={theme.palette.action.disabled} radius={[0, 0, 0, 0]} maxBarSize={26} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

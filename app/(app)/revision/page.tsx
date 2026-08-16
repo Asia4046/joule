@@ -112,7 +112,7 @@ export default async function RevisionPage() {
               {upcoming.map((r) => (
                 <Stack key={r.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1 }}>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: SUBJECT_COLORS[r.subject] ?? "#999" }} />
+                    <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[r.subject] ?? "#999" }} />
                     <Typography variant="body2">
                       {r.topic.chapter.name} — {r.topic.name}
                     </Typography>

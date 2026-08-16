@@ -93,7 +93,7 @@ export default async function TrackerPage() {
                             <LinearProgress
                               variant="determinate"
                               value={pct}
-                              sx={{ height: 5, borderRadius: 3, mt: 1, maxWidth: 360, bgcolor: "action.hover", "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[subject] } }}
+                              sx={{ height: 5, mt: 1, maxWidth: 360, bgcolor: "action.hover", "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[subject] } }}
                             />
                           </Box>
                           <Stack direction="row" spacing={2} sx={{ flexShrink: 0, alignItems: "center" }}>

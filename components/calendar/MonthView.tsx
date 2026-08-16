@@ -23,11 +23,11 @@ export type CalendarEvent = {
 };
 
 const KIND_COLOR: Record<CalendarEventKind, string> = {
-  study: "#6366f1", // primary
-  test: "#ef4444", // error
-  revision: "#f59e0b", // warning
-  journal: "#8b5cf6", // secondary
-  goal: "#10b981", // success
+  study: "#C05C3C", // rust
+  test: "#BF4B4B", // error
+  revision: "#C77D2E", // ochre
+  journal: "#8A7CA8", // muted violet
+  goal: "#43806B", // sage
 };
 
 const KIND_LABEL: Record<CalendarEventKind, string> = {
@@ -110,7 +110,7 @@ export default function MonthView({
         <Stack direction="row" spacing={1.5} sx={{ mb: 1.5, flexWrap: "wrap", gap: 1 }}>
           {(Object.keys(KIND_COLOR) as CalendarEventKind[]).map((k) => (
             <Stack key={k} direction="row" spacing={0.5} alignItems="center">
-              <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: KIND_COLOR[k] }} />
+              <Box sx={{ width: 8, height: 8, bgcolor: KIND_COLOR[k] }} />
               <Typography variant="caption" color="text.secondary">
                 {KIND_LABEL[k]}
               </Typography>
@@ -136,9 +136,9 @@ export default function MonthView({
                   minHeight: { xs: 52, sm: 72 },
                   border: "1px solid",
                   borderColor: isToday ? "primary.main" : "divider",
-                  borderRadius: 1.25,
+                  borderRadius: 0,
                   p: 0.75,
-                  bgcolor: isToday ? alpha("#6366f1", 0.06) : "transparent",
+                  bgcolor: isToday ? alpha("#D97757", 0.1) : "transparent",
                   display: "flex",
                   flexDirection: "column",
                   gap: 0.5,
@@ -151,7 +151,7 @@ export default function MonthView({
                 <Stack direction="row" spacing={0.5} sx={{ flexWrap: "wrap", gap: 0.5 }}>
                   {dayEvents.slice(0, 3).map((e, j) => (
                     <Tooltip key={`${e.label}-${j}`} title={`${KIND_LABEL[e.kind]} · ${e.label}`}>
-                      <Box sx={{ width: 7, height: 7, borderRadius: "50%", bgcolor: KIND_COLOR[e.kind] }} />
+                      <Box sx={{ width: 7, height: 7, bgcolor: KIND_COLOR[e.kind] }} />
                     </Tooltip>
                   ))}
                   {dayEvents.length > 3 && (

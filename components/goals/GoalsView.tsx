@@ -133,7 +133,7 @@ export default function GoalsView({ goals, subtitle }: { goals: GoalItem[]; subt
                               variant="determinate"
                               value={Math.min(100, (g.current / g.target) * 100)}
                               color={done ? "success" : "primary"}
-                              sx={{ height: 6, borderRadius: 3, width: "100%", mr: 1.5, bgcolor: "action.hover" }}
+                              sx={{ height: 6, width: "100%", mr: 1.5, bgcolor: "action.hover" }}
                             />
                             <Typography variant="caption" color="text.secondary" sx={{ fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>
                               {fmtValue(g.current, g.metric)} / {fmtValue(g.target, g.metric)}

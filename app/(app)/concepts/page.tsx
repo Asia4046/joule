@@ -13,8 +13,6 @@ import { PageHeader, LinkButton, StatCard } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
-const SUBJECT_COLOR = "#38bdf8";
-
 export default async function ConceptsPage() {
   await requireUser();
   const chapters = await prisma.chapter.findMany({
@@ -41,13 +39,13 @@ export default async function ConceptsPage() {
           <StatCard label="Interactive labs" value={withLabs.length} sub="one per Physics chapter" icon={<ScienceOutlinedIcon fontSize="small" />} />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Coverage" value="100%" sub="full Physics syllabus" color="#34d399" />
+          <StatCard label="Coverage" value="100%" sub="full Physics syllabus" />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Each lab includes" value="Sim + notes" sub="formulas, exam traps" color="#f59e0b" />
+          <StatCard label="Each lab includes" value="Sim + notes" sub="formulas, exam traps" />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Best used" value="Pre-study" sub="build intuition, then solve" color={SUBJECT_COLOR} />
+          <StatCard label="Best used" value="Pre-study" sub="build intuition, then solve" />
         </Box>
       </Stack>
 
@@ -62,15 +60,16 @@ export default async function ConceptsPage() {
                     sx={{
                       width: 44,
                       height: 44,
-                      borderRadius: 2.5,
                       flexShrink: 0,
                       display: { xs: "none", sm: "flex" },
                       alignItems: "center",
                       justifyContent: "center",
                       fontWeight: 800,
                       fontSize: "0.9rem",
-                      color: "#fff",
-                      background: "linear-gradient(135deg, #4f46e5, #8b5cf6)",
+                      color: "#F0EEE6",
+                      background: "#1F1E1D",
+                      border: "1.5px solid #1F1E1D",
+                      boxShadow: "2px 2px 0 #D97757",
                     }}
                   >
                     {String(i + 1).padStart(2, "0")}

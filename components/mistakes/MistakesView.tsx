@@ -122,7 +122,7 @@ export default function MistakesView({ mistakes, chapters }: { mistakes: Mistake
           ) : (
             <Stack spacing={1.5}>
               {filtered.map((m) => (
-                <Box key={m.id} sx={{ p: 1.5, borderRadius: 2, border: "1px solid", borderColor: "divider" }}>
+                <Box key={m.id} sx={{ p: 1.5, border: "1px solid", borderColor: "divider" }}>
                   <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
                     <Box sx={{ minWidth: 0 }}>
                       <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>{m.question}</Typography>

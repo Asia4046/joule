@@ -6,12 +6,11 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 140, 0.35);
-  border-radius: 4px;
+  background: rgba(110, 107, 100, 0.4);
 }
 *::-webkit-scrollbar-track {
   background: transparent;

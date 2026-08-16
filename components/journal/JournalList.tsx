@@ -135,7 +135,7 @@ function EntryCard({ entry, onEdit }: { entry: JournalEntryInput; onEdit: () => 
     entry.body.trim().length > 0 || SECTIONS.some((s) => (entry[s.key] ?? "").trim().length > 0);
 
   return (
-    <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1.5, p: 1.75 }}>
+    <Box sx={{ border: "1px solid", borderColor: "divider", p: 1.75 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
         <Box sx={{ minWidth: 0 }}>
           <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">

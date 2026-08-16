@@ -75,10 +75,10 @@ export default async function PerformancePage(props: { searchParams: Promise<{ r
       />
 
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2, mb: 3 }}>
-        <StatCard label="Study time" value={`${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`} color="#6366f1" />
-        <StatCard label="Questions solved" value={questions} sub={acc != null ? `${acc}% accuracy` : undefined} color="#10b981" />
-        <StatCard label="Consistency" value={`${consistencyScore(sessions, Math.min(range, 36500))}%`} sub="days studied in range" color="#f59e0b" />
-        <StatCard label="Streak" value={`${currentStreak(sessions)}d`} sub={`longest ${longestStreak(sessions)}d`} color="#ef4444" />
+        <StatCard label="Study time" value={`${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`} />
+        <StatCard label="Questions solved" value={questions} sub={acc != null ? `${acc}% accuracy` : undefined} />
+        <StatCard label="Consistency" value={`${consistencyScore(sessions, Math.min(range, 36500))}%`} sub="days studied in range" />
+        <StatCard label="Streak" value={`${currentStreak(sessions)}d`} sub={`longest ${longestStreak(sessions)}d`} />
       </Box>
 
       <PerformanceView

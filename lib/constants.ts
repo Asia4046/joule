@@ -1,18 +1,20 @@
 export const SUBJECTS = ["Physics", "Chemistry", "Mathematics"] as const;
 export type Subject = (typeof SUBJECTS)[number];
 
+// Data-encoding colors (charts, progress, statuses) — kept muted-warm to sit
+// on the paper/ink chrome. The UI chrome itself stays monochrome.
 export const SUBJECT_COLORS: Record<string, string> = {
-  Physics: "#6366f1",
-  Chemistry: "#10b981",
-  Mathematics: "#f59e0b",
+  Physics: "#C05C3C",
+  Chemistry: "#43806B",
+  Mathematics: "#3E5F8A",
 };
 
 export const CHAPTER_STATUSES = [
-  { value: "not_started", label: "Not Started", color: "#94a3b8" },
-  { value: "learning", label: "Learning", color: "#f59e0b" },
-  { value: "completed", label: "Completed", color: "#3b82f6" },
-  { value: "revision_due", label: "Revision Due", color: "#ef4444" },
-  { value: "mastered", label: "Mastered", color: "#10b981" },
+  { value: "not_started", label: "Not Started", color: "#8A877F" },
+  { value: "learning", label: "Learning", color: "#C77D2E" },
+  { value: "completed", label: "Completed", color: "#43806B" },
+  { value: "revision_due", label: "Revision Due", color: "#BF4B4B" },
+  { value: "mastered", label: "Mastered", color: "#2E6E4E" },
 ] as const;
 
 export const STUDY_TYPES = [

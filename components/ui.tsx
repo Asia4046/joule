@@ -32,15 +32,7 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
       sx={{ mb: 3 }}
     >
       <Box>
-        <Box
-          sx={{
-            width: 32,
-            height: 4,
-            borderRadius: 2,
-            background: "linear-gradient(90deg, #4f46e5, #8b5cf6)",
-            mb: 1.25,
-          }}
-        />
+        <Box sx={{ width: 12, height: 12, bgcolor: "#D97757", border: "1.5px solid currentColor", color: "text.primary", mb: 1.25 }} aria-hidden />
         <Typography variant="h4" component="h1">
           {title}
         </Typography>
@@ -69,7 +61,7 @@ export function StatCard({
   color?: string;
 }) {
   const theme = useTheme();
-  const c = color ?? theme.palette.primary.main;
+  const c = color ?? (theme.palette.mode === "dark" ? "#DE8468" : "#C05C3C");
   return (
     <Card
       sx={{
@@ -77,39 +69,23 @@ export function StatCard({
         position: "relative",
         overflow: "hidden",
         "&:hover": {
-          transform: "translateY(-2px)",
-          borderColor: alpha(c, 0.4),
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? `0 8px 24px rgba(0,0,0,.5)`
-              : `0 8px 24px ${alpha(c, 0.14)}`,
+          transform: "translate(-2px,-2px)",
+          boxShadow: theme.palette.mode === "dark" ? "6px 6px 0 #000" : "6px 6px 0 #1F1E1D",
         },
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: -34,
-          right: -34,
-          width: 110,
-          height: 110,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${alpha(c, 0.14)}, transparent 70%)`,
-          pointerEvents: "none",
-        }}
-      />
-      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 }, position: "relative" }}>
+      <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
         <Stack direction="row" alignItems="flex-start" spacing={1.5}>
           {icon && (
             <Box
               sx={{
                 width: 38,
                 height: 38,
-                borderRadius: 2.5,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: `linear-gradient(135deg, ${alpha(c, 0.14)}, ${alpha(c, 0.3)})`,
+                bgcolor: alpha(c, theme.palette.mode === "dark" ? 0.22 : 0.14),
+                border: `1.5px solid ${c}`,
                 color: c,
                 flexShrink: 0,
               }}
@@ -118,12 +94,13 @@ export function StatCard({
             </Box>
           )}
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, display: "block", letterSpacing: "0.02em" }}>
+            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: "block", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.6rem" }}>
               {label}
             </Typography>
             <Typography
               variant="h5"
-              sx={{ mt: 0.25, fontSize: "1.3rem", fontWeight: 800, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}
+              className="jee-num"
+              sx={{ mt: 0.25, fontSize: "1.4rem", fontWeight: 600, letterSpacing: "-0.02em" }}
             >
               {value}
             </Typography>
@@ -165,7 +142,7 @@ export function ProgressRing({
         value={Math.min(100, Math.max(0, value))}
         size={size}
         thickness={thickness}
-        sx={{ color: theme.palette.primary.main, "& .MuiCircularProgress-circle": { strokeLinecap: "round" } }}
+        sx={{ color: theme.palette.primary.main, "& .MuiCircularProgress-circle": { strokeLinecap: "butt" } }}
       />
       <Box
         sx={{
@@ -204,14 +181,14 @@ export function EmptyState({
             sx={{
               width: 56,
               height: 56,
-              borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               mx: "auto",
               mb: 1.5,
-              bgcolor: alpha(theme.palette.primary.main, 0.08),
-              color: theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
+              bgcolor: alpha(theme.palette.primary.main, 0.12),
+              border: `1.5px solid ${theme.palette.primary.main}`,
+              color: theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.dark,
             }}
           >
             {icon}
@@ -233,22 +210,15 @@ export function LoadingGrid({ rows = 3 }: { rows?: number }) {
   return (
     <Stack spacing={2}>
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} variant="rounded" height={90} />
+        <Skeleton key={i} variant="rectangular" height={90} />
       ))}
     </Stack>
   );
 }
 
-/** GitHub-style study consistency heatmap. Data: [{date: yyyy-mm-dd, minutes}] */
+/** GitHub-style study consistency heatmap in terracotta steps. Data: [{date: yyyy-mm-dd, minutes}] */
 export function StudyHeatmap({ data }: { data: { date: string; minutes: number }[] }) {
-  const theme = useTheme();
-  const levels = [
-    alpha(theme.palette.primary.main, 0.12),
-    alpha(theme.palette.primary.main, 0.35),
-    alpha(theme.palette.primary.main, 0.55),
-    alpha(theme.palette.primary.main, 0.78),
-    theme.palette.primary.main,
-  ];
+  const levels = ["#EADFD7", "#E0BFAE", "#D97757", "#B4552F", "#7F3A1F"];
   const levelFor = (m: number) => (m === 0 ? 0 : m < 60 ? 1 : m < 150 ? 2 : m < 270 ? 3 : 4);
 
   // group into weeks (columns)
@@ -282,8 +252,9 @@ export function StudyHeatmap({ data }: { data: { date: string; minutes: number }
                     sx={{
                       width: 11,
                       height: 11,
-                      borderRadius: "3px",
                       bgcolor: levels[levelFor(d.minutes)],
+                      outline: "0.5px solid rgba(31,30,29,0.18)",
+                      outlineOffset: "-0.5px",
                       transition: "transform .12s ease",
                       "&:hover": { transform: "scale(1.35)" },
                     }}

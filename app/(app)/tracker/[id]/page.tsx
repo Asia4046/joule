@@ -102,7 +102,6 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
             label="Last studied"
             value={daysSince == null ? "Never" : daysSince === 0 ? "Today" : `${daysSince} day${daysSince === 1 ? "" : "s"} ago`}
             sub={state?.nextRevisionAt ? `Next revision ${state.nextRevisionAt.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : "No revision scheduled"}
-            color="#f59e0b"
           />
           <Card>
             <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>

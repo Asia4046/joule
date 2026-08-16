@@ -9,7 +9,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { useTheme, alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { signupAction, type AuthState } from "@/app/auth-actions";
 import AuthShell from "@/components/auth/AuthShell";
 
@@ -19,18 +19,9 @@ export default function SignupPage() {
 
   return (
     <AuthShell tagline="Your personal JEE command center.">
-      <Card
-        sx={{
-          borderRadius: 5,
-          border: `1px solid ${alpha(theme.palette.divider, 0.8)}`,
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? "0 24px 64px rgba(0,0,0,.55)"
-              : "0 24px 64px rgba(27,27,34,.12)",
-        }}
-      >
+      <Card>
         <CardContent sx={{ p: { xs: 2.5, sm: 3.5 } }}>
-          <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: "-0.02em", textAlign: "center" }}>
+          <Typography variant="h5" sx={{ textAlign: "center" }}>
             Create your account
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3, textAlign: "center" }}>

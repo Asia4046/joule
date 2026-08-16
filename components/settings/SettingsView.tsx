@@ -177,7 +177,7 @@ export default function SettingsView({
 
             <Divider />
 
-            <Box sx={{ border: 1, borderColor: "error.main", borderRadius: 2, p: 2 }}>
+            <Box sx={{ border: 1, borderColor: "error.main", p: 2 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "error.main", mb: 1 }}>
                 DANGER ZONE
               </Typography>

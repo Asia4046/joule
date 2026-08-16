@@ -37,28 +37,22 @@ export default function DashboardCharts({ sessions }: { sessions: SessionLite[] 
     <div style={{ width: "100%", height: 220 }}>
       <ResponsiveContainer>
         <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-          <defs>
-            <linearGradient id="jeeBarGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={theme.palette.primary.main} stopOpacity={1} />
-              <stop offset="100%" stopColor={theme.palette.primary.main} stopOpacity={0.35} />
-            </linearGradient>
-          </defs>
           <CartesianGrid strokeDasharray="3 6" stroke={theme.palette.divider} vertical={false} />
           <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
           <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
           <Tooltip
-            cursor={{ fill: theme.palette.action.hover, radius: 4 }}
+            cursor={{ fill: theme.palette.action.hover }}
             formatter={(v) => [`${v}h`, "Studied"]}
             labelFormatter={(label) => `Day ${label}`}
             contentStyle={{
               background: theme.palette.background.paper,
-              border: `1px solid ${theme.palette.divider}`,
-              borderRadius: 10,
+              border: `1.5px solid ${theme.palette.text.primary}`,
+              boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+              borderRadius: 0,
               fontSize: 12,
-              boxShadow: "0 8px 24px rgba(0,0,0,.12)",
             }}
           />
-          <Bar dataKey="hours" fill="url(#jeeBarGrad)" radius={[4, 4, 0, 0]} maxBarSize={16} />
+          <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
         </BarChart>
       </ResponsiveContainer>
       <Typography variant="caption" color="text.secondary" sx={{ display: "block", textAlign: "center" }}>

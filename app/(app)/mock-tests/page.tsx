@@ -27,10 +27,10 @@ export default async function MockTestsPage() {
         subtitle={tests.length ? `${tests.length} tests recorded` : "Record and analyse your mock-test performance."}
       />
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2, mb: 3 }}>
-        <StatCard label="Average score" value={avg != null ? `${avg}%` : "—"} color="#6366f1" />
-        <StatCard label="Best percentile" value={bestPct != null ? bestPct.toFixed(2) : "—"} color="#10b981" />
-        <StatCard label="Latest accuracy" value={latestAcc != null ? `${latestAcc}%` : "—"} color="#f59e0b" />
-        <StatCard label="Avg time / question" value={avgTime != null ? `${avgTime} min` : "—"} color="#ef4444" />
+        <StatCard label="Average score" value={avg != null ? `${avg}%` : "—"} />
+        <StatCard label="Best percentile" value={bestPct != null ? bestPct.toFixed(2) : "—"} />
+        <StatCard label="Latest accuracy" value={latestAcc != null ? `${latestAcc}%` : "—"} />
+        <StatCard label="Avg time / question" value={avgTime != null ? `${avgTime} min` : "—"} />
       </Box>
       <MockTestTable
         tests={tests.map((t) => ({

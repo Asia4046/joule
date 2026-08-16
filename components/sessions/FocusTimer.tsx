@@ -148,7 +148,7 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
                     left: 0,
                     color: mode === "focus" ? "primary.main" : "secondary.main",
                     transition: "color .3s ease",
-                    "& .MuiCircularProgress-circle": { strokeLinecap: "round", transition: "stroke-dashoffset 1s linear" },
+                    "& .MuiCircularProgress-circle": { strokeLinecap: "butt", transition: "stroke-dashoffset 1s linear" },
                   }}
                 />
                 <Box

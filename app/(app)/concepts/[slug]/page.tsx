@@ -101,9 +101,8 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
                   flex: { xs: "1 1 100%", md: "1 1 calc(50% - 12px)" },
                   border: "1px solid",
                   borderColor: "divider",
-                  borderRadius: 2.5,
                   p: 1.75,
-                  bgcolor: "rgba(99,102,241,0.05)",
+                  bgcolor: "rgba(217,119,87,0.08)",
                 }}
               >
                 <TeX tex={f.tex} display />
@@ -132,7 +131,6 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
                   sx={{
                     width: 22,
                     height: 22,
-                    borderRadius: "50%",
                     flexShrink: 0,
                     display: "flex",
                     alignItems: "center",
@@ -170,7 +168,6 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
                 component="a"
                 href={`/concepts/${r.slug}`}
                 clickable
-                sx={{ borderRadius: 999 }}
               />
             ))}
           </Stack>

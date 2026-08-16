@@ -120,7 +120,7 @@ export default function SessionsList({
               <Stack key={s.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1.25 }}>
                 <Box sx={{ minWidth: 0 }}>
                   <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                    <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: SUBJECT_COLORS[s.subject] ?? "#999" }} />
+                    <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[s.subject] ?? "#999" }} />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       {s.chapterName ?? s.topic ?? s.subject}
                     </Typography>

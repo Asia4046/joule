@@ -33,10 +33,10 @@ export default async function QuestionsPage() {
     <Box>
       <PageHeader title="Questions" subtitle="Track solving volume and accuracy across subjects." />
       <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2, mb: 3 }}>
-        <StatCard label="Today" value={todayCount} color="#6366f1" />
-        <StatCard label="Last 7 days" value={weekCount} color="#10b981" />
-        <StatCard label="Last 30 days" value={monthCount} color="#f59e0b" />
-        <StatCard label="Accuracy (30d)" value={acc != null ? `${acc}%` : "—"} color="#ef4444" />
+        <StatCard label="Today" value={todayCount} />
+        <StatCard label="Last 7 days" value={weekCount} />
+        <StatCard label="Last 30 days" value={monthCount} />
+        <StatCard label="Accuracy (30d)" value={acc != null ? `${acc}%` : "—"} />
       </Box>
       <QuestionsView
         logs={logs.map((l) => ({

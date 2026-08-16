@@ -98,8 +98,9 @@ export default function QuestionsView({
   const tooltipProps = {
     contentStyle: {
       background: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: 8,
+      border: `1.5px solid ${theme.palette.text.primary}`,
+      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+      borderRadius: 0,
       fontSize: 12,
     },
   };
@@ -117,7 +118,7 @@ export default function QuestionsView({
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
-                  <Bar dataKey="questions" fill={theme.palette.primary.main} radius={[3, 3, 0, 0]} maxBarSize={16} />
+                  <Bar dataKey="questions" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -180,7 +181,7 @@ export default function QuestionsView({
                 <Stack key={l.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1.25 }}>
                   <Box>
                     <Stack direction="row" spacing={1} alignItems="center">
-                      <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: SUBJECT_COLORS[l.subject] ?? "#999" }} />
+                      <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[l.subject] ?? "#999" }} />
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>{l.chapterName ?? l.topic ?? l.subject}</Typography>
                       <Typography variant="caption" color="text.secondary">
                         {l.total} Q · {l.correct}✓ {l.incorrect}✗ · {Math.round((l.correct / Math.max(1, l.correct + l.incorrect)) * 100)}%

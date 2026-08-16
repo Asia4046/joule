@@ -23,8 +23,9 @@ export default function PerformanceView({
   const tooltipProps = {
     contentStyle: {
       background: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: 8,
+      border: `1.5px solid ${theme.palette.text.primary}`,
+      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+      borderRadius: 0,
       fontSize: 12,
     },
   };
@@ -46,7 +47,7 @@ export default function PerformanceView({
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
                   <Tooltip {...tooltipProps} />
-                  <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[3, 3, 0, 0]} maxBarSize={16} />
+                  <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

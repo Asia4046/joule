@@ -165,15 +165,16 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
                     <Tooltip
                       contentStyle={{
                         background: theme.palette.background.paper,
-                        border: `1px solid ${theme.palette.divider}`,
-                        borderRadius: 8,
+                        border: `1.5px solid ${theme.palette.text.primary}`,
+                        boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+                        borderRadius: 0,
                         fontSize: 12,
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="Physics" fill={SUBJECT_COLORS.Physics} radius={[3, 3, 0, 0]} maxBarSize={28} />
-                    <Bar dataKey="Chemistry" fill={SUBJECT_COLORS.Chemistry} radius={[3, 3, 0, 0]} maxBarSize={28} />
-                    <Bar dataKey="Maths" fill={SUBJECT_COLORS.Mathematics} radius={[3, 3, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Physics" fill={SUBJECT_COLORS.Physics} radius={[0, 0, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Chemistry" fill={SUBJECT_COLORS.Chemistry} radius={[0, 0, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Maths" fill={SUBJECT_COLORS.Mathematics} radius={[0, 0, 0, 0]} maxBarSize={28} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

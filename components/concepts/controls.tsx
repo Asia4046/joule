@@ -49,7 +49,7 @@ export function LabeledSlider({
             color: c,
             bgcolor: alpha(c, 0.1),
             px: 0.75,
-            borderRadius: 1,
+            borderRadius: 0,
           }}
         >
           {value.toFixed(decimals)}
@@ -81,7 +81,7 @@ export function Readout({ label, value, color }: { label: string; value: ReactNo
   return (
     <Box
       sx={{
-        borderRadius: 2,
+        borderRadius: 0,
         border: `1px solid ${alpha(c, 0.35)}`,
         bgcolor: alpha(c, 0.06),
         px: 1.5,

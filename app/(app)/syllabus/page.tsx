@@ -75,10 +75,9 @@ export default async function SyllabusPage(props: {
             value={subjectProgress(group.states, group.count)}
             sx={{
               height: 6,
-              borderRadius: 3,
               mb: 2,
               bgcolor: "action.hover",
-              "& .MuiLinearProgress-bar": { borderRadius: 3, bgcolor: SUBJECT_COLORS[group.subject] },
+              "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[group.subject] },
             }}
           />
           <Stack spacing={1.5}>
@@ -112,7 +111,7 @@ export default async function SyllabusPage(props: {
                       <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
                         <Box
                           sx={{
-                            width: 10, height: 10, borderRadius: "50%",
+                            width: 10, height: 10,
                             bgcolor: statusColor(status),
                             flexShrink: 0,
                           }}

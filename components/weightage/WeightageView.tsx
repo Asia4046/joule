@@ -46,8 +46,9 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
   const tooltipProps = {
     contentStyle: {
       background: theme.palette.background.paper,
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: 8,
+      border: `1.5px solid ${theme.palette.text.primary}`,
+      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+      borderRadius: 0,
       fontSize: 12,
     },
   };
@@ -102,7 +103,7 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
                 <XAxis type="number" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="%" />
                 <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                 <Tooltip formatter={(v) => [`${v}%`, "Weightage"]} {...tooltipProps} />
-                <Bar dataKey="weightage" radius={[0, 3, 3, 0]} maxBarSize={16}>
+                <Bar dataKey="weightage" radius={[0, 0, 0, 0]} maxBarSize={16}>
                   {chartData.map((d, i) => (
                     <Cell key={i} fill={d.fill} />
                   ))}
@@ -135,7 +136,7 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
                     <TableCell sx={{ fontWeight: 600 }}>{c.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: SUBJECT_COLORS[c.subject] }} />
+                        <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[c.subject] }} />
                         <Typography variant="body2">{c.subject}</Typography>
                       </Stack>
                     </TableCell>
