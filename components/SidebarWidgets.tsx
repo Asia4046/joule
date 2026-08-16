@@ -76,7 +76,7 @@ export function ClockCard() {
           "& .MuiLinearProgress-bar": { backgroundColor: "#D97757" },
         }}
       />
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", display: "block", mt: 0.5, fontSize: "0.6rem" }}>
+      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", display: "block", mt: 0.5, fontSize: "0.66rem" }}>
         {Math.round(dayPct)}% of today
       </Typography>
     </Box>
