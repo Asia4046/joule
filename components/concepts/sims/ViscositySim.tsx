@@ -27,7 +27,7 @@ export default function ViscositySim() {
     s.y += s.v * dt;
     s.t += dt;
     s.trace.push({ t: s.t, v: s.v });
-    if (s.trace.length > 900) s.trace.shift();
+    while (s.trace.length > 2 && s.trace[1].t < s.t - 3.9) s.trace.shift();
     if (s.y > 4) {
       s.y = 0;
       s.v = 0;

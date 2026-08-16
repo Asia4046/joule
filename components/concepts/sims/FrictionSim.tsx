@@ -30,7 +30,6 @@ export default function FrictionSim() {
     if (applied > fsM) acc = (applied - fkNow) / m;
     else if (s.v > 0) acc = -fkNow / m;
     s.v = Math.max(0, s.v + acc * dt);
-    if (s.v === 0 && applied <= fsM) s.x = 0.12;
     s.x += s.v * dt;
     if (s.x > 0.86) {
       s.x = 0.12;

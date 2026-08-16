@@ -10,14 +10,14 @@ export default function OrbitSim() {
   const [vFactor, setVFactor] = useState(1.0); // × circular speed
   const GM = 1;
   const R = 70; // planet radius in px-ish units
-  const state = useRef({ trail: [] as { x: number; y: number }[], x: 0, y: -160, vx: 0, vy: 0, t: 0, escaped: false, crashed: false });
+  const state = useRef({ trail: [] as { x: number; y: number }[], x: 0, y: -160, vx: 0, vy: 0, t: 0, escaped: false, crashed: false, restart: 0 });
 
   const vc = Math.sqrt(GM / 160);
   const v = vFactor * vc;
-  const ve = Math.sqrt(2) * vc;
+  const ve = Math.SQRT2 * vc;
 
   const reset = (vv: number) => {
-    state.current = { trail: [], x: 0, y: -160, vx: vv, vy: 0, t: 0, escaped: false, crashed: false };
+    state.current = { trail: [], x: 0, y: -160, vx: vv, vy: 0, t: 0, escaped: false, crashed: false, restart: 0 };
   };
   const lastFactor = useRef(vFactor);
   if (lastFactor.current !== vFactor) {
@@ -27,29 +27,33 @@ export default function OrbitSim() {
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
-    // physics — symplectic-ish substeps
+    // physics — semi-implicit Euler substeps on a sped-up clock so orbits complete in seconds
     const sub = 8;
+    const timeScale = 1500;
     for (let i = 0; i < sub; i++) {
       const r = Math.hypot(s.x, s.y);
       if (r < R * 0.72) {
         s.crashed = true;
         break;
       }
-      if (r > 900) {
+      if (r > 1400) {
         s.escaped = true;
       }
       const acc = GM / (r * r * r);
-      const ax = -acc * s.x;
-      const ay = -acc * s.y;
-      s.vx += ax * (dt / sub) * 60;
-      s.vy += ay * (dt / sub) * 60;
-      s.x += s.vx * (dt / sub) * 60;
-      s.y += s.vy * (dt / sub) * 60;
+      const step = (dt / sub) * timeScale;
+      s.vx += -acc * s.x * step;
+      s.vy += -acc * s.y * step;
+      s.x += s.vx * step;
+      s.y += s.vy * step;
     }
-    s.t += dt;
+    s.t += dt * timeScale;
     if (!s.crashed) s.trail.push({ x: s.x, y: s.y });
-    if (s.trail.length > 700) s.trail.shift();
-    if (s.t > 60 || (s.crashed && s.t > 2)) reset(v);
+    if (s.trail.length > 900) s.trail.shift();
+    // restarts: crash/escape → pause 1.5 real seconds; otherwise cap at ~5 circular periods
+    const T0 = 2 * Math.PI * Math.sqrt((160 * 160 * 160) / GM);
+    if (s.crashed || s.escaped) s.restart += dt;
+    if ((s.crashed || s.escaped) && s.restart > 1.5) reset(v);
+    else if (s.t > 5 * T0 && !s.escaped) reset(v);
 
     clearPanel(ctx, w, h);
     const cx = w / 2;

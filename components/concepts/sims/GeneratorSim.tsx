@@ -10,6 +10,11 @@ export default function GeneratorSim() {
   const [omega, setOmega] = useState(2);
   const [B, setB] = useState(1);
   const state = useRef({ ang: 0, trace: [] as { t: number; emf: number }[], t: 0 });
+  const params = useRef({ omega, B });
+  if (params.current.omega !== omega || params.current.B !== B) {
+    params.current = { omega, B };
+    state.current = { ang: state.current.ang, trace: [], t: 0 };
+  }
 
   const eps0 = B * omega; // NBAω with NA=1
 

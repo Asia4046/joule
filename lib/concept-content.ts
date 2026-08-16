@@ -181,9 +181,9 @@ export const CONCEPT_CONTENT: Record<string, ConceptContent> = {
   },
   "rotational-motion": {
     title: "Rotational Motion",
-    tagline: "Moment of inertia, torque and rolling — where JEE separates the well-drilled from the rest.",
-    simTitle: "Rolling race: ring vs disk vs sphere",
-    simAbout: "Race three bodies down an incline; see why the sphere always wins and geometry decides the order.",
+    tagline: "Moment of inertia, torque and angular momentum — where JEE separates the well-drilled from the rest.",
+    simTitle: "Angular momentum skater",
+    simAbout: "Slide the masses inward: I drops, ω rises, L stays constant — and KE climbs (your arms did work).",
     sections: [
       {
         heading: "Moment of inertia is the new mass",

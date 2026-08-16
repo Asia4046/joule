@@ -153,7 +153,7 @@ export default function PistonSim() {
     label(ctx, mode === "adiabatic" ? `PV^γ (γ = ${gamma.toFixed(2)})` : "isothermal", px0 + 8, py0 + 10, mode === "adiabatic" ? SIM.red : SIM.green, 10);
   });
 
-  const T2 = Math.pow(targetV, gamma - 1);
+  const T2 = Math.pow(targetV, 1 - gamma); // TV^(γ−1) = const → T rises on compression
   return (
     <SimFrame
       title="Piston & PV diagram"
@@ -180,9 +180,9 @@ export default function PistonSim() {
       }
       readouts={
         <>
-          <Readout label="Work done on gas" value={`${Math.max(0, -state.current.W).toFixed(2)} J`} color="#fbbf24" />
+          <Readout label="Work done on gas" value={`${Math.max(0, state.current.W).toFixed(2)} J`} color="#fbbf24" />
           <Readout label="ΔU = nCvΔT" value={`${(Cv * (T2 - 1)).toFixed(2)} J`} color={mode === "adiabatic" ? "#f87171" : "#38bdf8"} />
-          <Readout label="Heat Q" value={mode === "adiabatic" ? "0 (fast/insulated)" : `${(-state.current.W).toFixed(2)} J rejected`} />
+          <Readout label="Heat Q" value={mode === "adiabatic" ? "0 (fast/insulated)" : `${Math.max(0, state.current.W).toFixed(2)} J rejected`} />
         </>
       }
     />

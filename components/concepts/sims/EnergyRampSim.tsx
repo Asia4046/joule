@@ -13,6 +13,11 @@ export default function EnergyRampSim() {
   const L = 10; // ramp length (m)
   const m = 2;
   const state = useRef<{ s: number; v: number; restartTimer: number }>({ s: 0, v: 0, restartTimer: 0 });
+  const params = useRef({ theta, mu });
+  if (params.current.theta !== theta || params.current.mu !== mu) {
+    params.current = { theta, mu };
+    state.current = { s: 0, v: 0, restartTimer: 0 };
+  }
 
   const th = (theta * Math.PI) / 180;
   const a = g * (Math.sin(th) - mu * Math.cos(th));
@@ -67,8 +72,7 @@ export default function EnergyRampSim() {
     ctx.restore();
     label(ctx, `θ = ${theta.toFixed(0)}°`, rampBot.x + 58, rampBot.y - 20, SIM.dim, 11);
 
-    // height lines
-    const heightNow = (L - s.s) * Math.sin(th);
+    // height reference line
     ctx.save();
     ctx.strokeStyle = "rgba(148,163,184,0.25)";
     ctx.setLineDash([3, 5]);
@@ -121,7 +125,6 @@ export default function EnergyRampSim() {
     label(ctx, `total = ${PE0.toFixed(0)} J`, barX + 2 * (barW + 26) + barW / 2, h - 30, SIM.text, 10, "center");
 
     label(ctx, s.s >= L ? "reached the bottom — restarting" : `a = g(sinθ − μcosθ) = ${a.toFixed(2)} m/s²`, w * 0.3, h - 14, SIM.text, 11, "center");
-    void heightNow;
   });
 
   return (

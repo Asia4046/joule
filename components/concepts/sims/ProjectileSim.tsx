@@ -10,12 +10,17 @@ export default function ProjectileSim() {
   const [angle, setAngle] = useState(45);
   const g = 9.8;
   const state = useRef({ t: 0, trail: [] as { x: number; y: number }[], done: false });
+  const params = useRef({ u, angle });
+  if (params.current.u !== u || params.current.angle !== angle) {
+    params.current = { u, angle };
+    state.current = { t: 0, trail: [], done: false };
+  }
 
   const th = (angle * Math.PI) / 180;
   const ux = u * Math.cos(th);
   const uy = u * Math.sin(th);
   const T = (2 * uy) / g;
-  const R = (ux * T) / 1;
+  const R = ux * T;
   const H = (uy * uy) / (2 * g);
   const optimal = (u * u) / g;
   const compAngle = 90 - angle;
@@ -23,7 +28,7 @@ export default function ProjectileSim() {
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
     const pad = 34;
-    const world = { w: optimal * 1.12, h: H * 1.9 + 6 };
+    const world = { w: optimal * 1.12, h: Math.max(H * 1.45 + 4, optimal * 0.45) };
     const sx = (x: number) => pad + (x / world.w) * (w - 2 * pad);
     const sy = (y: number) => h - pad - (y / world.h) * (h - 2 * pad);
 

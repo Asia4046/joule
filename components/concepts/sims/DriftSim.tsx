@@ -56,20 +56,24 @@ export default function DriftSim() {
     ctx.restore();
     label(ctx, `ε = ${V.toFixed(1)} V`, bx - 6, wireY + 46, SIM.amber, 11, "center");
 
-    // resistor (right) — zigzag
+    // resistor (right) — vertical zigzag on the right wire
     ctx.save();
     ctx.strokeStyle = I > 0.5 ? SIM.green : SIM.dim;
     ctx.lineWidth = 2.4;
     ctx.beginPath();
-    const rz = wx1 - 64;
-    ctx.moveTo(rz, wireY - 60);
+    ctx.moveTo(wx1, wireY - 60);
+    let zy = wireY - 44;
+    ctx.lineTo(wx1, zy);
     for (let i = 0; i < 6; i++) {
-      ctx.lineTo(rz - 8 + (i % 2 === 0 ? 0 : 0), wireY - 60 + (i % 2 === 0 ? -10 : 10) - (i > 0 ? 0 : 0));
-      ctx.lineTo(rz - 8, wireY - 60);
+      zy += 8;
+      ctx.lineTo(wx1 + (i % 2 === 0 ? 11 : -11), zy);
     }
+    zy += 8;
+    ctx.lineTo(wx1, zy);
+    ctx.lineTo(wx1, wireY + 60);
     ctx.stroke();
     ctx.restore();
-    label(ctx, `R = ${R.toFixed(1)} Ω`, wx1 - 34, wireY - 84, SIM.text, 11, "center");
+    label(ctx, `R = ${R.toFixed(1)} Ω`, wx1 + 24, wireY, SIM.text, 11, "left");
 
     // bulb (top center)
     const cx = (wx0 + wx1) / 2;

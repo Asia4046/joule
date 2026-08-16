@@ -3,7 +3,7 @@ import ErrorSim from "./ErrorSim";
 import ProjectileSim from "./ProjectileSim";
 import FrictionSim from "./FrictionSim";
 import EnergyRampSim from "./EnergyRampSim";
-import RollingRaceSim from "./RollingRaceSim";
+import AngularMomentumSim from "./AngularMomentumSim";
 import OrbitSim from "./OrbitSim";
 import ViscositySim from "./ViscositySim";
 import PistonSim from "./PistonSim";
@@ -27,7 +27,7 @@ export const SIM_REGISTRY: Record<string, ComponentType> = {
   kinematics: ProjectileSim,
   "laws-of-motion": FrictionSim,
   "work-energy-and-power": EnergyRampSim,
-  "rotational-motion": RollingRaceSim,
+  "rotational-motion": AngularMomentumSim,
   gravitation: OrbitSim,
   "properties-of-solids-and-liquids": ViscositySim,
   thermodynamics: PistonSim,

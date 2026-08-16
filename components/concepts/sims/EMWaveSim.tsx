@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import SimFrame from "@/components/concepts/SimFrame";
 import { LabeledSlider, Readout, SimControls } from "@/components/concepts/controls";
 import { useCanvas, SIM, clearPanel, label, arrow, circle } from "@/components/concepts/useCanvas";
@@ -11,7 +13,7 @@ export default function EMWaveSim() {
   const [amp, setAmp] = useState(40);
   const [speed, setSpeed] = useState(1);
   const [pause, setPause] = useState(false);
-  const tRef = { current: 0 };
+  const tRef = useRef(0);
 
   const f = 1 / lambda; // arbitrary units with v=1
 
@@ -97,7 +99,11 @@ export default function EMWaveSim() {
           <LabeledSlider label="Wavelength λ" value={lambda} min={60} max={300} step={5} decimals={0} onChange={setLambda} />
           <LabeledSlider label="Amplitude" value={amp} min={15} max={55} step={1} decimals={0} onChange={setAmp} color="#f87171" />
           <LabeledSlider label="Animation speed" value={speed} min={0} max={3} step={0.1} decimals={1} onChange={setSpeed} color="#34d399" />
-          <Readout label="State" value={pause ? "Paused" : "Running"} color={pause ? "#fbbf24" : "#34d399"} />
+          <Box sx={{ pb: 0.5 }}>
+            <Button size="small" variant="outlined" onClick={() => setPause((p) => !p)}>
+              {pause ? "▶ Play" : "⏸ Pause"}
+            </Button>
+          </Box>
         </SimControls>
       }
       readouts={

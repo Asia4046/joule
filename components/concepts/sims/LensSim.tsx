@@ -83,7 +83,7 @@ export default function LensSim() {
       label(ctx, real ? "real image" : "virtual image", ix, axisY - imH - (imH > 0 ? 10 : -16), SIM.red, 10, "center");
     }
 
-    // principal rays from object tip
+    // ---- principal rays (exact construction) ----
     const oy = axisY - objH;
     const ray = (x1: number, y1: number, x2: number, y2: number, dashed = false) => {
       ctx.save();
@@ -97,31 +97,46 @@ export default function LensSim() {
       ctx.stroke();
       ctx.restore();
     };
-
     if (Math.abs(v) < 5 && Math.abs(imH) < h) {
       const iy = axisY - imH;
+      const edgeX = w - pad;
+
+      // Ray 1: parallel to axis → refracts through F' (convex) / away from F' (concave); passes through image tip
+      ray(ox, oy, cx, oy);
       if (real) {
-        // ray 1: parallel → through F'
-        ray(ox, oy, cx, oy);
         ray(cx, oy, ix, iy);
-        // ray 2: through centre undeviated
-        ray(ox, oy, ix, iy);
-        // ray 3: through F → emerges parallel
-        ray(ox, oy, cx, iy);
-        ray(cx, iy, ix, iy);
+        // extend a little past the image
+        const ex = ix + (ix - cx) * 0.15;
+        ray(ix, iy, ex, iy + (iy - oy) * 0.15);
       } else {
-        // virtual: rays diverge; construction lines dashed
-        ray(ox, oy, cx, oy);
-        // parallel ray leaves as if from image: extend backwards
-        const slope = (oy - iy) / (cx - ix);
-        ray(cx, oy, w - pad, oy + slope * (w - pad - cx));
-        ray(ox, oy, cx, oy, true);
-        // centre ray
-        const slopeC = (iy - oy) / (ix - ox);
-        ray(ox, oy, w - pad, oy + slopeC * (w - pad - ox));
-        // dashed back-extensions to image
+        // refracted ray diverges along the line from the virtual image through the lens point
+        const dx = Math.max(cx - ix, 1);
+        const dy = oy - iy;
+        ray(cx, oy, edgeX, oy + (dy * (edgeX - cx)) / dx);
         ray(cx, oy, ix, iy, true);
-        ray(w - pad, oy + slopeC * (w - pad - ox), ix, iy, true);
+      }
+
+      // Ray 2: through the optical centre — undeviated
+      const slopeC = (axisY - oy) / (cx - ox);
+      if (real) {
+        ray(ox, oy, ix, iy);
+      } else {
+        ray(ox, oy, edgeX, oy + slopeC * (edgeX - ox));
+        ray(cx, axisY, ix, iy, true);
+      }
+
+      // Ray 3: through F (object side) → emerges parallel to axis at height h3
+      const fx = cx - F * scale;
+      const t3 = (cx - ox) / (fx - ox);
+      const h3 = oy + t3 * (axisY - oy);
+      if (Math.abs(h3 - axisY) < h) {
+        ray(ox, oy, cx, h3);
+        if (real) {
+          ray(cx, h3, Math.min(edgeX, Math.max(ix, cx) + 30), h3);
+        } else {
+          ray(cx, h3, edgeX, h3);
+          ray(cx, h3, ix, h3, true);
+        }
       }
     }
 

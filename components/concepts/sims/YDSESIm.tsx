@@ -32,7 +32,6 @@ export default function YDSESIm() {
     const bandY = pad;
     const bandH = 64;
     const color = WAVE_COLOR(lambda);
-    const dPx = 2600 / (d * 1000) / 8; // fringe spacing in px ∝ λD/d
     const betaPx = ((lambda * 1e-9 * screenD) / (d * 1e-3)) * 9000;
 
     ctx.save();
@@ -52,7 +51,6 @@ export default function YDSESIm() {
     ctx.strokeRect(0, bandY, w, bandH);
     ctx.restore();
     label(ctx, "screen intensity pattern", 10, bandY + bandH + 12, SIM.dim, 9);
-    void dPx;
 
     // intensity graph (bottom)
     const py0 = bandY + bandH + 40;
@@ -105,10 +103,13 @@ export default function YDSESIm() {
       const x = w / 2 + n * betaPx;
       if (x > px0 + 8 && x < px1 - 8) label(ctx, n === 0 ? "n=0" : `n=${n > 0 ? "+" : ""}${n}`, x, py1 + 12, SIM.dim, 9, "center");
     });
-    // fringe width marker
-    arrow(ctx, w / 2, py0 - 2, w / 2 + betaPx, py0 - 2, SIM.text, 1.4);
-    arrow(ctx, w / 2, py0 - 2, w / 2 - 0, py0 - 2, SIM.text, 0);
-    label(ctx, `β = λD/d = ${beta} mm`, (w / 2 + betaPx / 2) | 0, py0 - 14, SIM.bright, 10, "center");
+    // fringe width bracket between n=0 and n=1, inside the plot
+    if (betaPx > 24) {
+      const byy = py0 + 14;
+      arrow(ctx, w / 2, byy, w / 2 + betaPx, byy, SIM.bright, 1.6);
+      arrow(ctx, w / 2 + betaPx, byy, w / 2, byy, SIM.bright, 1.6);
+      label(ctx, `β = ${beta} mm`, w / 2 + betaPx / 2, byy - 9, SIM.bright, 10, "center");
+    }
   });
 
   return (
