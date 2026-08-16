@@ -10,14 +10,17 @@ graphs keep data colors; all UI chrome is monochrome.
 
 ## Surfaces
 
-- Light mode: paper background `#F0EEE6`, cards `#FBFAF6`, ink borders
-  `#1F1E1D`, hard shadow `4px 4px 0 #1F1E1D`.
+- Light mode ("restrained brutalism"): paper background `#F4F2EC`, white
+  cards with **hairline** border `#E4E0D6` and soft warm offset shadow
+  `3px 3px 0 rgba(31,30,29,0.08)`. Full ink borders are reserved for
+  interactive/primary elements (buttons, search bar, dialogs, menus, brand,
+  streak tile, active nav).
 - Dark mode: background `#1B1A18`, cards `#26251F`, cream borders `#E8E5DB`,
   hard shadow `4px 4px 0 #000`.
 - Sidebar is always ink `#1F1E1D` (both modes): cream active item with a
   terracotta hard shadow, widgets on `#2A2926` with `#57544C` borders.
 - Radius is **0 everywhere** (theme `shape.borderRadius = 0`).
-- Cards lift on hover: translate(-2px,-2px) + shadow grows to 6px 6px.
+- Cards lift on hover: translate(-2px,-2px) + shadow grows.
 
 ## Color tokens
 
@@ -25,10 +28,10 @@ graphs keep data colors; all UI chrome is monochrome.
 | --- | --- |
 | Accent (primary) | `#D97757` terracotta (light) / `#DE8468` (dark) |
 | Ink | `#1F1E1D` |
-| Paper | `#F0EEE6` |
-| Card | `#FBFAF6` |
-| Text secondary | `#6E6B64` (light) / `#A8A49B` (dark) |
-| Divider | `#DDD9CF` (light) / `#3D3B35` (dark) |
+| Paper | `#F4F2EC` |
+| Card | `#FFFFFF` |
+| Text secondary | `#75716A` (light) / `#A8A49B` (dark) |
+| Divider / hairline | `#E4E0D6` (light) / `#3D3B35` (dark) |
 
 Buttons: primary = ink block (cream text in dark mode) with terracotta hard
 shadow; press = translate into the shadow. Links/focus/active = terracotta.

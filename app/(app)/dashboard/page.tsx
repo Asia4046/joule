@@ -96,7 +96,7 @@ export default async function DashboardPage() {
             <Box sx={{ width: 10, height: 10, bgcolor: "#D97757" }} aria-hidden />
             <Typography
               variant="caption"
-              sx={{ letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, fontSize: "0.64rem", color: "text.secondary" }}
+              sx={{ letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, fontSize: "0.68rem", color: "text.secondary" }}
             >
               {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
             </Typography>
@@ -369,13 +369,13 @@ export default async function DashboardPage() {
             <Box sx={{ overflowX: "auto" }}>
               <table className="jee-num" style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
                 <thead>
-                  <tr style={{ textAlign: "left", color: "rgba(128,128,140,1)" }}>
-                    <th style={{ padding: "6px 12px 6px 0", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Test</th>
-                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Score</th>
-                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Percentile</th>
-                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Accuracy</th>
-                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Attempted</th>
-                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.64rem", letterSpacing: "0.08em" }}>Date</th>
+                  <tr style={{ textAlign: "left" }} className="jee-dim">
+                    <th style={{ padding: "6px 12px 6px 0", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Test</th>
+                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Score</th>
+                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Percentile</th>
+                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Accuracy</th>
+                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Attempted</th>
+                    <th style={{ padding: "6px 12px", fontWeight: 700, textTransform: "uppercase", fontSize: "0.66rem", letterSpacing: "0.07em" }}>Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -386,7 +386,7 @@ export default async function DashboardPage() {
                       <td style={{ padding: "8px 12px" }}>{t.percentile?.toFixed(2) ?? "—"}</td>
                       <td style={{ padding: "8px 12px" }}>{accuracy(t.correct, t.attempted) ?? "—"}%</td>
                       <td style={{ padding: "8px 12px" }}>{t.attempted}</td>
-                      <td style={{ padding: "8px 12px", color: "rgba(128,128,140,1)" }}>{t.date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
+                      <td style={{ padding: "8px 12px" }} className="jee-dim">{t.date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
                     </tr>
                   ))}
                 </tbody>

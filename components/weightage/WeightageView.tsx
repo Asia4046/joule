@@ -100,8 +100,8 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
             <ResponsiveContainer>
               <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 16, left: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                <XAxis type="number" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                 <Tooltip formatter={(v) => [`${v}%`, "Weightage"]} {...tooltipProps} />
                 <Bar dataKey="weightage" radius={[0, 0, 0, 0]} maxBarSize={16}>
                   {chartData.map((d, i) => (

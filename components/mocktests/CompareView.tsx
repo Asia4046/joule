@@ -160,8 +160,8 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
                 <ResponsiveContainer>
                   <BarChart data={chartData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="name" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                     <Tooltip
                       contentStyle={{
                         background: theme.palette.background.paper,

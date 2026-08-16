@@ -70,7 +70,10 @@ export function StatCard({
         overflow: "hidden",
         "&:hover": {
           transform: "translate(-2px,-2px)",
-          boxShadow: theme.palette.mode === "dark" ? "6px 6px 0 #000" : "6px 6px 0 #1F1E1D",
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "6px 6px 0 #000"
+              : "5px 5px 0 rgba(31,30,29,0.16)",
         },
       }}
     >
@@ -94,7 +97,7 @@ export function StatCard({
             </Box>
           )}
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: "block", letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "0.6rem" }}>
+            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: "block", letterSpacing: "0.08em", textTransform: "uppercase", fontSize: "0.66rem" }}>
               {label}
             </Typography>
             <Typography

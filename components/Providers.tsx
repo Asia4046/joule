@@ -60,15 +60,17 @@ const tile = (border: string, shadow: string): CSSObject => ({
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: TERRA, dark: "#C05C3C", light: "#E08B6D" },
+    // main stays the bright terracotta for accents; dark is the accessible
+    // text-safe rust used for links and small primary text (5.7:1 on white)
+    primary: { main: TERRA, dark: "#A84A2D", light: "#E08B6D" },
     secondary: { main: "#4A4842" },
     success: { main: "#43806B" },
     warning: { main: "#C77D2E" },
     error: { main: "#BF4B4B" },
     info: { main: "#3E5F8A" },
-    background: { default: PAPER, paper: CARD },
-    text: { primary: INK, secondary: "#6E6B64" },
-    divider: "#DDD9CF",
+    background: { default: "#F4F2EC", paper: "#FFFFFF" },
+    text: { primary: INK, secondary: "#6B6760" },
+    divider: "#E4E0D6",
   },
   shape,
   typography,
@@ -80,8 +82,8 @@ const lightTheme = createTheme({
       defaultProps: { elevation: 0 },
       styleOverrides: {
         root: {
-          ...tile(INK, "4px 4px 0 #1F1E1D"),
-          backgroundColor: CARD,
+          ...tile("#E4E0D6", "3px 3px 0 rgba(31,30,29,0.08)"),
+          backgroundColor: "#FFFFFF",
           transition: "box-shadow .18s ease, transform .18s ease",
         },
       },
@@ -118,6 +120,12 @@ const lightTheme = createTheme({
         root: { borderRadius: 0, fontWeight: 600, letterSpacing: "0.02em" },
       },
     },
+    MuiLink: {
+      defaultProps: { underline: "always" },
+      styleOverrides: {
+        root: { color: "#A84A2D", fontWeight: 600, "&:hover": { color: "#1F1E1D" } },
+      },
+    },
     MuiOutlinedInput: {
       styleOverrides: { root: { borderRadius: 0, backgroundColor: "#FFFFFF" } },
     },
@@ -139,7 +147,7 @@ const lightTheme = createTheme({
       styleOverrides: { root: { borderRadius: 0 }, bar: { borderRadius: 0 } },
     },
     MuiTableCell: {
-      styleOverrides: { root: { borderColor: "#DDD9CF" } },
+      styleOverrides: { root: { borderColor: "#E4E0D6" } },
     },
     MuiTab: {
       styleOverrides: { root: { minHeight: 40, fontWeight: 700, textTransform: "none" as const } },
@@ -148,7 +156,16 @@ const lightTheme = createTheme({
       styleOverrides: { indicator: { height: 3, borderRadius: 0, backgroundColor: TERRA } },
     },
     MuiToggleButton: {
-      styleOverrides: { root: { borderRadius: 0 } },
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          "&.Mui-selected": {
+            backgroundColor: INK,
+            color: "#FAF9F5",
+            "&:hover": { backgroundColor: "#35332F" },
+          },
+        },
+      },
     },
     MuiDialog: {
       styleOverrides: {
@@ -176,14 +193,14 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    primary: { main: "#DE8468", dark: "#D97757", light: "#E89B82" },
-    secondary: { main: "#A8A49B" },
+    primary: { main: "#DE8468", dark: "#E08B6D", light: "#EFA98F" },
+    secondary: { main: "#B3AFA6" },
     success: { main: "#7BA88F" },
     warning: { main: "#D9A05B" },
     error: { main: "#D97D7D" },
     info: { main: "#8FA8C8" },
     background: { default: "#1B1A18", paper: "#26251F" },
-    text: { primary: PAPER, secondary: "#A8A49B" },
+    text: { primary: PAPER, secondary: "#B3AFA6" },
     divider: "#3D3B35",
   },
   shape,
@@ -234,6 +251,12 @@ const darkTheme = createTheme({
         root: { borderRadius: 0, fontWeight: 600, letterSpacing: "0.02em" },
       },
     },
+    MuiLink: {
+      defaultProps: { underline: "always" },
+      styleOverrides: {
+        root: { color: "#E08B6D", fontWeight: 600, "&:hover": { color: "#F0EEE6" } },
+      },
+    },
     MuiOutlinedInput: {
       styleOverrides: { root: { borderRadius: 0, backgroundColor: "#1F1E1D" } },
     },
@@ -264,7 +287,16 @@ const darkTheme = createTheme({
       styleOverrides: { indicator: { height: 3, borderRadius: 0, backgroundColor: "#DE8468" } },
     },
     MuiToggleButton: {
-      styleOverrides: { root: { borderRadius: 0 } },
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          "&.Mui-selected": {
+            backgroundColor: PAPER,
+            color: "#1F1E1D",
+            "&:hover": { backgroundColor: "#FFFDF8" },
+          },
+        },
+      },
     },
     MuiDialog: {
       styleOverrides: {
@@ -312,6 +344,10 @@ function GlobalThemeStyles() {
         },
         ".jee-serif": { fontFamily: SERIF },
         ".jee-num": { fontVariantNumeric: "tabular-nums lining-nums" },
+        // accessible dimmed text for raw (non-MUI) tables — mode-aware
+        ".jee-dim": {
+          color: theme.palette.mode === "dark" ? "#B3AFA6" : "#6B6760",
+        },
       })}
     />
   );

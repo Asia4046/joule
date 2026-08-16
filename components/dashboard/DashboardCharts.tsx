@@ -38,8 +38,8 @@ export default function DashboardCharts({ sessions }: { sessions: SessionLite[] 
       <ResponsiveContainer>
         <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
           <CartesianGrid strokeDasharray="3 6" stroke={theme.palette.divider} vertical={false} />
-          <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
+          <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
           <Tooltip
             cursor={{ fill: theme.palette.action.hover }}
             formatter={(v) => [`${v}h`, "Studied"]}

@@ -20,7 +20,7 @@ export default function AuthShell({ children, tagline }: { children: ReactNode; 
         p: 2,
         position: "relative",
         overflow: "hidden",
-        bgcolor: resolved === "dark" ? "#1B1A18" : "#F0EEE6",
+        bgcolor: resolved === "dark" ? "#1B1A18" : "#F4F2EC",
       }}
     >
       {/* quiet terracotta corner marks */}

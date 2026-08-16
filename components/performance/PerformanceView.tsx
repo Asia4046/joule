@@ -44,8 +44,8 @@ export default function PerformanceView({
               <ResponsiveContainer>
                 <BarChart data={dailyMinutes} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
                   <Tooltip {...tooltipProps} />
                   <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
@@ -92,8 +92,8 @@ export default function PerformanceView({
               <ResponsiveContainer>
                 <LineChart data={scoreTrendData.map((t, i) => ({ ...t, label: `Test ${i + 1}` }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ r: 3 }} />

@@ -57,11 +57,11 @@ export function ClockCard() {
         >
           {now ? `${hh}:${mm}` : "--:--"}
         </Typography>
-        <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", fontWeight: 600 }}>
+        <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.65)", fontWeight: 600 }}>
           {now ? time.toLocaleDateString("en-IN", { weekday: "short" }) : ""}
         </Typography>
       </Stack>
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", display: "block", mt: 0.5, fontWeight: 500 }}>
+      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.65)", display: "block", mt: 0.5, fontWeight: 500 }}>
         {now
           ? time.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
           : " "}
@@ -76,7 +76,7 @@ export function ClockCard() {
           "& .MuiLinearProgress-bar": { backgroundColor: "#D97757" },
         }}
       />
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.4)", display: "block", mt: 0.5, fontSize: "0.6rem" }}>
+      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", display: "block", mt: 0.5, fontSize: "0.6rem" }}>
         {Math.round(dayPct)}% of today
       </Typography>
     </Box>
@@ -110,11 +110,11 @@ export function QuoteCard() {
       </Typography>
       <Typography
         className="jee-serif"
-        sx={{ fontSize: "0.8rem", fontStyle: "italic", color: "rgba(240,238,230,0.9)", lineHeight: 1.55 }}
+        sx={{ fontSize: "0.8rem", fontStyle: "italic", color: "rgba(240,238,230,0.95)", lineHeight: 1.55 }}
       >
         {quote.text}
       </Typography>
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.45)", display: "block", mt: 0.75, fontWeight: 600 }}>
+      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.6)", display: "block", mt: 0.75, fontWeight: 600 }}>
         — {quote.author}
       </Typography>
     </Box>

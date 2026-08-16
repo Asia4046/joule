@@ -62,8 +62,8 @@ export default function MockAnalyticsCharts({
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={tooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ r: 3 }} />
@@ -85,8 +85,8 @@ export default function MockAnalyticsCharts({
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip contentStyle={tooltipStyle(theme)} />
                   <Line type="monotone" dataKey="accuracy" name="Accuracy %" stroke={theme.palette.warning.main} strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
@@ -104,8 +104,8 @@ export default function MockAnalyticsCharts({
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={tooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="physics" name="Physics" stroke={SUBJECT_COLORS.Physics} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -126,8 +126,8 @@ export default function MockAnalyticsCharts({
               <ResponsiveContainer>
                 <BarChart data={attempts.map((a, i) => ({ ...a, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={tooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="correct" name="Correct" stackId="a" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={26} />

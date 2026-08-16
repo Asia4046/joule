@@ -115,8 +115,8 @@ export default function QuestionsView({
               <ResponsiveContainer>
                 <BarChart data={daily} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
                   <Bar dataKey="questions" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
@@ -151,8 +151,8 @@ export default function QuestionsView({
             <ResponsiveContainer>
               <LineChart data={accuracyTrend} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
                 <Tooltip {...tooltipProps} />
                 <Line type="monotone" dataKey="accuracy" stroke={theme.palette.success.main} strokeWidth={2} dot={false} />
               </LineChart>

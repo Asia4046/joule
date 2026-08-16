@@ -129,7 +129,7 @@ function Brand() {
         </Typography>
         <Typography
           variant="caption"
-          sx={{ color: "rgba(240,238,230,0.45)", fontSize: "0.58rem", letterSpacing: "0.16em", fontWeight: 700, textTransform: "uppercase" }}
+          sx={{ color: "rgba(240,238,230,0.55)", fontSize: "0.62rem", letterSpacing: "0.14em", fontWeight: 700, textTransform: "uppercase" }}
         >
           Prep Platform
         </Typography>
@@ -163,7 +163,7 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
           <Box key={group.section} sx={{ mb: 1.5 }}>
             <Typography
               variant="caption"
-              sx={{ px: 1.5, py: 0.5, display: "block", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.58rem", color: "rgba(240,238,230,0.38)" }}
+              sx={{ px: 1.5, py: 0.5, display: "block", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.64rem", color: "rgba(240,238,230,0.52)" }}
             >
               {group.section}
             </Typography>
@@ -179,22 +179,28 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
                       mb: 0.25,
                       minHeight: 36,
                       position: "relative",
-                      color: active ? "#1F1E1D" : "rgba(240,238,230,0.72)",
                       transition: "all .15s ease",
                       ...(active
                         ? {
                             bgcolor: "#F0EEE6",
+                            color: "#1F1E1D",
                             border: "1.5px solid #F0EEE6",
                             boxShadow: "3px 3px 0 #D97757",
+                            // beat MUI's own .Mui-selected cascade (it would
+                            // repaint ink text on the ink rail — invisible)
+                            "&.Mui-selected": { bgcolor: "#F0EEE6", color: "#1F1E1D" },
+                            "&.Mui-selected:hover": { bgcolor: "#FFFDF8" },
                             "&:hover": { bgcolor: "#FFFDF8" },
                           }
                         : {
+                            color: "rgba(240,238,230,0.8)",
                             border: "1.5px solid transparent",
+                            "&.Mui-selected": { bgcolor: "transparent", color: "rgba(240,238,230,0.72)" },
                             "&:hover": { bgcolor: "rgba(240,238,230,0.08)", color: "#F0EEE6" },
                           }),
                       "& .MuiListItemIcon-root": {
                         minWidth: 34,
-                        color: active ? "#C05C3C" : "rgba(240,238,230,0.55)",
+                        color: active ? "#C05C3C" : "rgba(240,238,230,0.62)",
                       },
                     }}
                     selected={active}
@@ -249,7 +255,7 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: "#F0EEE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {userName}
             </Typography>
-            <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.45)", fontSize: "0.65rem" }}>
+            <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.6)", fontSize: "0.65rem" }}>
               Signed in
             </Typography>
           </Box>
@@ -322,10 +328,10 @@ export default function AppShell({ children, userName }: { children: React.React
           position="sticky"
           elevation={0}
           sx={{
-            bgcolor: dark ? "rgba(27,26,24,0.9)" : "rgba(240,238,230,0.9)",
+            bgcolor: dark ? "rgba(27,26,24,0.9)" : "rgba(244,242,236,0.9)",
             backdropFilter: "blur(8px)",
             borderBottom: "1.5px solid",
-            borderBottomColor: dark ? "#3D3B35" : "#1F1E1D",
+            borderBottomColor: dark ? "#3D3B35" : "#E4E0D6",
             color: "text.primary",
           }}
         >
@@ -423,8 +429,8 @@ export default function AppShell({ children, userName }: { children: React.React
           display: { xs: "flex", md: "none" },
           zIndex: theme.zIndex.appBar,
           borderTop: "1.5px solid",
-          borderColor: dark ? "#E8E5DB" : "#1F1E1D",
-          bgcolor: dark ? "rgba(38,37,31,0.95)" : "rgba(251,250,246,0.95)",
+          borderColor: dark ? "#E8E5DB" : "#E4E0D6",
+          bgcolor: dark ? "rgba(38,37,31,0.95)" : "rgba(255,255,255,0.95)",
           backdropFilter: "blur(8px)",
         }}
       >
