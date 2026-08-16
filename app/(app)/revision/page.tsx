@@ -1,17 +1,15 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import DoneIcon from "@mui/icons-material/Done";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SUBJECT_COLORS } from "@/lib/constants";
 import { EmptyState, PageHeader } from "@/components/ui";
-import { completeRevisionAction } from "@/app/actions/data";
 import ScheduleRevisionForm from "@/components/revision/ScheduleRevisionForm";
+import CompleteRevisionButton from "@/components/revision/CompleteRevisionButton";
 
 export const dynamic = "force-dynamic";
 
@@ -82,12 +80,7 @@ export default async function RevisionPage() {
                           {r.dueAt < new Date() && <Chip label="Overdue" size="small" color="error" variant="outlined" />}
                         </Stack>
                       </Box>
-                      <form action={completeRevisionAction}>
-                        <input type="hidden" name="id" value={r.id} />
-                        <Button size="small" variant="contained" color="success" startIcon={<DoneIcon />} type="submit">
-                          Mark revised
-                        </Button>
-                      </form>
+                      <CompleteRevisionButton id={r.id} />
                     </Stack>
                   </CardContent>
                 </Card>
