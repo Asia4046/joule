@@ -1,0 +1,306 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile        Profile        ?
+  preferences    UserPreference ?
+  chapterStates  ChapterState[]
+  sessions       StudySession[]
+  journalEntries JournalEntry[]
+  goals          Goal[]
+  mockTests      MockTest[]
+  mistakes       Mistake[]
+  questionLogs   QuestionLog[]
+  resources      Resource[]
+  notifications  Notification[]
+  revisions      Revision[]
+}
+
+model Profile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetExam     String   @default("both") // main | advanced | both
+  targetYear     Int      @default(2027)
+  targetPercentile Float?
+  targetRank     Int?
+  prepLevel      String   @default("intermediate") // beginner | intermediate | advanced
+  dailyStudyTargetMinutes Int @default(360)
+  dailyQuestionTarget Int  @default(60)
+  updatedAt      DateTime @updatedAt
+}
+
+model UserPreference {
+  id                  String  @id @default(cuid())
+  userId              String  @unique
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme               String  @default("system") // light | dark | system
+  revisionIntervals   Json    @default("[1,3,7,14,30,60]")
+  notifyRevision      Boolean @default(true)
+  notifyGoals         Boolean @default(true)
+  notifyStreak        Boolean @default(true)
+  notifyMockTests     Boolean @default(true)
+}
+
+// ---------- Syllabus (global, seeded) ----------
+
+model Chapter {
+  id                 String  @id @default(cuid())
+  subject            String // Physics | Chemistry | Mathematics
+  branch             String? // Physical/Organic/Inorganic for Chemistry
+  name               String
+  slug               String
+  jeeMainRelevance   Int     @default(3) // 1-5
+  jeeAdvRelevance    Int     @default(3)
+  difficulty         Int     @default(3) // 1-5
+  avgQuestionsMain   Float   @default(1)
+  avgQuestionsAdv    Float   @default(1)
+  weightageMain      Float   @default(2) // percentage estimate
+  weightageAdv       Float   @default(2)
+  topics             Topic[]
+  states             ChapterState[]
+  sessions           StudySession[]
+  mistakes           Mistake[]
+  questionLogs       QuestionLog[]
+  yearWeightages     ChapterWeightage[]
+
+  @@unique([subject, slug])
+  @@index([subject])
+}
+
+// Year-wise historical weightage estimates (2021–2026), per exam type
+model ChapterWeightage {
+  id        String  @id @default(cuid())
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  year      Int
+  exam      String // main | advanced
+  questions Float   @default(0) // average questions in papers that year
+  weightage Float   @default(0) // % of paper that year
+
+  @@unique([chapterId, year, exam])
+  @@index([chapterId, year])
+}
+
+model Topic {
+  id        String   @id @default(cuid())
+  chapterId String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int      @default(0)
+  states    TopicState[]
+  mistakes  Mistake[]
+  revisions Revision[]
+  resources Resource[]
+
+  @@index([chapterId])
+}
+
+// ---------- Per-user tracking ----------
+
+model ChapterState {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapterId   String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  status      String   @default("not_started") // not_started | learning | completed | revision_due | mastered
+  confidence  Int      @default(2) // 1-5
+  questionsSolved Int  @default(0)
+  questionsCorrect Int @default(0)
+  lastStudiedAt DateTime?
+  nextRevisionAt DateTime?
+  revisionCount Int   @default(0)
+  topics      TopicState[]
+
+  @@unique([userId, chapterId])
+  @@index([userId, nextRevisionAt])
+}
+
+model TopicState {
+  id          String  @id @default(cuid())
+  chapterStateId String
+  chapterState ChapterState @relation(fields: [chapterStateId], references: [id], onDelete: Cascade)
+  topicId     String
+  topic       Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  done        Boolean @default(false)
+
+  @@unique([chapterStateId, topicId])
+}
+
+model StudySession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  chapterId String?
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  topic     String?
+  startedAt DateTime
+  endedAt   DateTime
+  durationMinutes Int
+  type      String   // concept | practice | revision | mock_test | analysis | lecture | reading
+  notes     String?
+
+  @@index([userId, startedAt])
+  @@index([userId, subject])
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime
+  title     String
+  mood      String?
+  studiedWhat String?
+  understood  String?
+  struggled   String?
+  mistakes    String?
+  tomorrow    String?
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  kind      String   // daily | weekly | long_term
+  metric    String   // hours | questions | chapters | mocks | custom
+  target    Float
+  current   Float    @default(0)
+  deadline  DateTime?
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, kind])
+}
+
+model MockTest {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  date        DateTime
+  examType    String   @default("main") // main | advanced
+  source      String?
+  totalMarks  Float
+  marksObtained Float
+  physicsMarks  Float?
+  chemistryMarks Float?
+  mathsMarks    Float?
+  attempted   Int
+  correct     Int
+  incorrect   Int
+  skipped     Int
+  timeMinutes Int
+  negativeMarks Float @default(0)
+  percentile  Float?
+  rank        Int?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, date])
+}
+
+model Mistake {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject     String
+  chapterId   String?
+  chapter     Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  topicId     String?
+  topic       Topic?   @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  question    String
+  myReasoning String?
+  solution    String?
+  source      String?
+  mistakeType String   // conceptual | calculation | silly | misread | formula_forgotten | time_pressure | guessing
+  difficulty  String   @default("medium") // easy | medium | hard
+  date        DateTime
+  status      String   @default("open") // open | revisited | resolved
+  createdAt   DateTime @default(now())
+
+  @@index([userId, mistakeType])
+  @@index([userId, date])
+}
+
+model QuestionLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  chapterId String?
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  topic     String?
+  total     Int
+  correct   Int
+  incorrect Int
+  skipped   Int      @default(0)
+  difficulty String   @default("mixed")
+  date      DateTime
+
+  @@index([userId, date])
+}
+
+model Revision {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId   String
+  topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subject   String
+  dueAt     DateTime
+  completedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId, dueAt])
+}
+
+model Resource {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // book | video | pdf | website | notes | problem_set | course
+  title     String
+  url       String?
+  topicId   String?
+  topic     Topic?   @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  subject   String?
+  tags      String   @default("")
+  favorite  Boolean  @default(false)
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, type])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      String   // revision | goal | streak | mock_test | info
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}
