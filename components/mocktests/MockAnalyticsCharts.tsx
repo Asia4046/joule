@@ -17,8 +17,8 @@ import {
   Legend,
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
-import type { Theme } from "@mui/material/styles";
 import { SUBJECT_COLORS } from "@/lib/constants";
+import { chartTooltipStyle } from "@/components/ui";
 
 type TrendPoint = {
   name: string;
@@ -29,14 +29,6 @@ type TrendPoint = {
   chemistry?: number | null;
   maths?: number | null;
 };
-
-const tooltipStyle = (theme: Theme) => ({
-  background: theme.palette.background.paper,
-  border: `1.5px solid ${theme.palette.text.primary}`,
-  boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-  borderRadius: 0,
-  fontSize: 12,
-});
 
 export default function MockAnalyticsCharts({
   trend,
@@ -64,7 +56,7 @@ export default function MockAnalyticsCharts({
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={tooltipStyle(theme)} />
+                  <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ r: 3 }} />
                   {trend.some((t) => t.percentile != null) && (
@@ -87,7 +79,7 @@ export default function MockAnalyticsCharts({
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
-                  <Tooltip contentStyle={tooltipStyle(theme)} />
+                  <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Line type="monotone" dataKey="accuracy" name="Accuracy %" stroke={theme.palette.warning.main} strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
@@ -106,7 +98,7 @@ export default function MockAnalyticsCharts({
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={tooltipStyle(theme)} />
+                  <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="physics" name="Physics" stroke={SUBJECT_COLORS.Physics} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                   <Line type="monotone" dataKey="chemistry" name="Chemistry" stroke={SUBJECT_COLORS.Chemistry} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -128,7 +120,7 @@ export default function MockAnalyticsCharts({
                   <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={tooltipStyle(theme)} />
+                  <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="correct" name="Correct" stackId="a" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={26} />
                   <Bar dataKey="incorrect" name="Incorrect" stackId="a" fill={theme.palette.error.main} maxBarSize={26} />

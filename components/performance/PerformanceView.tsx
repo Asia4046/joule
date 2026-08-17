@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from "recharts";
 import { SUBJECT_COLORS } from "@/lib/constants";
+import { chartTooltipStyle } from "@/components/ui";
 
 export default function PerformanceView({
   dailyMinutes,
@@ -21,13 +22,7 @@ export default function PerformanceView({
 }) {
   const theme = useTheme();
   const tooltipProps = {
-    contentStyle: {
-      background: theme.palette.background.paper,
-      border: `1.5px solid ${theme.palette.text.primary}`,
-      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-      borderRadius: 0,
-      fontSize: 12,
-    },
+    contentStyle: chartTooltipStyle(theme),
   };
   const pie = Object.entries(subjectDist)
     .filter(([, v]) => v > 0)

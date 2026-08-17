@@ -10,8 +10,19 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import { useTheme, alpha } from "@mui/material/styles";
+import { useTheme, alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
+
+/** Shared Recharts tooltip contentStyle — Paper & Ink hard-shadow tile. */
+export function chartTooltipStyle(theme: Theme) {
+  return {
+    background: theme.palette.background.paper,
+    border: `1.5px solid ${theme.palette.text.primary}`,
+    boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
+    borderRadius: 0,
+    fontSize: 12,
+  };
+}
 
 /** Button that navigates — safe to render from Server Components (no function props cross the boundary). */
 export function LinkButton({ href, children, ...rest }: { href: string; children: ReactNode } & ButtonProps) {

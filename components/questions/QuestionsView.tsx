@@ -28,7 +28,7 @@ import {
 } from "recharts";
 import { SUBJECTS, SUBJECT_COLORS } from "@/lib/constants";
 import { deleteQuestionLogAction } from "@/app/actions/study";
-import { EmptyState } from "@/components/ui";
+import { EmptyState, chartTooltipStyle } from "@/components/ui";
 import QuestionLogDialog from "./QuestionLogDialog";
 
 type LogItem = {
@@ -96,13 +96,7 @@ export default function QuestionsView({
   );
 
   const tooltipProps = {
-    contentStyle: {
-      background: theme.palette.background.paper,
-      border: `1.5px solid ${theme.palette.text.primary}`,
-      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-      borderRadius: 0,
-      fontSize: 12,
-    },
+    contentStyle: chartTooltipStyle(theme),
   };
 
   return (
@@ -191,7 +185,7 @@ export default function QuestionsView({
                       {new Date(l.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })} · {l.difficulty}
                     </Typography>
                   </Box>
-                  <form action={deleteQuestionLogAction}>
+                  <form action={deleteQuestionLogAction} onSubmit={(e) => { if (!window.confirm("Delete this question log?")) e.preventDefault(); }}>
                     <input type="hidden" name="id" value={l.id} />
                     <IconButton size="small" aria-label="Delete log" type="submit">
                       <DeleteOutlineIcon fontSize="small" />

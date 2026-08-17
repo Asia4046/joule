@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { SUBJECT_COLORS } from "@/lib/constants";
-import { EmptyState } from "@/components/ui";
+import { EmptyState, chartTooltipStyle } from "@/components/ui";
 
 type TestItem = {
   id: string;
@@ -98,7 +98,7 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
               }}
               SelectProps={{ multiple: true }}
               size="small"
-              sx={{ minWidth: 320 }}
+              sx={{ minWidth: { xs: 0, sm: 320 }, width: { xs: "100%", sm: "auto" } }}
             >
               {tests.map((t) => (
                 <MenuItem key={t.id} value={t.id}>
@@ -154,7 +154,7 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
             <CardContent>
               <Typography variant="h6" sx={{ mb: 0.5 }}>Subject performance (relative %)</Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1.5 }}>
-                Best value per metric is highlighted green. Inorrect is lower-is-better.
+                Best value per metric is highlighted green. Incorrect is lower-is-better.
               </Typography>
               <div style={{ width: "100%", height: 260 }}>
                 <ResponsiveContainer>
@@ -162,15 +162,7 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
                     <XAxis dataKey="name" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      contentStyle={{
-                        background: theme.palette.background.paper,
-                        border: `1.5px solid ${theme.palette.text.primary}`,
-                        boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-                        borderRadius: 0,
-                        fontSize: 12,
-                      }}
-                    />
+                    <Tooltip contentStyle={chartTooltipStyle(theme)} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Bar dataKey="Physics" fill={SUBJECT_COLORS.Physics} radius={[0, 0, 0, 0]} maxBarSize={28} />
                     <Bar dataKey="Chemistry" fill={SUBJECT_COLORS.Chemistry} radius={[0, 0, 0, 0]} maxBarSize={28} />

@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
+import Grow from "@mui/material/Grow";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -77,13 +78,19 @@ export default function NotificationBell() {
   }, []);
 
   async function markAllRead() {
-    setUnread(0);
-    setItems((prev) => prev.map((i) => ({ ...i, read: true })));
-    await fetch("/api/notifications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ markAllRead: true }),
-    });
+    try {
+      const res = await fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ markAllRead: true }),
+      });
+      if (res.ok) {
+        setUnread(0);
+        setItems((prev) => prev.map((i) => ({ ...i, read: true })));
+      }
+    } catch {
+      // leave state untouched on failure
+    }
   }
 
   return (
@@ -94,7 +101,7 @@ export default function NotificationBell() {
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ""}`}
         aria-expanded={open}
       >
-        <Badge color="error" variant={unread ? "dot" : "standard"} invisible={unread === 0}>
+        <Badge color="error" variant="dot" invisible={unread === 0}>
           <NotificationsOutlinedIcon />
         </Badge>
       </IconButton>
@@ -102,54 +109,59 @@ export default function NotificationBell() {
         open={open}
         anchorEl={anchorRef.current}
         placement="bottom-end"
+        role="dialog"
+        aria-label="Notifications panel"
         sx={{ zIndex: theme.zIndex.appBar + 1, width: { xs: 320, sm: 380 } }}
       >
         <ClickAwayListener onClickAway={() => setOpen(false)}>
-          <Card elevation={8} sx={{ mt: 1 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 2, py: 1.25 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Notifications {unread > 0 && `(${unread})`}
-            </Typography>
-            {unread > 0 && (
-              <Button size="small" onClick={markAllRead}>
-                Mark all read
-              </Button>
-            )}
-          </Stack>
-          <Divider />
-          <Box sx={{ maxHeight: 360, overflowY: "auto" }}>
-            {items.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 3, textAlign: "center" }}>
-                You&apos;re all caught up.
-              </Typography>
-            ) : (
-              items.map((n) => (
-                <Stack
-                  key={n.id}
-                  direction="row"
-                  spacing={1.25}
-                  sx={{
-                    px: 2,
-                    py: 1.25,
-                    alignItems: "flex-start",
-                    bgcolor: n.read ? "transparent" : alpha(theme.palette.primary.main, 0.06),
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                  }}
-                >
-                  <Box sx={{ color: `${kindColor[n.kind] ?? "info"}.main`, mt: 0.25, display: "flex" }}>
-                    {kindIcon[n.kind] ?? <InfoOutlinedIcon fontSize="small" />}
-                  </Box>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="body2">{n.message}</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {timeAgo(n.createdAt)}
-                    </Typography>
-                  </Box>
-                </Stack>
-              ))
-            )}
-          </Box>
-          </Card>
+          <Grow in={open} style={{ transformOrigin: "top right" }}>
+            <Card elevation={0} sx={{ mt: 1 }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 2, py: 1.25 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                  Notifications {unread > 0 && `(${unread})`}
+                </Typography>
+                {unread > 0 && (
+                  <Button size="small" onClick={markAllRead}>
+                    Mark all read
+                  </Button>
+                )}
+              </Stack>
+              <Divider />
+              <Box sx={{ maxHeight: 360, overflowY: "auto" }}>
+                {items.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 3, textAlign: "center" }}>
+                    You&apos;re all caught up.
+                  </Typography>
+                ) : (
+                  items.map((n) => (
+                    <Stack
+                      key={n.id}
+                      direction="row"
+                      spacing={1.25}
+                      sx={{
+                        px: 2,
+                        py: 1.25,
+                        alignItems: "flex-start",
+                        bgcolor: n.read ? "transparent" : alpha(theme.palette.primary.main, 0.06),
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                        "&:last-child": { borderBottom: "none" },
+                      }}
+                    >
+                      <Box sx={{ color: `${kindColor[n.kind] ?? "info"}.main`, mt: 0.25, display: "flex" }}>
+                        {kindIcon[n.kind] ?? <InfoOutlinedIcon fontSize="small" />}
+                      </Box>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography variant="body2">{n.message}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {timeAgo(n.createdAt)}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  ))
+                )}
+              </Box>
+            </Card>
+          </Grow>
         </ClickAwayListener>
       </Popper>
     </>

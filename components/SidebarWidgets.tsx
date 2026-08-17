@@ -104,7 +104,7 @@ export function QuoteCard() {
     >
       <Typography
         className="jee-serif"
-        sx={{ fontSize: "1.4rem", lineHeight: 0.6, color: "#D97757", fontWeight: 600 }}
+        sx={{ fontSize: "1.4rem", lineHeight: 1, color: "#D97757", fontWeight: 600 }}
       >
         &ldquo;
       </Typography>

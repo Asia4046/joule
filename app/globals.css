@@ -5,16 +5,7 @@ body {
   height: 100%;
 }
 
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-*::-webkit-scrollbar-thumb {
-  background: rgba(110, 107, 100, 0.4);
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* Scrollbar styling lives in Providers.tsx GlobalStyles (theme-aware). */
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -350,7 +350,7 @@ export default function AppShell({ children, userName }: { children: React.React
                 gap: 1,
                 px: 2,
                 py: 0.75,
-                cursor: "text",
+                cursor: "pointer",
                 width: { xs: "100%", sm: 380 },
                 textAlign: "left",
                 bgcolor: dark ? "#26251F" : "#FBFAF6",
@@ -419,6 +419,8 @@ export default function AppShell({ children, userName }: { children: React.React
 
       {/* Mobile bottom nav */}
       <Paper
+        component="nav"
+        aria-label="Primary"
         square
         elevation={0}
         sx={{
@@ -441,6 +443,7 @@ export default function AppShell({ children, userName }: { children: React.React
               key={item.href}
               component={Link}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               sx={{
                 flex: 1,
                 display: "flex",
@@ -450,6 +453,10 @@ export default function AppShell({ children, userName }: { children: React.React
                 py: 1,
                 color: active ? "primary.dark" : "text.secondary",
                 textDecoration: "none",
+                "&:focus-visible": {
+                  outline: "2px solid #D97757",
+                  outlineOffset: "-2px",
+                },
               }}
             >
               <Box

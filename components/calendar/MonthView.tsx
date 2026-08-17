@@ -118,20 +118,26 @@ export default function MonthView({
           ))}
         </Stack>
 
-        {/* weekday header */}
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}>
+        {/* weekday header + day grid */}
+        <Box
+          role="grid"
+          aria-label={`${monthTitle(year, month)} calendar`}
+          sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}
+        >
           {WEEKDAYS.map((w) => (
-            <Typography key={w} variant="caption" color="text.secondary" sx={{ textAlign: "center", fontWeight: 600, py: 0.5 }}>
+            <Typography key={w} variant="caption" color="text.secondary" sx={{ textAlign: "center", fontWeight: 600, py: 0.5 }} component="div" role="columnheader">
               {w}
             </Typography>
           ))}
           {cells.map((cell, i) => {
-            if (cell == null) return <Box key={`empty-${i}`} />;
+            if (cell == null) return <Box key={`empty-${i}`} role="gridcell" aria-hidden />;
             const dayEvents = byDate.get(cell.key) ?? [];
             const isToday = cell.key === todayKey;
             return (
               <Box
                 key={cell.key}
+                role="gridcell"
+                aria-label={`${cell.day} ${monthTitle(year, month)}${dayEvents.length ? ` — ${dayEvents.length} event${dayEvents.length > 1 ? "s" : ""}` : ""}`}
                 sx={{
                   minHeight: { xs: 52, sm: 72 },
                   border: "1px solid",
@@ -164,6 +170,12 @@ export default function MonthView({
             );
           })}
         </Box>
+
+        {events.length === 0 && (
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 3 }}>
+            Nothing scheduled this month. Log sessions, tests or journal entries and they&apos;ll show up here.
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

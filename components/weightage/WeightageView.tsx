@@ -26,6 +26,7 @@ import {
   Cell,
 } from "recharts";
 import { SUBJECT_COLORS, SUBJECTS } from "@/lib/constants";
+import { chartTooltipStyle } from "@/components/ui";
 
 type ChapterW = {
   id: string;
@@ -44,13 +45,7 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
   const theme = useTheme();
 
   const tooltipProps = {
-    contentStyle: {
-      background: theme.palette.background.paper,
-      border: `1.5px solid ${theme.palette.text.primary}`,
-      boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-      borderRadius: 0,
-      fontSize: 12,
-    },
+    contentStyle: chartTooltipStyle(theme),
   };
 
   const tableRows = useMemo(
