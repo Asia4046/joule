@@ -20,6 +20,12 @@ import PhotoelectricSim from "./PhotoelectricSim";
 import BohrSim from "./BohrSim";
 import RectifierSim from "./RectifierSim";
 import VernierSim from "./VernierSim";
+import CollisionSim from "./CollisionSim";
+import RollingSim from "./RollingSim";
+import DopplerSim from "./DopplerSim";
+import RCCircuitSim from "./RCCircuitSim";
+import DecaySim from "./DecaySim";
+import StandingWaveSim from "./StandingWaveSim";
 
 /** Chapter slug → interactive simulation component. All sims are client components. */
 export const SIM_REGISTRY: Record<string, ComponentType> = {
@@ -44,4 +50,11 @@ export const SIM_REGISTRY: Record<string, ComponentType> = {
   "atoms-and-nuclei": BohrSim,
   "semiconductor-electronics": RectifierSim,
   "experimental-physics": VernierSim,
+  // JEE Advanced question labs — standalone archetypes not tied to a single chapter
+  collisions: CollisionSim,
+  "rolling-motion": RollingSim,
+  "doppler-effect": DopplerSim,
+  "rc-transients": RCCircuitSim,
+  "nuclear-decay": DecaySim,
+  "standing-waves": StandingWaveSim,
 };

@@ -890,4 +890,263 @@ export const CONCEPT_CONTENT: Record<string, ConceptContent> = {
       "Report final answers to the instrument's least count, not calculator precision.",
     ],
   },
+  // ── JEE Advanced question labs: standalone archetypes built around famous Adv patterns ──
+  collisions: {
+    title: "Collisions & Restitution",
+    tagline: "Momentum always survives the crash — kinetic energy surrenders a fraction (1−e²).",
+    simTitle: "Collision & restitution lab",
+    simAbout: "Head-on 1-D collision with tunable masses, speeds and coefficient of restitution.",
+    sections: [
+      {
+        heading: "What a collision conserves",
+        body: [
+          "In every collision — elastic, inelastic or explosive — linear momentum is conserved during the brief contact because the contact forces are internal and huge compared to external impulses. Kinetic energy is a different story: only e = 1 (perfectly elastic) preserves it.",
+          "The coefficient of restitution e = (relative velocity of separation)/(relative velocity of approach) links the before and after states. Together with momentum conservation, two equations solve any 1-D collision for the two unknown final velocities — no Newton's-law integration needed.",
+          "JEE Advanced has leaned on this repeatedly: the famous 2019 paper 1 problem stacked balls that undergo successive collisions and asked for total collisions (answer via relative-velocity ratios); several other problems hide a collision inside a projectile or a block-wedge chain where you must recognise the collision instant.",
+        ],
+      },
+      {
+        heading: "Special cases JEE loves",
+        body: [
+          "Equal masses with e = 1 exchange velocities exactly — the lab above shows this as a clean swap. A heavy body hitting a stationary light one barely slows while the light one shoots off at up to twice the heavy body's speed.",
+          "Perfectly inelastic (e = 0) means the bodies move together after impact — maximum kinetic energy loss consistent with momentum, ΔKE = ½μv²_rel, where μ = m₁m₂/(m₁+m₂) is the reduced mass. This same reduced mass hides in Bohr-model and SHM problems.",
+          "In 2-D collisions of a particle with a stationary target (billiards style), equal masses scatter at 90° to each other after an elastic hit — a result JEE Advanced asks you to prove or exploit.",
+        ],
+      },
+      {
+        heading: "Collision chains and repeated impacts",
+        body: [
+          "When a ball bounces down steps or between a wall and an incoming block, the trick is to treat each impact independently and track velocities, not positions. Coefficient e with the wall gives v' = e·v; each bounce loses a factor e in speed and e² in energy.",
+          "Total distance travelled by a bouncing ball forms a geometric series: first drop h, then 2e²h, 2e⁴h, … summing to h(1+e²)/(1−e²). Total time follows the same series with √ factors — a classic computation-saving identity.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "m_1u_1 + m_2u_2 = m_1v_1 + m_2v_2", label: "Momentum conservation" },
+      { tex: "e = \\frac{v_2 - v_1}{u_1 - u_2}", label: "Restitution (1-D)" },
+      { tex: "v_1 = \\frac{(m_1 - em_2)u_1 + (1+e)m_2 u_2}{m_1+m_2}", label: "Final velocity, body 1" },
+      { tex: "\\Delta KE = \\tfrac{1}{2}\\,\\frac{m_1 m_2}{m_1+m_2}(1-e^2)(u_1-u_2)^2", label: "Energy lost (1-D)" },
+      { tex: "h_{total} = h\\,\\frac{1+e^2}{1-e^2}", label: "Bouncing-ball total height" },
+    ],
+    tips: [
+      "Momentum conservation applies DURING the collision; energy methods apply before/after. Never mix them mid-impact.",
+      "For equal masses, elastic, one stationary: velocities simply swap — zero computation.",
+      "Energy loss peaks at e = 0 (move together) and vanishes at e = 1 — check limits to validate answers.",
+      "In block-wedge problems with frictionless contact, horizontal momentum is conserved even though total momentum is not.",
+    ],
+  },
+  "rolling-motion": {
+    title: "Rolling Motion",
+    tagline: "Down the same incline, shape alone decides the winner — mass and radius never enter.",
+    simTitle: "Rolling race",
+    simAbout: "Ring, hollow sphere, disc and solid sphere released together on one incline.",
+    sections: [
+      {
+        heading: "Why rolling splits gravity's work",
+        body: [
+          "A body rolling without slipping divides gravitational potential energy between translation (½mv²) and rotation (½Iω²). With I = kmR² (k = 1 for a ring, ½ for a disc, ⅖ for a solid sphere, ⅔ for a hollow sphere) and ω = v/R, energy conservation gives v² = 2gh/(1+k) — the mass and the radius cancel identically.",
+          "The acceleration down a slope follows the same censorship: a = g sinθ/(1+k). The solid sphere (k = ⅖) always beats the disc (½), which beats the hollow sphere (⅔), which beats the ring (k = 1) — regardless of their masses or sizes. JEE Advanced has tested exactly this ranking several times, once with a numerical 'time ratio' twist.",
+        ],
+      },
+      {
+        heading: "Friction's supporting role",
+        body: [
+          "Counter-intuitively, friction points UP the incline for a body rolling down: gravity acts through the centre of mass and provides no torque about it, so friction alone supplies the torque that spins the body up — at the cost of reducing the translational acceleration. Without friction the body slides with a = g sinθ — larger than any rolling acceleration — but never rotates.",
+          "Rolling without slipping demands a minimum friction: μ ≥ k·tanθ/(1+k). Ask 'will it roll or slide?' before computing anything; JEE Advanced regularly sets μ below this threshold so the body slips and the kinematics change entirely.",
+        ],
+      },
+      {
+        heading: "Rolling energy bookkeeping",
+        body: [
+          "Total kinetic energy of a rolling body is (1+k)/2 · mv² — translation plus rotation in a fixed ratio set by shape. This fixed fraction is why rolling bodies reach the bottom slower than sliding ones from the same height, and why a rolling sphere's rotational share is exactly 2/7 of its total KE.",
+          "For rolling on level ground struck impulsively (a cue ball), the point of impact relative to the centre of mass decides whether it initially slips, and friction then drives it toward pure rolling with v = ωR. Tracking that transition is a recurring Advanced-level multi-step problem.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "a = \\frac{g\\sin\\theta}{1 + I/mR^2}", label: "Rolling acceleration on incline" },
+      { tex: "v_{bottom} = \\sqrt{\\frac{2gh}{1+k}}", label: "Speed at bottom (k = I/mR²)" },
+      { tex: "\\mu_{min} = \\frac{\\tan\\theta}{1 + 1/k}", label: "Friction needed to roll" },
+      { tex: "KE_{rot} = \\frac{k}{1+k}\\,KE_{total}", label: "Rotation's fixed share" },
+      { tex: "v = \\omega R", label: "Rolling constraint" },
+    ],
+    tips: [
+      "Memorise the ladder: solid sphere (⅖) > disc (½) > hollow sphere (⅔) > ring (1) — 'smaller k wins'.",
+      "Mass and radius cancel everywhere in pure rolling — if your answer contains them, re-check.",
+      "Sliding (frictionless) beats every rolling body down an incline; rolling with slipping sits in between.",
+      "On level ground, rolling friction in JEE means static friction doing zero net work — no energy loss.",
+    ],
+  },
+  "doppler-effect": {
+    title: "Doppler Effect",
+    tagline: "Wavefronts keep no memory except where they were born — that memory is the shift.",
+    simTitle: "Doppler effect",
+    simAbout: "A moving source emits circular wavefronts that compress ahead and stretch behind.",
+    sections: [
+      {
+        heading: "The mechanism, not the formula",
+        body: [
+          "Sound speed in a medium depends only on the medium — every wavefront expands at v regardless of how the source moves. But each successive wavefront is emitted from a new position, so ahead of a moving source the circles crowd together (shorter λ, higher f) and behind they spread (longer λ, lower f).",
+          "This is why source motion and observer motion are not symmetric: a moving source changes the wavelength printed into the medium, while a moving observer merely sweeps through wavefronts at a different rate. JEE Advanced traps almost always hinge on this asymmetry.",
+        ],
+      },
+      {
+        heading: "Signs, limits and special cases",
+        body: [
+          "The master formula f′ = f(v + v_o)/(v − v_s) uses speeds positive toward the other party. Source approaching observer is the denominator shrinking — f′ grows without bound as v_s → v, which is the sonic boom singularity (not in syllabus, but its origin is).",
+          "A source moving in a circle past a stationary observer (JEE Advanced 2016-style) gives a periodically varying f′, maximum when the velocity points at the observer, minimum when it points away, and exactly f when the velocity is perpendicular — i.e. when the line-of-sight component of velocity vanishes.",
+          "Reflection problems (a sound bouncing off a moving wall) treat the wall as a moving observer first, then a moving source for the return leg — two Doppler shifts applied in sequence.",
+        ],
+      },
+      {
+        heading: "Light vs sound",
+        body: [
+          "For light there is no medium, so only relative line-of-sight velocity matters (relativistic formula, qualitatively in syllabus). The 'approaching star blueshifts' statement is the astronomy version of the same physics.",
+          "Keep v_sound = 343 m/s at 20 °C (≈ 330 m/s at 0 °C) at your fingertips; temperature changes v and hence the shift — a fact Advanced papers have used to disguise a simple computation.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "f' = f\\,\\frac{v \\pm v_o}{v \\mp v_s}", label: "Doppler effect (signs toward each other)" },
+      { tex: "\\lambda' = \\frac{v - v_s}{f}", label: "Wavelength ahead of source" },
+      { tex: "f' = f\\left(1 \\pm \\frac{v_s}{v}\\right)^{-1}", label: "Source-only form" },
+      { tex: "v_{sound} = 343\\ \\text{m/s at } 20^\\circ\\text{C}", label: "Speed of sound" },
+      { tex: "\\frac{\\Delta f}{f} \\approx \\frac{v_{radial}}{v}", label: "Small-shift approximation" },
+    ],
+    tips: [
+      "Ask 'who is moving relative to the MEDIUM?' — for sound, medium matters; for light, only relative motion.",
+      "Source and observer crossing exactly perpendicular: no shift at that instant (line-of-sight velocity is zero).",
+      "Reflected sound off a moving object = two sequential Doppler shifts; don't double-count in one step.",
+      "As v_s → v, f′ → ∞ for approaching source — if a numerical gives this, suspect a mis-set sign.",
+    ],
+  },
+  "rc-transients": {
+    title: "RC Circuits & Transients",
+    tagline: "Every capacitor voltage is an exponential with one personality: the time constant τ = RC.",
+    simTitle: "RC transient lab",
+    simAbout: "Charge and discharge a capacitor through a resistor; watch Vc and I evolve against τ.",
+    sections: [
+      {
+        heading: "The exponential fingerprint",
+        body: [
+          "At t = 0 a charging capacitor is a short circuit (Vc = 0, current jumps to ε/R); at t = ∞ it is an open circuit (I = 0, Vc = ε). Between those extremes everything is exponential: Vc = ε(1 − e^(−t/τ)) and I = (ε/R)e^(−t/τ) with τ = RC.",
+          "The time constant is the time to close 63.2% of the remaining gap — and also the time the initial slope line would take to reach the final value. After 5τ the circuit is within 0.7% of steady state, the practical 'done' marker.",
+          "Discharging flips the roles: Vc = εe^(−t/τ) decays through the same resistor with the SAME τ — the half-life t½ = τ ln 2 ≈ 0.693τ appears in both directions, a favourite Advanced numerical.",
+        ],
+      },
+      {
+        heading: "Reading transient graphs like JEE wants",
+        body: [
+          "An RC plot question usually asks for τ from a graph: read the initial slope's intercept, or the 63.2%/36.8% landmark, or the half-life divided by ln 2. Recognising which landmark is on the graph is 90% of the marks.",
+          "For charging, the charge on the capacitor Q = Cε(1 − e^(−t/τ)) — the same shape as Vc since Q = CVc. The current, however, DECAYS during charging: current falling while voltage rises is the classic conceptual trap.",
+          "In circuits with multiple resistors, first find the Thevenin equivalent seen by the capacitor to get τ = R_eq·C, then write the single-exponential solution for Vc(t) toward V_∞. Steady-state first, transient second — always in that order.",
+        ],
+      },
+      {
+        heading: "Energy audit",
+        body: [
+          "Charging a capacitor to Q = Cε stores energy ½Cε², but the battery delivered Q·ε = Cε² — exactly half is dissipated in the resistance regardless of R's value. This 50% efficiency is independent of how fast you charge, a genuinely surprising result JEE Advanced has asked students to prove.",
+          "During discharge the entire stored ½CV² is dissipated in the resistor; integrating I²R over the exponential confirms it — a quick energy-conservation check for multi-capacitor problems.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "V_C(t) = \\varepsilon\\left(1 - e^{-t/RC}\\right)", label: "Charging voltage" },
+      { tex: "I(t) = \\frac{\\varepsilon}{R}e^{-t/RC}", label: "Charging current" },
+      { tex: "V_C(t) = V_0\\, e^{-t/RC}", label: "Discharging voltage" },
+      { tex: "t_{1/2} = RC\\ln 2 \\approx 0.693\\,RC", label: "Half-life of transient" },
+      { tex: "\\eta = \\frac{\\tfrac{1}{2}C\\varepsilon^2}{C\\varepsilon^2} = 50\\%", label: "Charging efficiency" },
+    ],
+    tips: [
+      "At t = 0⁺, replace capacitors by wires; at steady state, by open circuits — the two boundary sketches solve most problems.",
+      "Current through a charging capacitor is maximum at t = 0 and decays; voltage does the opposite.",
+      "Multi-resistor circuit? Reduce to Thevenin equivalent first: τ = R_eq C, V_∞ from the divider.",
+      "Half the charging energy is ALWAYS lost in resistance — even for arbitrarily small R.",
+    ],
+  },
+  "nuclear-decay": {
+    title: "Radioactive Decay",
+    tagline: "No nucleus knows its age — yet the population obeys a perfect exponential.",
+    simTitle: "Radioactive decay",
+    simAbout: "96 nuclei decay at random while their population traces N₀·2^(−t/T½).",
+    sections: [
+      {
+        heading: "Randomness with a law",
+        body: [
+          "Individual nuclei decay without memory — the probability per unit time (λ, the decay constant) is constant no matter how long a nucleus has existed. This 'nuclear atheism' is exactly why the population follows dN/dt = −λN and N(t) = N₀e^(−λt).",
+          "The half-life T½ = ln2/λ is the time for half a sample to decay; after n half-lives, exactly N₀/2ⁿ remains. JEE Advanced prefers reasoning in powers of two over grinding exponentials — e.g. '3.25 half-lives' should immediately read as N₀ × 2^(−3.25).",
+          "The mean life τ_mean = 1/λ = T½/ln2 ≈ 1.44 T½ is the arithmetic average lifetime; it is longer than the half-life because the decay curve's tail drags the average up. Papers frequently ask which is bigger and why.",
+        ],
+      },
+      {
+        heading: "Activity and half-life tricks",
+        body: [
+          "Activity A = λN = A₀(½)^(t/T½) — the same halving clock applies to counts per second. Carbon dating, isotope mixing and 'how much of a 2 isotope sample remains' questions are all this one line in disguise.",
+          "The fraction decayed vs remaining distinction is the top silly-mistake source: after 4 half-lives, 1/16 remains but 15/16 has decayed. Read which one is asked.",
+        ],
+      },
+      {
+        heading: "Decay chains",
+        body: [
+          "When a parent decays into a radioactive daughter (A → B → C), the daughter's population first grows, peaks, then falls — governed by the Bateman equations. For JEE, the two exploitable limits: secular equilibrium (λ_A ≪ λ_B: daughter activity eventually equals parent's) and the case where the daughter is stable (total B approaches N₀).",
+          "Alpha and beta decay shift the nuclide along N–Z: alpha lowers both A and Z (Z−2, A−4); beta⁻ raises Z by 1 at fixed A. Decay-series questions are pure bookkeeping once these two rules are automatic.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "N(t) = N_0 e^{-\\lambda t} = N_0 \\left(\\tfrac{1}{2}\\right)^{t/T_{1/2}}", label: "Decay law" },
+      { tex: "A = \\lambda N = -\\frac{dN}{dt}", label: "Activity" },
+      { tex: "T_{1/2} = \\frac{\\ln 2}{\\lambda}", label: "Half-life" },
+      { tex: "\\tau_{mean} = \\frac{1}{\\lambda} = \\frac{T_{1/2}}{\\ln 2}", label: "Mean life" },
+      { tex: "\\text{after } n \\text{ half-lives: } \\frac{N_0}{2^n}", label: "Halving rule" },
+    ],
+    tips: [
+      "Convert everything to half-lives first — JEE numericals are engineered to be powers of 2.",
+      "Mean life > half-life always (factor 1/ln2 ≈ 1.44); know why the tail lifts the average.",
+      "Activity falls with the same half-life as the population — count rate IS a population measurement.",
+      "Alpha: A−4, Z−2 · beta⁻: Z+1 — write the balance explicitly in series questions.",
+    ],
+  },
+  "standing-waves": {
+    title: "Standing Waves & Harmonics",
+    tagline: "A string fixed at both ends only permits λ = 2L/n — everything else follows.",
+    simTitle: "Standing waves on a string",
+    simAbout: "Choose the harmonic; see nodes, antinodes and the sonometer frequency ladder respond.",
+    sections: [
+      {
+        heading: "Why only certain wavelengths survive",
+        body: [
+          "Two identical waves travelling in opposite directions (an incident and a reflected wave) superpose into y = 2A sin(kx)·cos(ωt) — a spatial sine envelope oscillating in time. The boundary condition y = 0 at both fixed ends forces sin(kL) = 0, so kL = nπ and λ_n = 2L/n for integer n.",
+          "Each allowed pattern (mode) is a standing wave with stationary nodes (zero displacement always) and antinodes (maximum amplitude) halfway between. The nth mode has n loops, n+1 nodes, and frequency f_n = n·f₁ where the fundamental f₁ = v/2L — the harmonic ladder JEE Advanced loves to climb.",
+        ],
+      },
+      {
+        heading: "What controls the pitch",
+        body: [
+          "Wave speed on a string is v = √(T/µ) — tension up, frequency up; linear density up, frequency down. Stretching a string to twice its length both increases L and decreases µ, so sonometer problems need BOTH effects applied: f ∝ (1/L)√(T/µ).",
+          "A tuning fork loading a sonometer wire at resonance shares its frequency; changing tension until beats vanish is how the wire's f₁ is matched. JEE Advanced 2019 asked for the mass hung on a wire given resonance conditions — pure f₁ = (1/2L)√(T/µ) bookkeeping with T = mg.",
+        ],
+      },
+      {
+        heading: "Same physics, other boundaries",
+        body: [
+          "A pipe open at both end mirrors the string: both ends are antinodes, f_n = n·v/2L. A pipe closed at one end allows only odd harmonics f_n = (2n−1)·v/4L — the missing even harmonics are the classic identification question.",
+          "When a wave reflects from a denser medium (fixed end) it inverts phase; from a rarer medium it doesn't. That single rule decides node vs antinode at every junction — in composite strings, at organ-pipe mouths, and in quarter-wave reflectors.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "\\lambda_n = \\frac{2L}{n},\\quad n = 1,2,3\\ldots", label: "Allowed wavelengths" },
+      { tex: "f_n = \\frac{n}{2L}\\sqrt{\\frac{T}{\\mu}}", label: "Harmonic frequencies (string)" },
+      { tex: "v = \\sqrt{\\frac{T}{\\mu}}", label: "Wave speed on string" },
+      { tex: "y(x,t) = 2A\\sin(kx)\\cos(\\omega t)", label: "Standing wave" },
+      { tex: "f_n = (2n-1)\\frac{v}{4L}", label: "Closed pipe (odd only)" },
+    ],
+    tips: [
+      "Fixed–fixed and open–open share the same harmonic ladder; closed–open keeps only odd n — the fastest identifier.",
+      "nth mode: n loops, n+1 nodes, n antinodes. Count before you calculate.",
+      "Sonometer: stretching changes µ too — apply f ∝ (1/L)√(T/µ), not just 1/L.",
+      "Reflection from denser medium inverts phase (node at junction); rarer does not (antinode).",
+    ],
+  },
 };

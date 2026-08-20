@@ -21,6 +21,8 @@ export default async function ConceptsPage() {
     orderBy: [{ weightageMain: "desc" }],
   });
   const withLabs = chapters.filter((c) => CONCEPT_CONTENT[c.slug]);
+  const dbSlugs = new Set(chapters.map((c) => c.slug));
+  const advLabs = Object.keys(CONCEPT_CONTENT).filter((slug) => !dbSlugs.has(slug));
 
   return (
     <Box>
@@ -36,7 +38,7 @@ export default async function ConceptsPage() {
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 2.5 }} useFlexGap flexWrap="wrap">
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Interactive labs" value={withLabs.length} sub="one per Physics chapter" icon={<ScienceOutlinedIcon fontSize="small" />} />
+          <StatCard label="Interactive labs" value={withLabs.length + advLabs.length} sub="21 chapter labs + JEE Advanced labs" icon={<ScienceOutlinedIcon fontSize="small" />} />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
           <StatCard label="Coverage" value="100%" sub="full Physics syllabus" />
@@ -95,6 +97,64 @@ export default async function ConceptsPage() {
           );
         })}
       </Stack>
+
+      {advLabs.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1.5 }}>
+            <Typography variant="h6">JEE Advanced question labs</Typography>
+            <Chip size="small" color="secondary" label={`${advLabs.length} archetype labs`} />
+          </Stack>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, maxWidth: 760 }}>
+            Standalone simulations built around famous JEE Advanced question patterns — collisions and restitution,
+            the rolling-body race, Doppler wavefronts, RC transients, radioactive decay and string harmonics.
+          </Typography>
+          <Stack spacing={1.25}>
+            {advLabs.map((slug, i) => {
+              const content = CONCEPT_CONTENT[slug];
+              return (
+                <Card key={slug} sx={{ "&:hover": { borderColor: "secondary.main" } }}>
+                  <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Box
+                        sx={{
+                          width: 44,
+                          height: 44,
+                          flexShrink: 0,
+                          display: { xs: "none", sm: "flex" },
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: 800,
+                          fontSize: "0.9rem",
+                          color: "#F0EEE6",
+                          background: "#1F1E1D",
+                          border: "1.5px solid #1F1E1D",
+                          boxShadow: "2px 2px 0 #D97757",
+                        }}
+                      >
+                        A{i + 1}
+                      </Box>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+                          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                            {content.title}
+                          </Typography>
+                          <Chip size="small" variant="outlined" label="JEE Advanced archetype" color="secondary" />
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, display: { xs: "none", sm: "block" } }}>
+                          {content.tagline}
+                        </Typography>
+                      </Box>
+                      <LinkButton href={`/concepts/${slug}`} endIcon={<ArrowForward />} size="small">
+                        Open lab
+                      </LinkButton>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
 }
