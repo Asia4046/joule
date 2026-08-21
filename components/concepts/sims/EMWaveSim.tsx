@@ -7,6 +7,8 @@ import SimFrame from "@/components/concepts/SimFrame";
 import { LabeledSlider, Readout, SimControls } from "@/components/concepts/controls";
 import { useCanvas, SIM, clearPanel, label, arrow, circle } from "@/components/concepts/useCanvas";
 
+const V_PX = 120; // visual wave speed, px/s
+
 /** EM wave: coupled E (vertical, red) and B (horizontal, blue) oscillations travelling right. */
 export default function EMWaveSim() {
   const [lambda, setLambda] = useState(140);
@@ -47,7 +49,7 @@ export default function EMWaveSim() {
     ctx.shadowBlur = 6;
     ctx.beginPath();
     for (let x = x0; x <= x1 - 50; x += 3) {
-      const y = cy - amp * Math.sin(k * (x - x0) - t * 0.08);
+      const y = cy - amp * Math.sin(k * (x - x0) - V_PX * k * t * 0.01);
       x === x0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     ctx.stroke();
@@ -62,7 +64,7 @@ export default function EMWaveSim() {
     ctx.shadowBlur = 6;
     ctx.beginPath();
     for (let x = x0; x <= x1 - 50; x += 3) {
-      const b = amp * 0.7 * Math.sin(k * (x - x0) - t * 0.08);
+      const b = amp * 0.7 * Math.sin(k * (x - x0) - V_PX * k * t * 0.01);
       // project depth onto 45° so B appears perpendicular to both E and propagation
       const dx = b * 0.5;
       const dy = -b * 0.5;
@@ -75,7 +77,7 @@ export default function EMWaveSim() {
     // sample field vectors along the axis
     for (let i = 0; i < 8; i++) {
       const x = x0 + 30 + i * ((x1 - 60 - x0) / 7);
-      const ph = Math.sin(k * (x - x0) - t * 0.08);
+      const ph = Math.sin(k * (x - x0) - V_PX * k * t * 0.01);
       const ey = cy - ph * amp * 0.55;
       arrow(ctx, x, cy, x, ey, "rgba(248,113,113,0.6)", 1.4);
       const b = ph * amp * 0.4;

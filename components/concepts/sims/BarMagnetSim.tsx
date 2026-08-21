@@ -137,6 +137,8 @@ function BarMagnetCanvasWithDrag({
   draw: React.RefObject<HTMLCanvasElement | null>;
   onCompass: (p: { x: number; y: number }) => void;
 }) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  
   return (
     <Box
       sx={{ position: "absolute", inset: 0, cursor: "crosshair" }}
@@ -148,7 +150,12 @@ function BarMagnetCanvasWithDrag({
         });
       }}
     >
-      <canvas ref={draw} />
+      <canvas ref={(el) => {
+        canvasRef.current = el;
+        if (draw && 'current' in draw) {
+          (draw as React.MutableRefObject<HTMLCanvasElement | null>).current = el;
+        }
+      }} />
     </Box>
   );
 }

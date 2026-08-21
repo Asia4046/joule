@@ -17,9 +17,9 @@ export default function FrictionSim() {
   const N = W;
   const fsMax = mu * N;
   const fk = 0.8 * mu * N;
-  const moving = state.current.v > 0.001;
-  const friction = F > fsMax ? fk : F;
-  const a = F > fsMax ? (F - fk) / m : 0;
+  const sliding = F > fsMax;
+  const friction = sliding ? fk : F;
+  const a = sliding ? (F - fk) / m : 0;
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
@@ -106,7 +106,7 @@ export default function FrictionSim() {
         <>
           <Readout label="Friction limit μₛN" value={`${fsMax.toFixed(1)} N`} color="#f87171" />
           <Readout label="Kinetic μₖN (μₖ = 0.8μₛ)" value={`${fk.toFixed(1)} N`} />
-          <Readout label="Acceleration" value={moving || F > fsMax ? `${a.toFixed(2)} m/s²` : "0 (static)"} color={F > fsMax ? "#34d399" : undefined} />
+          <Readout label="Acceleration" value={sliding ? `${a.toFixed(2)} m/s²` : "0 (static)"} color={sliding ? "#34d399" : undefined} />
         </>
       }
     />

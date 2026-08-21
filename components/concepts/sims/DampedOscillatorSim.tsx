@@ -55,7 +55,7 @@ export default function DampedOscillatorSim() {
     }
     s.trace.push({ t: s.t, x: s.x });
     const T_MAX = 20;
-    while (s.trace.length > 2 && s.trace[1].t > s.t - T_MAX) s.trace.shift();
+    while (s.trace.length > 2 && s.trace[1].t < s.t - T_MAX) s.trace.shift();
 
     clearPanel(ctx, w, h);
     const pad = 14;

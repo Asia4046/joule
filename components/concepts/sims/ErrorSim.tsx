@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimFrame from "@/components/concepts/SimFrame";
 import { LabeledSlider, Readout, SimControls, ResetButton } from "@/components/concepts/controls";
 import { useCanvas, SIM, clearPanel, label } from "@/components/concepts/useCanvas";
@@ -10,14 +10,7 @@ export default function ErrorSim() {
   const [leastCount, setLeastCount] = useState(0.1); // mm
   const [n, setN] = useState(20);
   const TRUE = 50.0; // mm
-  const state = useRef({ samples: [] as number[], acc: 0 });
-
-  const samples = state.current.samples;
-  const mean = samples.length ? samples.reduce((a, b) => a + b, 0) / samples.length : 0;
-  const std = samples.length > 1
-    ? Math.sqrt(samples.reduce((a, b) => a + (b - mean) ** 2, 0) / (samples.length - 1))
-    : 0;
-  const sem = samples.length ? std / Math.sqrt(samples.length) : 0;
+  const state = useRef({ samples: [] as number[] });
 
   const takeSamples = () => {
     const out: number[] = [];
@@ -28,7 +21,18 @@ export default function ErrorSim() {
     }
     state.current.samples = out;
   };
-  if (state.current.samples.length !== n) takeSamples();
+
+  // Generate samples when n or leastCount changes
+  useEffect(() => {
+    takeSamples();
+  }, [n, leastCount]);
+
+  const samples = state.current.samples;
+  const mean = samples.length ? samples.reduce((a, b) => a + b, 0) / samples.length : 0;
+  const std = samples.length > 1
+    ? Math.sqrt(samples.reduce((a, b) => a + (b - mean) ** 2, 0) / (samples.length - 1))
+    : 0;
+  const sem = samples.length ? std / Math.sqrt(samples.length) : 0;
 
   const canvasRef = useCanvas((ctx, w, h) => {
     clearPanel(ctx, w, h, false);

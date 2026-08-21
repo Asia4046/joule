@@ -58,7 +58,7 @@ export default function GeneratorSim() {
     ctx.shadowColor = SIM.indigo;
     ctx.shadowBlur = 8;
     ctx.beginPath();
-    ctx.ellipse(0, 0, R, R * (0.18 + 0.82 * sq), s.ang * 0 + 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, R, R * (0.18 + 0.82 * sq), s.ang, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
 

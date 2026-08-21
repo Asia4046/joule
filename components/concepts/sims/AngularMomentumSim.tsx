@@ -181,9 +181,11 @@ export default function AngularMomentumSim() {
     }
   });
 
+  // Read ref values once for render (refs are mutated in animation loop, safe to read here)
   const I0 = I(r);
   const wNow = state.current.L / I0;
   const KE = 0.5 * I0 * wNow * wNow;
+  const LNow = state.current.L;
 
   return (
     <SimFrame
@@ -212,7 +214,7 @@ export default function AngularMomentumSim() {
         <>
           <Readout label="I = 2mr² + I_rod" value={`${I0.toFixed(2)} kg·m²`} />
           <Readout label="ω = L/I" value={`${wNow.toFixed(2)} rad/s`} color="#34d399" />
-          <Readout label="L = Iω" value={`${state.current.L.toFixed(2)} kg·m²/s`} color="#fbbf24" />
+          <Readout label="L = Iω" value={`${LNow.toFixed(2)} kg·m²/s`} color="#fbbf24" />
           <Readout label="KE = ½Iω²" value={`${KE.toFixed(1)} J`} color="#f87171" />
         </>
       }
