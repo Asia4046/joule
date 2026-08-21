@@ -106,7 +106,8 @@ export default async function ConceptsPage() {
           </Stack>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, maxWidth: 760 }}>
             Standalone simulations built around famous JEE Advanced question patterns — collisions and restitution,
-            the rolling-body race, Doppler wavefronts, RC transients, radioactive decay and string harmonics.
+            the rolling-body race, Doppler wavefronts, RC transients, radioactive decay, string harmonics and
+            the tunnel piston effect.
           </Typography>
           <Stack spacing={1.25}>
             {advLabs.map((slug, i) => {

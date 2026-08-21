@@ -26,6 +26,7 @@ import DopplerSim from "./DopplerSim";
 import RCCircuitSim from "./RCCircuitSim";
 import DecaySim from "./DecaySim";
 import StandingWaveSim from "./StandingWaveSim";
+import TrainTunnelSim from "./TrainTunnelSim";
 
 /** Chapter slug → interactive simulation component. All sims are client components. */
 export const SIM_REGISTRY: Record<string, ComponentType> = {
@@ -57,4 +58,5 @@ export const SIM_REGISTRY: Record<string, ComponentType> = {
   "rc-transients": RCCircuitSim,
   "nuclear-decay": DecaySim,
   "standing-waves": StandingWaveSim,
+  "train-in-tunnel": TrainTunnelSim,
 };

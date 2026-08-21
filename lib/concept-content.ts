@@ -1149,4 +1149,50 @@ export const CONCEPT_CONTENT: Record<string, ConceptContent> = {
       "Reflection from denser medium inverts phase (node at junction); rarer does not (antinode).",
     ],
   },
+  "train-in-tunnel": {
+    title: "Train in a Tunnel: Piston Effect",
+    tagline: "A train is a loose piston — the air it displaces must squeeze through the gap at vA₁/(A₂−A₁).",
+    simTitle: "Train in a tunnel — the piston effect",
+    simAbout: "Ride with the train: watch displaced air squeeze through the annular gap and blast backward.",
+    sections: [
+      {
+        heading: "The loose piston",
+        body: [
+          "A train of cross-section A₁ driving through a tunnel of cross-section A₂ (A₂ > A₁) is a piston that does not seal. Every second it sweeps a volume v·A₁ of air out of its way, and with nowhere else to go, that air streams back through the annular gap between the train's sides and the tunnel walls.",
+          "In the ground frame the flow is unsteady — messy. Jump to the train's frame and it becomes a steady flow problem: air far ahead approaches at v and fills the whole tunnel cross-section A₂, then must squeeze through the gap of area A₂ − A₁. Continuity gives it in one line: v·A₂ = u′(A₂ − A₁), so u′ = vA₂/(A₂−A₁) = v/(1−β), where β = A₁/A₂ is the blockage ratio.",
+          "Notice what the algebra is telling you: the gap speed depends only on the ratio β, never on the absolute size. A model train in a straw and a metro in a tunnel behave identically if their blockage ratios match.",
+        ],
+      },
+      {
+        heading: "Two speeds, one subtraction",
+        body: [
+          "u′ = v/(1−β) is the air speed relative to the TRAIN. Relative to the TUNNEL walls, the gap air drifts backward at u = u′ − v = vA₁/(A₂−A₁) = vβ/(1−β). JEE asks for both framings — the IIT-JEE 2005 screening original and its many descendants hinge on reading which one the question wants, and the answers differ by exactly v.",
+          "There is a ground-frame audit that arrives at the same place without changing frames: the train sweeps volume at vA₁ per second, and that volume exits through the gap at speed u, so u(A₂ − A₁) = vA₁. One equation, no calculus — this is the entire problem.",
+          "Always run the limit checks: β → 0 (the train vanishes) gives u′ → v and u → 0 — nothing to displace, nothing happens. β → 1 makes both speeds diverge — with no gap, incompressible flow is impossible, which is why tightly sealed trains in real tunnels generate pressure waves instead (your ears popping in a metro).",
+        ],
+      },
+      {
+        heading: "Pressure, drag and the platform draft",
+        body: [
+          "Apply Bernoulli in the train's frame between the free stream (speed v, pressure P₀) and the gap (speed u′): P_gap = P₀ − ½ρ(u′² − v²). The annulus acts as a Venturi — the tighter the fit, the harder the suction through the gap, exactly the ½ρv²[(1/(1−β))² − 1] the sim tracks.",
+          "Ahead of the nose, air piles up into a compression zone; behind the tail, the departing jet leaves a suction zone. The pressure difference pushes the train backward — pure aerodynamic drag from displacement, present even with zero friction — and it is why tunnels impose speed limits that open track does not.",
+          "The same pressure landscape is the platform draft: high pressure ahead of the nose shoves you away, then the low-pressure wake yanks debris (and careless passengers) toward the passing train. The yellow line exists because this problem is on the exam of life too.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "vA_2 = u'(A_2 - A_1)", label: "Continuity in the train's frame" },
+      { tex: "u' = \\frac{v}{1-\\beta} = \\frac{vA_2}{A_2-A_1}", label: "Gap air speed rel. train" },
+      { tex: "u = \\frac{vA_1}{A_2-A_1} = u' - v", label: "Gap air speed rel. tunnel (backward)" },
+      { tex: "u(A_2 - A_1) = vA_1", label: "Ground-frame displaced-volume audit" },
+      { tex: "P_0 - P_{gap} = \\tfrac{1}{2}\\rho\\left(u'^2 - v^2\\right)", label: "Bernoulli drop across the gap" },
+    ],
+    tips: [
+      "Switch to the train's frame first — the unsteady mess becomes a steady flow and continuity is one line.",
+      "u′ depends only on the blockage ratio β = A₁/A₂; doubling every area changes nothing.",
+      "Rel. train vs rel. tunnel differ by exactly v — underline which one the question asks before substituting.",
+      "As β → 1 the answers diverge — a sign that the incompressible model itself is breaking (real tunnels: pressure waves, ear pop).",
+      "Front of train = compression (push), rear = suction (pull): the platform draft is this pressure profile wearing a safety announcement.",
+    ],
+  },
 };
