@@ -44,7 +44,8 @@ export default function RCCircuitSim() {
       if (s.hold > 1.4) reinit();
     }
     if (running) {
-      const sub = Math.min(600, Math.max(1, Math.ceil(dt / (tau / 20))));
+      // ensure at least 20 steps per tau for numerical stability
+      const sub = Math.max(1, Math.ceil(dt * 20 / Math.max(tau, 1e-6)));
       const dtt = dt / sub;
       for (let k = 0; k < sub; k++) {
         if (mode === "square" && s.t - s.lastFlip >= T_END) {

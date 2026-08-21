@@ -34,7 +34,7 @@ export default function PistonSim() {
           ? s.P * Math.pow(s.V / (s.V + dV), gamma)
           : nRT / (s.V + dV);
       const Pavg = (P0 + P1) / 2;
-      s.W += -Pavg * dV * 10; // work BY gas (negative when compressed)
+      s.W += -Pavg * dV; // work BY gas (negative when compressed)
       s.V += dV;
       s.P = P1;
       s.path.push({ V: s.V, P: s.P });

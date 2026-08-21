@@ -67,7 +67,10 @@ export default function ProjectileSim() {
     ctx.beginPath();
     for (let i = 0; i <= 80; i++) {
       const tt = (i / 80) * ((2 * (u / Math.SQRT2)) / g);
-      ctx.lineTo(sx((u / Math.SQRT2) * tt), sy((u / Math.SQRT2) * tt - 0.5 * g * tt * tt));
+      const x45 = (u / Math.SQRT2) * tt;
+      const y45 = (u / Math.SQRT2) * tt - 0.5 * g * tt * tt;
+      if (i === 0) ctx.moveTo(sx(x45), sy(y45));
+      else ctx.lineTo(sx(x45), sy(y45));
     }
     ctx.stroke();
     ctx.restore();

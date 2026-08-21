@@ -158,7 +158,7 @@ export default function DampedOscillatorSim() {
     ctx.beginPath();
     for (let i = 0; i <= 100; i++) {
       const tt = tMin + (T_MAX * i) / 100;
-      const env = Math.exp(-zeta * omega0 * tt) * 1;
+      const env = Math.exp(-zeta * omega0 * (tt - tMin)) * 1;
       const xx = px0 + ((tt - tMin) / T_MAX) * plotW;
       ctx.lineTo(xx, py0 + plotH / 2 - (env / X_MAX) * (plotH / 2));
     }
@@ -166,7 +166,7 @@ export default function DampedOscillatorSim() {
     ctx.beginPath();
     for (let i = 0; i <= 100; i++) {
       const tt = tMin + (T_MAX * i) / 100;
-      const env = Math.exp(-zeta * omega0 * tt);
+      const env = Math.exp(-zeta * omega0 * (tt - tMin));
       const xx = px0 + ((tt - tMin) / T_MAX) * plotW;
       ctx.lineTo(xx, py0 + plotH / 2 + (env / X_MAX) * (plotH / 2));
     }

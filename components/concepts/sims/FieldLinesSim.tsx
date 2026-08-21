@@ -20,11 +20,12 @@ export default function FieldLinesSim() {
 
     const Efield = (x: number, y: number) => {
       let ex = 0, ey = 0;
+      const softening = 16; // px^2 softening to avoid singularity
       for (const [p, Q] of [[p1, Q1], [p2, Q2]] as const) {
         const dx = x - p.x;
         const dy = y - p.y;
         const r2 = dx * dx + dy * dy;
-        const r = Math.sqrt(r2) + 4;
+        const r = Math.sqrt(r2 + softening);
         const e = Q / r2;
         ex += (e * dx) / r;
         ey += (e * dy) / r;

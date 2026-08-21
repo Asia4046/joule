@@ -122,8 +122,9 @@ export default function EnergyRampSim() {
 
     // ---- energy bars (right) ----
     const KE = 0.5 * m * s.v * s.v;
-    const heat = mu * m * g * Math.cos(th) * s.s;
-    const PE = PE0 - KE - heat;
+    const currentHeight = (L - s.s) * Math.sin(th);
+    const PE = m * g * currentHeight;
+    const heat = PE0 - PE - KE;
     const barsX0 = w - barsW - 8;
     const barTop = pad + 26;
     const barMaxH = h - barTop - 46;
