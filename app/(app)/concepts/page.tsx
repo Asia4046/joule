@@ -16,8 +16,8 @@ export const dynamic = "force-dynamic";
 export default async function ConceptsPage() {
   await requireUser();
   const chapters = await prisma.chapter.findMany({
-    where: { subject: "Physics" },
-    select: { id: true, name: true, slug: true, branch: true, weightageMain: true, weightageAdv: true, avgQuestionsMain: true },
+    where: { subject: { in: ["Physics", "Chemistry"] } },
+    select: { id: true, name: true, slug: true, branch: true, subject: true, weightageMain: true, weightageAdv: true, avgQuestionsMain: true },
     orderBy: [{ weightageMain: "desc" }],
   });
   const withLabs = chapters.filter((c) => CONCEPT_CONTENT[c.slug]);
@@ -28,7 +28,7 @@ export default async function ConceptsPage() {
     <Box>
       <PageHeader
         title="Concept Labs"
-        subtitle="Interactive simulations + JEE-level explanations for every Physics chapter."
+        subtitle="Interactive simulations + JEE-level explanations for Physics and Chemistry chapters."
         action={
           <LinkButton href="/concepts/oscillations-and-waves" variant="contained" startIcon={<ScienceOutlinedIcon />}>
             Open flagship lab
@@ -68,10 +68,9 @@ export default async function ConceptsPage() {
                       justifyContent: "center",
                       fontWeight: 800,
                       fontSize: "0.9rem",
-                      color: "#F0EEE6",
-                      background: "#1F1E1D",
-                      border: "1.5px solid #1F1E1D",
-                      boxShadow: "2px 2px 0 #D97757",
+                      color: "#F4F4F5",
+                      background: "#1D1D24",
+                      border: "1px solid rgba(255,255,255,0.2)",
                     }}
                   >
                     {String(i + 1).padStart(2, "0")}
@@ -81,6 +80,9 @@ export default async function ConceptsPage() {
                       <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                         {content.title}
                       </Typography>
+                      {c.subject !== "Physics" && (
+                        <Chip size="small" color="secondary" variant="outlined" label={c.subject} />
+                      )}
                       <Chip size="small" variant="outlined" label={`${c.weightageMain}% in Main 2026`} color="primary" />
                       <Chip size="small" variant="outlined" label={`${c.avgQuestionsMain} Qs/paper`} />
                     </Stack>
@@ -126,10 +128,9 @@ export default async function ConceptsPage() {
                           justifyContent: "center",
                           fontWeight: 800,
                           fontSize: "0.9rem",
-                          color: "#F0EEE6",
-                          background: "#1F1E1D",
-                          border: "1.5px solid #1F1E1D",
-                          boxShadow: "2px 2px 0 #D97757",
+                          color: "#F4F4F5",
+                          background: "#1D1D24",
+                          border: "1px solid rgba(255,255,255,0.2)",
                         }}
                       >
                         A{i + 1}

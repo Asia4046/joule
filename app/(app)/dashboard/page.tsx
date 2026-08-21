@@ -93,7 +93,7 @@ export default async function DashboardPage() {
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" }, position: "relative", overflow: "hidden" }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-            <Box sx={{ width: 10, height: 10, bgcolor: "#D97757" }} aria-hidden />
+            <Box sx={{ width: 10, height: 10, borderRadius: 999, bgcolor: "#E6C384", boxShadow: "0 0 10px rgba(230,195,132,0.7)" }} aria-hidden />
             <Typography
               variant="caption"
               sx={{ letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, fontSize: "0.68rem", color: "text.secondary" }}
@@ -118,9 +118,8 @@ export default async function DashboardPage() {
       <Card
         sx={{
           gridColumn: { xs: "1 / -1", md: "span 4" },
-          bgcolor: "#D97757",
-          border: "1.5px solid #1F1E1D",
-          boxShadow: "4px 4px 0 #1F1E1D",
+          bgcolor: "#0E0E11",
+          border: "1px solid rgba(255,255,255,0.14)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -130,13 +129,13 @@ export default async function DashboardPage() {
           <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
             <Typography
               variant="caption"
-              sx={{ fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.64rem", color: "#1F1E1D" }}
+              sx={{ fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.64rem", color: "#A1A1AA" }}
             >
               Current streak
             </Typography>
-            <WhatshotOutlinedIcon sx={{ color: "#1F1E1D" }} fontSize="small" />
+            <WhatshotOutlinedIcon sx={{ color: "#E6C384" }} fontSize="small" />
           </Stack>
-          <Typography variant="h2" className="jee-serif jee-num" sx={{ mt: 1, color: "#1F1E1D", lineHeight: 1.05, fontWeight: 600 }}>
+          <Typography variant="h2" className="jee-serif jee-num" sx={{ mt: 1, color: "#F4F4F5", lineHeight: 1.05, fontWeight: 650 }}>
             {streak}
             <Typography component="span" className="jee-serif" sx={{ fontSize: "1.2rem", fontWeight: 600, ml: 1 }}>
               day{streak === 1 ? "" : "s"}
@@ -149,7 +148,7 @@ export default async function DashboardPage() {
               mt: 1.5,
               height: 6,
               bgcolor: "rgba(31,30,29,0.25)",
-              "& .MuiLinearProgress-bar": { backgroundColor: "#1F1E1D" },
+              "& .MuiLinearProgress-bar": { backgroundColor: "rgba(255,255,255,0.55)" },
             }}
           />
           <Typography variant="caption" sx={{ display: "block", mt: 0.75, fontWeight: 600, color: "rgba(31,30,29,0.8)" }}>
@@ -262,7 +261,7 @@ export default async function DashboardPage() {
           ) : (
             <Stack spacing={1} sx={{ mt: 1.5 }}>
               {revisionsDue.slice(0, 4).map((r) => (
-                <Box key={r.id} sx={{ borderLeft: "3px solid #D97757", pl: 1.25 }}>
+                <Box key={r.id} sx={{ borderLeft: "2px solid rgba(255,255,255,0.22)", pl: 1.25 }}>
                   <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
                     {r.topic.chapter.name}
                   </Typography>
@@ -403,7 +402,7 @@ export default async function DashboardPage() {
             <Typography variant="h6">Consistency</Typography>
             <Stack direction="row" spacing={0.75} alignItems="center">
               <Typography variant="caption" color="text.secondary">Less</Typography>
-              {["#EADFD7", "#E0BFAE", "#D97757", "#B4552F", "#7F3A1F"].map((c) => (
+              {["#2A2A37", "#2D4F67", "#658594", "#6A9589", "#98BB6C"].map((c) => (
                 <Box key={c} sx={{ width: 11, height: 11, bgcolor: c }} />
               ))}
               <Typography variant="caption" color="text.secondary">More</Typography>

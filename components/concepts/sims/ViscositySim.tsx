@@ -112,7 +112,7 @@ export default function ViscositySim() {
     // terminal velocity line at ~80% height
     const vtY = py1 - 0.8 * (py1 - py0);
     ctx.save();
-    ctx.strokeStyle = "rgba(248,113,113,0.6)";
+    ctx.strokeStyle = "rgba(228,104,118,0.6)";
     ctx.setLineDash([5, 5]);
     ctx.beginPath();
     ctx.moveTo(px0, vtY);
@@ -125,7 +125,7 @@ export default function ViscositySim() {
     const tauT = termV / gPrime;
     const tauX = px0 + (Math.min(tauT, T_WINDOW) / T_WINDOW) * (px1 - px0);
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.3)";
+    ctx.strokeStyle = "rgba(161,161,170,0.3)";
     ctx.setLineDash([2, 4]);
     ctx.beginPath();
     ctx.moveTo(tauX, py1);
@@ -161,17 +161,17 @@ export default function ViscositySim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Viscosity η (Pa·s)" value={eta} min={0.05} max={3} step={0.05} onChange={setEta} color="#38bdf8" />
-          <LabeledSlider label="Ball radius r (mm)" value={r} min={0.5} max={4} step={0.1} decimals={1} onChange={setR} color="#fbbf24" />
+          <LabeledSlider label="Viscosity η (Pa·s)" value={eta} min={0.05} max={3} step={0.05} onChange={setEta} color="#7FB4CA" />
+          <LabeledSlider label="Ball radius r (mm)" value={r} min={0.5} max={4} step={0.1} decimals={1} onChange={setR} color="#E6C384" />
           <ResetButton onClick={() => { state.current = { y: 0, v: 0, t: 0, trace: [] }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Terminal velocity v_t" value={`${vt.toFixed(3)} m/s`} color="#f87171" />
+          <Readout label="Terminal velocity v_t" value={`${vt.toFixed(3)} m/s`} color="#E46876" />
           <Readout label="Time constant τ = v_t/g′" value={`${tau.toFixed(3)} s`} />
           <Readout label="Stokes drag at v_t" value={`${stokesAtVt.toExponential(2)} N`} />
-          <Readout label="Scaling" value="v_t ∝ r² · (ρ−σ) / η" color="#34d399" />
+          <Readout label="Scaling" value="v_t ∝ r² · (ρ−σ) / η" color="#98BB6C" />
         </>
       }
     />

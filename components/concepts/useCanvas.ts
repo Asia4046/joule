@@ -62,22 +62,23 @@ export function useCanvas(draw: DrawFn) {
   return canvasRef;
 }
 
-/** Simulation color tokens — sims always draw on a dark navy panel (matches Concept Lab aesthetic). */
+/** Simulation color tokens — reference-grade: near-black panel, neutral text,
+ *  Kanagawa jewel hues reserved for rays and data. */
 export const SIM = {
-  panel: "#0d1220",
-  panelEdge: "#1e2a44",
-  grid: "rgba(148,163,184,0.08)",
-  axis: "rgba(148,163,184,0.4)",
-  text: "#cbd5e1",
-  bright: "#f1f5f9",
-  dim: "#64748b",
-  indigo: "#818cf8",
-  green: "#34d399",
-  amber: "#fbbf24",
-  red: "#f87171",
-  sky: "#38bdf8",
-  fuchsia: "#e879f9",
-  white: "#f8fafc",
+  panel: "#0A0A0D",
+  panelEdge: "rgba(255,255,255,0.12)",
+  grid: "rgba(255,255,255,0.05)",
+  axis: "rgba(255,255,255,0.28)",
+  text: "#B9B9C2",
+  bright: "#F4F4F5",
+  dim: "#6F6F78",
+  indigo: "#7E9CD8",
+  green: "#98BB6C",
+  amber: "#E6C384",
+  red: "#E46876",
+  sky: "#7FB4CA",
+  fuchsia: "#D27E99",
+  white: "#F4F4F5",
 };
 
 export function drawGrid(ctx: CanvasRenderingContext2D, w: number, h: number, step = 32) {

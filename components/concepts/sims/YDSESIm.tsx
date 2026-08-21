@@ -70,7 +70,7 @@ export default function YDSESIm() {
     const orderXs: number[] = [];
     for (let n = -4; n <= 4; n++) orderXs.push(w / 2 + n * betaPx);
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.25)";
+    ctx.strokeStyle = "rgba(161,161,170,0.25)";
     orderXs.forEach((x) => {
       if (x < px0 || x > px1) return;
       ctx.beginPath();
@@ -122,14 +122,14 @@ export default function YDSESIm() {
         <SimControls>
           <LabeledSlider label="Wavelength λ (nm)" value={lambda} min={400} max={700} step={5} decimals={0} onChange={setLambda} color={WAVE_COLOR(lambda)} />
           <LabeledSlider label="Slit separation d (mm)" value={d} min={0.1} max={0.8} step={0.01} onChange={setD} />
-          <LabeledSlider label="Screen distance D (m)" value={screenD} min={0.5} max={2.5} step={0.05} onChange={setScreenD} color="#34d399" />
+          <LabeledSlider label="Screen distance D (m)" value={screenD} min={0.5} max={2.5} step={0.05} onChange={setScreenD} color="#98BB6C" />
         </SimControls>
       }
       readouts={
         <>
           <Readout label="Fringe width β" value={`${beta} mm`} color={WAVE_COLOR(lambda)} />
           <Readout label="Path diff rule" value="bright: nλ · dark: (n+½)λ" />
-          <Readout label="Water immersion" value="β shrinks ×1/n" color="#38bdf8" />
+          <Readout label="Water immersion" value="β shrinks ×1/n" color="#7FB4CA" />
         </>
       }
     />

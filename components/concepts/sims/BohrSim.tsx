@@ -20,12 +20,12 @@ export default function BohrSim() {
   const state = useRef({ photons: [] as { x: number; y: number; vx: number; life: number }[], flash: 0 });
 
   const dE = energyOf(from) - energyOf(to);
-  const lambda = (HC / dE) * 1; // nm
+  const lambda = dE !== 0 ? HC / Math.abs(dE) : 0; // nm; absorption and emission share |ΔE|
   const series = to === 1 ? "Lyman (UV)" : to === 2 ? "Balmer (visible)" : to === 3 ? "Paschen (IR)" : `to n=${to}`;
   const visible = lambda >= 380 && lambda <= 750;
   const color = visible
     ? lambda > 640 ? "#ef4444" : lambda > 590 ? "#f97316" : lambda > 560 ? "#eab308" : lambda > 500 ? "#22c55e" : "#06b6d4"
-    : to === 1 ? "#a78bfa" : "#94a3b8";
+    : to === 1 ? "#938AA9" : "#938AA9";
 
   const emit = () => {
     if (dE > 0) {
@@ -49,7 +49,7 @@ export default function BohrSim() {
     LEVELS.forEach((n) => {
       const r = (rBase * n) / 2.4 + rBase * 0.45;
       ctx.save();
-      ctx.strokeStyle = n === to || n === from ? "rgba(129,140,248,0.55)" : "rgba(148,163,184,0.18)";
+      ctx.strokeStyle = n === to || n === from ? "rgba(129,140,248,0.55)" : "rgba(161,161,170,0.18)";
       ctx.lineWidth = n === from || n === to ? 1.6 : 1;
       ctx.setLineDash(n === from ? [4, 4] : []);
       ctx.beginPath();
@@ -121,7 +121,17 @@ export default function BohrSim() {
     label(ctx, dE > 0 ? `ΔE = ${dE.toFixed(2)} eV → photon` : `ΔE = ${dE.toFixed(2)} eV (needs input)`, ex + ew * 0.5 + 8, (eOf(energyOf(from)) + eOf(energyOf(to))) / 2, color, 10);
 
     // ground label
-    label(ctx, `1/λ = R(1/${to}² − 1/${from}²) → λ = ${lambda.toFixed(0)} nm (${series})`, w / 2, h - 12, SIM.text, 10, "center");
+    label(
+      ctx,
+      dE === 0
+        ? "pick two different levels to define a transition"
+        : `1/λ = R(1/${to}² − 1/${from}²) → λ = ${lambda.toFixed(0)} nm (${series})`,
+      w / 2,
+      h - 12,
+      SIM.text,
+      10,
+      "center"
+    );
   });
 
   return (
@@ -158,6 +168,7 @@ export default function BohrSim() {
               variant={to === n ? "contained" : "outlined"}
               color="secondary"
               onClick={() => setTo(n)}
+              disabled={n === from}
               sx={{ minWidth: 0, px: 1.2 }}
             >
               to n={n}
@@ -167,8 +178,8 @@ export default function BohrSim() {
       }
       readouts={
         <>
-          <Readout label="ΔE = 13.6(1/n_f² − 1/n_i²)" value={`${dE.toFixed(2)} eV`} color={color} />
-          <Readout label="Photon λ" value={`${lambda.toFixed(0)} nm`} color={color} />
+          <Readout label="ΔE = 13.6(1/n_f² − 1/n_i²)" value={dE === 0 ? "—" : `${dE.toFixed(2)} eV`} color={color} />
+          <Readout label="Photon λ" value={dE === 0 ? "—" : `${lambda.toFixed(0)} nm`} color={color} />
           <Readout label="Spectral series" value={series} />
           <Readout label="Ionisation (n=1→∞)" value="13.6 eV" />
         </>

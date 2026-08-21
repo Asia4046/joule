@@ -160,7 +160,7 @@ export default function RollingSim() {
       const tW = (keT[i] / keMax) * bw;
       const rW = (keR[i] / keMax) * bw;
       ctx.save();
-      ctx.fillStyle = "rgba(148,163,184,0.12)";
+      ctx.fillStyle = "rgba(161,161,170,0.12)";
       ctx.fillRect(bx, y, bw, 9);
       ctx.fillStyle = b.color;
       ctx.fillRect(bx, y, tW, 9);
@@ -197,19 +197,19 @@ export default function RollingSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Incline θ (°)" value={angle} min={10} max={40} step={1} decimals={0} onChange={setAngle} color="#fbbf24" />
-          <LabeledSlider label="Friction μ" value={mu} min={0} max={0.8} step={0.05} decimals={2} onChange={setMu} color="#f87171" />
+          <LabeledSlider label="Incline θ (°)" value={angle} min={10} max={40} step={1} decimals={0} onChange={setAngle} color="#E6C384" />
+          <LabeledSlider label="Friction μ" value={mu} min={0} max={0.8} step={0.05} decimals={2} onChange={setMu} color="#E46876" />
           <ResetButton onClick={() => { state.current = { t: 0, finished: false, holdTimer: 0, om: [0, 0, 0, 0] }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Solid sphere a" value={`${acc[3].toFixed(2)} m/s² · ${rolling[3] ? "rolls" : "slips"}`} color="#34d399" />
-          <Readout label="Disc a" value={`${acc[2].toFixed(2)} m/s² · ${rolling[2] ? "rolls" : "slips"}`} color="#38bdf8" />
-          <Readout label="Hollow sphere a" value={`${acc[1].toFixed(2)} m/s² · ${rolling[1] ? "rolls" : "slips"}`} color="#e879f9" />
-          <Readout label="Ring a" value={`${acc[0].toFixed(2)} m/s² · ${rolling[0] ? "rolls" : "slips"}`} color="#f87171" />
-          <Readout label="Worst μ needed (ring)" value={`≥ ${Math.max(...muMin).toFixed(3)}`} color="#fbbf24" />
-          <Readout label="Free-slide a = g(sinθ−μcosθ)" value={`${(g * (Math.sin(th) - mu * Math.cos(th))).toFixed(2)} m/s²`} color="#cbd5e1" />
+          <Readout label="Solid sphere a" value={`${acc[3].toFixed(2)} m/s² · ${rolling[3] ? "rolls" : "slips"}`} color="#98BB6C" />
+          <Readout label="Disc a" value={`${acc[2].toFixed(2)} m/s² · ${rolling[2] ? "rolls" : "slips"}`} color="#7FB4CA" />
+          <Readout label="Hollow sphere a" value={`${acc[1].toFixed(2)} m/s² · ${rolling[1] ? "rolls" : "slips"}`} color="#D27E99" />
+          <Readout label="Ring a" value={`${acc[0].toFixed(2)} m/s² · ${rolling[0] ? "rolls" : "slips"}`} color="#E46876" />
+          <Readout label="Worst μ needed (ring)" value={`≥ ${Math.max(...muMin).toFixed(3)}`} color="#E6C384" />
+          <Readout label="Free-slide a = g(sinθ−μcosθ)" value={`${(g * (Math.sin(th) - mu * Math.cos(th))).toFixed(2)} m/s²`} color="#C8C093" />
         </>
       }
     />

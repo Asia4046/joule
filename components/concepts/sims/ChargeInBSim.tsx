@@ -20,6 +20,12 @@ export default function ChargeInBSim() {
   const reset = () => {
     state.current = { trail: [], x: 0, y: 0, ang: 0 };
   };
+  // radius depends on v and B — keep the trail on one circle by clearing it when either changes
+  const params = useRef({ v, B });
+  if (params.current.v !== v || params.current.B !== B) {
+    params.current = { v, B };
+    reset();
+  }
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
@@ -40,7 +46,7 @@ export default function ChargeInBSim() {
 
     // B field crosses (into page)
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.35)";
+    ctx.strokeStyle = "rgba(161,161,170,0.35)";
     ctx.lineWidth = 1.2;
     for (let x = 26; x < w - 10; x += 46) {
       for (let y = 24; y < h - 10; y += 42) {
@@ -88,7 +94,7 @@ export default function ChargeInBSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Speed v (m/s)" value={v} min={0.5} max={4} step={0.05} onChange={setV} />
-          <LabeledSlider label="Field B (T)" value={B} min={0.3} max={3} step={0.05} onChange={setB} color="#fbbf24" />
+          <LabeledSlider label="Field B (T)" value={B} min={0.3} max={3} step={0.05} onChange={setB} color="#E6C384" />
           <SimToggleGroup
             label="Charge"
             value={sign}
@@ -103,10 +109,10 @@ export default function ChargeInBSim() {
       }
       readouts={
         <>
-          <Readout label="Radius r = mv/qB" value={`${r.toFixed(2)} m`} color="#fbbf24" />
+          <Readout label="Radius r = mv/qB" value={`${r.toFixed(2)} m`} color="#E6C384" />
           <Readout label="Period T" value={`${T.toFixed(2)} s`} />
-          <Readout label="Cyclotron freq" value={`${f.toFixed(2)} Hz`} color="#34d399" />
-          <Readout label="Work by B" value="0 J — always" color="#f87171" />
+          <Readout label="Cyclotron freq" value={`${f.toFixed(2)} Hz`} color="#98BB6C" />
+          <Readout label="Work by B" value="0 J — always" color="#E46876" />
         </>
       }
     />

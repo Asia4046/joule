@@ -112,7 +112,7 @@ export default function DopplerSim() {
     // ── arena ──
     clearPanel(ctx, w, h, false);
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.12)";
+    ctx.strokeStyle = "rgba(161,161,170,0.12)";
     ctx.setLineDash([2, 6]);
     ctx.beginPath();
     ctx.moveTo(10, midY);
@@ -133,7 +133,7 @@ export default function DopplerSim() {
 
     if (mode === "circle") {
       ctx.save();
-      ctx.strokeStyle = "rgba(148,163,184,0.25)";
+      ctx.strokeStyle = "rgba(161,161,170,0.25)";
       ctx.setLineDash([4, 6]);
       ctx.beginPath();
       ctx.arc(cCx, cCy, Rpx, 0, Math.PI * 2);
@@ -166,7 +166,7 @@ export default function DopplerSim() {
     ctx.lineTo(cx0, cy1);
     ctx.lineTo(cx1, cy1);
     ctx.stroke();
-    ctx.strokeStyle = "rgba(148,163,184,0.3)";
+    ctx.strokeStyle = "rgba(161,161,170,0.3)";
     ctx.setLineDash([3, 4]);
     ctx.beginPath();
     ctx.moveTo(cx0, yF(f));
@@ -247,10 +247,10 @@ export default function DopplerSim() {
           />
           <LabeledSlider label="Source freq f (Hz)" value={f} min={300} max={900} step={10} decimals={0} onChange={setF} />
           {mode !== "echo" && (
-            <LabeledSlider label="Source speed vs (m/s)" value={vs} min={10} max={300} step={5} decimals={0} onChange={setVs} color="#f87171" />
+            <LabeledSlider label="Source speed vs (m/s)" value={vs} min={10} max={300} step={5} decimals={0} onChange={setVs} color="#E46876" />
           )}
           {mode === "echo" && (
-            <LabeledSlider label="Wall speed vw (m/s)" value={vw} min={0} max={100} step={5} decimals={0} onChange={setVw} color="#34d399" />
+            <LabeledSlider label="Wall speed vw (m/s)" value={vw} min={0} max={100} step={5} decimals={0} onChange={setVw} color="#98BB6C" />
           )}
           <ResetButton onClick={reinit} />
         </SimControls>
@@ -259,26 +259,26 @@ export default function DopplerSim() {
         <>
           {mode === "passby" && (
             <>
-              <Readout label="f′ approaching" value={`${fApp.toFixed(0)} Hz`} color="#34d399" />
-              <Readout label="f′ receding" value={`${fRec.toFixed(0)} Hz`} color="#f87171" />
-              <Readout label="Drop at pass" value={`${(fApp - fRec).toFixed(0)} Hz`} color="#fbbf24" />
-              <Readout label="λ ahead" value={`${((V_SOUND - vs) / f).toFixed(3)} m`} color="#38bdf8" />
+              <Readout label="f′ approaching" value={`${fApp.toFixed(0)} Hz`} color="#98BB6C" />
+              <Readout label="f′ receding" value={`${fRec.toFixed(0)} Hz`} color="#E46876" />
+              <Readout label="Drop at pass" value={`${(fApp - fRec).toFixed(0)} Hz`} color="#E6C384" />
+              <Readout label="λ ahead" value={`${((V_SOUND - vs) / f).toFixed(3)} m`} color="#7FB4CA" />
             </>
           )}
           {mode === "circle" && (
             <>
-              <Readout label="f′ max (closest approach)" value={`${fCircle(-Math.PI / 2).toFixed(0)} Hz`} color="#34d399" />
-              <Readout label="f′ min (pulling away)" value={`${fCircle(Math.PI / 2).toFixed(0)} Hz`} color="#f87171" />
-              <Readout label="f′ when v ⊥ sight-line" value={`${f} Hz — no shift`} color="#38bdf8" />
-              <Readout label="Observer at centre?" value="constant f — trap!" color="#e879f9" />
+              <Readout label="f′ max (closest approach)" value={`${fCircle(-Math.PI / 2).toFixed(0)} Hz`} color="#98BB6C" />
+              <Readout label="f′ min (pulling away)" value={`${fCircle(Math.PI / 2).toFixed(0)} Hz`} color="#E46876" />
+              <Readout label="f′ when v ⊥ sight-line" value={`${f} Hz — no shift`} color="#7FB4CA" />
+              <Readout label="Observer at centre?" value="constant f — trap!" color="#D27E99" />
             </>
           )}
           {mode === "echo" && (
             <>
-              <Readout label="f at wall (mov. observer)" value={`${fWall.toFixed(0)} Hz`} color="#38bdf8" />
-              <Readout label="Echo f′′ (two shifts)" value={`${fEcho.toFixed(0)} Hz`} color="#fbbf24" />
-              <Readout label="Ratio f′′/f" value={`${(fEcho / f).toFixed(3)}`} color="#34d399" />
-              <Readout label="Sequence" value="obs. shift → source shift" color="#e879f9" />
+              <Readout label="f at wall (mov. observer)" value={`${fWall.toFixed(0)} Hz`} color="#7FB4CA" />
+              <Readout label="Echo f′′ (two shifts)" value={`${fEcho.toFixed(0)} Hz`} color="#E6C384" />
+              <Readout label="Ratio f′′/f" value={`${(fEcho / f).toFixed(3)}`} color="#98BB6C" />
+              <Readout label="Sequence" value="obs. shift → source shift" color="#D27E99" />
             </>
           )}
         </>

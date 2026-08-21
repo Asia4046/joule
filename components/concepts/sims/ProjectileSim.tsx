@@ -104,7 +104,7 @@ export default function ProjectileSim() {
 
     // max height marker
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.35)";
+    ctx.strokeStyle = "rgba(161,161,170,0.35)";
     ctx.setLineDash([3, 5]);
     ctx.beginPath();
     ctx.moveTo(sx(R / 2), sy(0));
@@ -127,16 +127,16 @@ export default function ProjectileSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Launch speed u (m/s)" value={u} min={5} max={45} step={0.5} decimals={1} onChange={setU} />
-          <LabeledSlider label="Angle θ (°)" value={angle} min={10} max={80} step={1} decimals={0} onChange={setAngle} color="#fbbf24" />
+          <LabeledSlider label="Angle θ (°)" value={angle} min={10} max={80} step={1} decimals={0} onChange={setAngle} color="#E6C384" />
           <ResetButton onClick={() => { state.current = { t: 0, trail: [], done: false }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Range R" value={`${R.toFixed(1)} m`} color="#34d399" />
+          <Readout label="Range R" value={`${R.toFixed(1)} m`} color="#98BB6C" />
           <Readout label="Max height H" value={`${H.toFixed(1)} m`} />
           <Readout label="Time of flight T" value={`${T.toFixed(2)} s`} />
-          <Readout label={`R at ${compAngle.toFixed(0)}° (complement)`} value={`${((u * u * Math.sin(2 * ((compAngle * Math.PI) / 180))) / g).toFixed(1)} m`} color="#fbbf24" />
+          <Readout label={`R at ${compAngle.toFixed(0)}° (complement)`} value={`${((u * u * Math.sin(2 * ((compAngle * Math.PI) / 180))) / g).toFixed(1)} m`} color="#E6C384" />
         </>
       }
     />

@@ -146,7 +146,7 @@ export default function PistonSim() {
     ctx.lineTo(vx(s.path[s.path.length - 1]?.V ?? 1), py1);
     ctx.lineTo(vx(1), py1);
     ctx.closePath();
-    ctx.fillStyle = mode === "adiabatic" ? "rgba(248,113,113,0.12)" : "rgba(52,211,153,0.12)";
+    ctx.fillStyle = mode === "adiabatic" ? "rgba(228,104,118,0.12)" : "rgba(52,211,153,0.12)";
     ctx.fill();
     ctx.restore();
 
@@ -164,7 +164,7 @@ export default function PistonSim() {
         <SimControls>
           <LabeledSlider label="Final volume (× V₀)" value={targetV} min={0.3} max={0.95} step={0.01} onChange={setTargetV} />
           {mode === "adiabatic" && (
-            <LabeledSlider label="γ = Cp/Cv" value={gamma} min={1.3} max={1.7} step={0.01} onChange={setGamma} color="#f87171" />
+            <LabeledSlider label="γ = Cp/Cv" value={gamma} min={1.3} max={1.7} step={0.01} onChange={setGamma} color="#E46876" />
           )}
           <SimToggleGroup
             label="Process"
@@ -180,8 +180,8 @@ export default function PistonSim() {
       }
       readouts={
         <>
-          <Readout label="Work done on gas" value={`${Math.max(0, state.current.W).toFixed(2)} J`} color="#fbbf24" />
-          <Readout label="ΔU = nCvΔT" value={`${(Cv * (T2 - 1)).toFixed(2)} J`} color={mode === "adiabatic" ? "#f87171" : "#38bdf8"} />
+          <Readout label="Work done on gas" value={`${Math.max(0, state.current.W).toFixed(2)} J`} color="#E6C384" />
+          <Readout label="ΔU = nCvΔT" value={`${(Cv * (T2 - 1)).toFixed(2)} J`} color={mode === "adiabatic" ? "#E46876" : "#7FB4CA"} />
           <Readout label="Heat Q" value={mode === "adiabatic" ? "0 (fast/insulated)" : `${Math.max(0, state.current.W).toFixed(2)} J rejected`} />
         </>
       }

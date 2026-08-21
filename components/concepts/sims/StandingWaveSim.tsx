@@ -44,7 +44,7 @@ export default function StandingWaveSim() {
 
     // envelope ±A
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.3)";
+    ctx.strokeStyle = "rgba(161,161,170,0.3)";
     ctx.setLineDash([3, 5]);
     [1, -1].forEach((sgn) => {
       ctx.beginPath();
@@ -120,7 +120,7 @@ export default function StandingWaveSim() {
         ctx.moveTo(x, midY - amp - 22);
         ctx.lineTo(x, midY + amp + 22);
         ctx.stroke();
-        ctx.strokeStyle = "rgba(148,163,184,0.4)";
+        ctx.strokeStyle = "rgba(161,161,170,0.4)";
         ctx.lineWidth = 1;
         for (let y = midY - amp - 20; y < midY + amp + 22; y += 9) {
           ctx.beginPath();
@@ -211,7 +211,7 @@ export default function StandingWaveSim() {
       const y = 34 + (i - 1) * 26;
       const active = i === n;
       ctx.save();
-      ctx.fillStyle = active ? SIM.green : "rgba(148,163,184,0.35)";
+      ctx.fillStyle = active ? SIM.green : "rgba(161,161,170,0.35)";
       if (active) {
         ctx.shadowColor = SIM.green;
         ctx.shadowBlur = 8;
@@ -241,22 +241,22 @@ export default function StandingWaveSim() {
             ]}
             onChange={(v) => setMode(v)}
           />
-          <LabeledSlider label="Mode n (nth allowed)" value={n} min={1} max={6} step={1} decimals={0} onChange={setN} color="#34d399" />
+          <LabeledSlider label="Mode n (nth allowed)" value={n} min={1} max={6} step={1} decimals={0} onChange={setN} color="#98BB6C" />
           <LabeledSlider label="Tension T (N)" value={tension} min={20} max={200} step={5} decimals={0} onChange={setTension} />
-          <LabeledSlider label="Linear density µ (g/m)" value={muG} min={0.5} max={5} step={0.1} decimals={1} onChange={setMuG} color="#e879f9" />
-          <LabeledSlider label="Length L (m)" value={len} min={0.6} max={2} step={0.05} onChange={setLen} color="#fbbf24" />
-          <LabeledSlider label="Probe x/L" value={probe} min={0} max={1} step={0.01} onChange={setProbe} color="#38bdf8" />
+          <LabeledSlider label="Linear density µ (g/m)" value={muG} min={0.5} max={5} step={0.1} decimals={1} onChange={setMuG} color="#D27E99" />
+          <LabeledSlider label="Length L (m)" value={len} min={0.6} max={2} step={0.05} onChange={setLen} color="#E6C384" />
+          <LabeledSlider label="Probe x/L" value={probe} min={0} max={1} step={0.01} onChange={setProbe} color="#7FB4CA" />
           <ResetButton onClick={() => { state.current.t = 0; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Wave speed v = √(T/µ)" value={`${v.toFixed(0)} m/s`} color="#38bdf8" />
-          <Readout label={`Harmonic ${harmonic} frequency`} value={`${fn.toFixed(0)} Hz`} color="#34d399" />
+          <Readout label="Wave speed v = √(T/µ)" value={`${v.toFixed(0)} m/s`} color="#7FB4CA" />
+          <Readout label={`Harmonic ${harmonic} frequency`} value={`${fn.toFixed(0)} Hz`} color="#98BB6C" />
           <Readout label={odd ? "Fundamental v/4L" : "Fundamental v/2L"} value={`${f1.toFixed(1)} Hz`} />
-          <Readout label="λ of this mode" value={`${lambdaN.toFixed(2)} m`} color="#fbbf24" />
-          <Readout label="Probe amplitude" value={`${(probeAmp * 100).toFixed(0)}% of antinode`} color={probeAmp < 0.08 ? "#f87171" : "#cbd5e1"} />
-          <Readout label="Allowed harmonics" value={odd ? "odd only (1,3,5,…)" : "all (1,2,3,…)"} color="#e879f9" />
+          <Readout label="λ of this mode" value={`${lambdaN.toFixed(2)} m`} color="#E6C384" />
+          <Readout label="Probe amplitude" value={`${(probeAmp * 100).toFixed(0)}% of antinode`} color={probeAmp < 0.08 ? "#E46876" : "#C8C093"} />
+          <Readout label="Allowed harmonics" value={odd ? "odd only (1,3,5,…)" : "all (1,2,3,…)"} color="#D27E99" />
         </>
       }
     />

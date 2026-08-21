@@ -143,7 +143,7 @@ export default function RCCircuitSim() {
     const eMax = Math.max(s.eBat, s.eCap, s.eRes, 1e-9);
     const eBar = (name: string, val: number, color: string, y: number) => {
       ctx.save();
-      ctx.fillStyle = "rgba(148,163,184,0.12)";
+      ctx.fillStyle = "rgba(161,161,170,0.12)";
       ctx.fillRect(ex, y, ew, 8);
       ctx.fillStyle = color;
       ctx.fillRect(ex, y, (val / eMax) * ew, 8);
@@ -178,7 +178,7 @@ export default function RCCircuitSim() {
     ctx.lineTo(px0, py1);
     ctx.stroke();
     // τ gridlines
-    ctx.strokeStyle = "rgba(148,163,184,0.12)";
+    ctx.strokeStyle = "rgba(161,161,170,0.12)";
     ctx.setLineDash([2, 4]);
     const firstTau = Math.ceil(tLo / tau);
     const lastTau = Math.floor(tHi / tau);
@@ -193,7 +193,7 @@ export default function RCCircuitSim() {
     // zero line for square mode
     if (square) {
       const y0 = py1 - ((0 - vMin) / (vMax - vMin)) * (py1 - py0);
-      ctx.strokeStyle = "rgba(148,163,184,0.3)";
+      ctx.strokeStyle = "rgba(161,161,170,0.3)";
       ctx.beginPath();
       ctx.moveTo(px0, y0);
       ctx.lineTo(px1, y0);
@@ -231,7 +231,7 @@ export default function RCCircuitSim() {
       ctx.stroke();
       ctx.restore();
     };
-    trace((p) => p.src, "rgba(148,163,184,0.5)", 1);
+    trace((p) => p.src, "rgba(161,161,170,0.5)", 1);
     trace((p) => p.vc, SIM.green, 2.2);
     trace((p) => Math.abs(p.i) / (i0 || 1) * emf * 0.92, SIM.amber, 1.8);
     label(ctx, "Vc(t)", px1 - 4, yV(s.vc) - 10, SIM.green, 10, "right");
@@ -257,21 +257,21 @@ export default function RCCircuitSim() {
             ]}
             onChange={(v) => setMode(v)}
           />
-          <LabeledSlider label="EMF ε (V)" value={emf} min={4} max={24} step={1} decimals={0} onChange={setEmf} color="#fbbf24" />
+          <LabeledSlider label="EMF ε (V)" value={emf} min={4} max={24} step={1} decimals={0} onChange={setEmf} color="#E6C384" />
           <LabeledSlider label="Resistance R (kΩ)" value={rK} min={0.5} max={10} step={0.1} decimals={1} onChange={setRK} />
-          <LabeledSlider label="Capacitance C (µF)" value={cU} min={10} max={300} step={10} decimals={0} onChange={setCU} color="#34d399" />
+          <LabeledSlider label="Capacitance C (µF)" value={cU} min={10} max={300} step={10} decimals={0} onChange={setCU} color="#98BB6C" />
           <ResetButton onClick={reinit} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Time constant τ = RC" value={`${(tau * 1000).toFixed(0)} ms`} color="#818cf8" />
-          <Readout label="Half-value t½ = τ ln2" value={`${(half * 1000).toFixed(0)} ms`} color="#e879f9" />
-          <Readout label="I₀ = ε/R" value={`${(i0 * 1000).toFixed(2)} mA`} color="#fbbf24" />
+          <Readout label="Time constant τ = RC" value={`${(tau * 1000).toFixed(0)} ms`} color="#7E9CD8" />
+          <Readout label="Half-value t½ = τ ln2" value={`${(half * 1000).toFixed(0)} ms`} color="#D27E99" />
+          <Readout label="I₀ = ε/R" value={`${(i0 * 1000).toFixed(2)} mA`} color="#E6C384" />
           <Readout
             label={mode === "square" ? "Steady-state ripple" : "Charging efficiency →"}
             value={mode === "square" ? "≈ 2ε·e^(−5)" : "50%"}
-            color="#f87171"
+            color="#E46876"
           />
         </>
       }

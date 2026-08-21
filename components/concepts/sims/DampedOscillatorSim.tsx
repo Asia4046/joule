@@ -75,7 +75,7 @@ export default function DampedOscillatorSim() {
     ctx.restore();
     // equilibrium marker
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.3)";
+    ctx.strokeStyle = "rgba(161,161,170,0.3)";
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(lw / 2, pad + 14);
@@ -177,7 +177,7 @@ export default function DampedOscillatorSim() {
     // steady-state amplitude band (forced)
     if (steadyAmp) {
       ctx.save();
-      ctx.fillStyle = "rgba(248,113,113,0.10)";
+      ctx.fillStyle = "rgba(228,104,118,0.10)";
       ctx.fillRect(px0, py0 + plotH / 2 - (steadyAmp / X_MAX) * (plotH / 2), plotW, (steadyAmp / X_MAX) * plotH);
       ctx.restore();
     }
@@ -212,9 +212,9 @@ export default function DampedOscillatorSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Damping ratio ζ" value={zeta} min={0.02} max={2.5} step={0.01} onChange={setZeta} />
-          <LabeledSlider label="Natural ω₀ (rad/s)" value={omega0} min={0.5} max={5} step={0.05} onChange={setOmega0} color="#38bdf8" />
+          <LabeledSlider label="Natural ω₀ (rad/s)" value={omega0} min={0.5} max={5} step={0.05} onChange={setOmega0} color="#7FB4CA" />
           {driven === "forced" && (
-            <LabeledSlider label="Drive Ω (rad/s)" value={drive} min={0.2} max={6} step={0.05} onChange={setDrive} color="#f87171" />
+            <LabeledSlider label="Drive Ω (rad/s)" value={drive} min={0.2} max={6} step={0.05} onChange={setDrive} color="#E46876" />
           )}
           <Box sx={{ minWidth: 160 }}>
             <Typography variant="caption" sx={{ fontWeight: 600, display: "block", mb: 0.25 }}>
@@ -235,10 +235,10 @@ export default function DampedOscillatorSim() {
       }
       readouts={
         <>
-          <Readout label="Regime" value={regime} color={zeta < 0.999 ? "#34d399" : zeta < 1.001 ? "#fbbf24" : "#f87171"} />
+          <Readout label="Regime" value={regime} color={zeta < 0.999 ? "#98BB6C" : zeta < 1.001 ? "#E6C384" : "#E46876"} />
           <Readout label="ω_d (rad/s)" value={zeta < 1 ? omegaD.toFixed(3) : "—"} />
           <Readout label="Q factor" value={zeta < 1 ? Q.toFixed(2) : "—"} />
-          {driven === "forced" && <Readout label="Steady amplitude" value={steadyAmp ? steadyAmp.toFixed(3) : "—"} color="#f87171" />}
+          {driven === "forced" && <Readout label="Steady amplitude" value={steadyAmp ? steadyAmp.toFixed(3) : "—"} color="#E46876" />}
         </>
       }
     />

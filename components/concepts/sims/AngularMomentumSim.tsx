@@ -65,7 +65,7 @@ export default function AngularMomentumSim() {
     // reference orbits at min/max r
     [0.3, 1.2].forEach((rr) => {
       ctx.save();
-      ctx.strokeStyle = "rgba(148,163,184,0.15)";
+      ctx.strokeStyle = "rgba(161,161,170,0.15)";
       ctx.setLineDash([3, 6]);
       ctx.beginPath();
       ctx.arc(cx, cy, (rr / 1.2) * RMAX, 0, Math.PI * 2);
@@ -209,16 +209,16 @@ export default function AngularMomentumSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Mass distance r (m)" value={r} min={0.3} max={1.2} step={0.01} onChange={setR} />
-          <LabeledSlider label="Rod mass (kg)" value={rodM} min={1} max={6} step={0.1} decimals={1} onChange={setRodM} color="#38bdf8" />
+          <LabeledSlider label="Rod mass (kg)" value={rodM} min={1} max={6} step={0.1} decimals={1} onChange={setRodM} color="#7FB4CA" />
           <ResetButton onClick={reset} />
         </SimControls>
       }
       readouts={
         <>
           <Readout label="I = 2mr² + I_rod" value={`${I0.toFixed(2)} kg·m²`} />
-          <Readout label="ω = L/I" value={`${wNow.toFixed(2)} rad/s`} color="#34d399" />
-          <Readout label="L = Iω" value={`${LNow.toFixed(2)} kg·m²/s`} color="#fbbf24" />
-          <Readout label="KE = ½Iω²" value={`${KE.toFixed(1)} J`} color="#f87171" />
+          <Readout label="ω = L/I" value={`${wNow.toFixed(2)} rad/s`} color="#98BB6C" />
+          <Readout label="L = Iω" value={`${LNow.toFixed(2)} kg·m²/s`} color="#E6C384" />
+          <Readout label="KE = ½Iω²" value={`${KE.toFixed(1)} J`} color="#E46876" />
         </>
       }
     />

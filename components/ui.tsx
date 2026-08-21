@@ -13,13 +13,13 @@ import Tooltip from "@mui/material/Tooltip";
 import { useTheme, alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
 
-/** Shared Recharts tooltip contentStyle — Paper & Ink hard-shadow tile. */
+/** Shared Recharts tooltip contentStyle — Kanagawa quiet tile. */
 export function chartTooltipStyle(theme: Theme) {
   return {
-    background: theme.palette.background.paper,
-    border: `1.5px solid ${theme.palette.text.primary}`,
-    boxShadow: `3px 3px 0 ${theme.palette.text.primary}`,
-    borderRadius: 0,
+    background: theme.palette.mode === "dark" ? "#101014" : theme.palette.background.paper,
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: "none",
+    borderRadius: 10,
     fontSize: 12,
   };
 }
@@ -43,7 +43,7 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
       sx={{ mb: 3 }}
     >
       <Box>
-        <Box sx={{ width: 12, height: 12, bgcolor: "#D97757", border: "1.5px solid currentColor", color: "text.primary", mb: 1.25 }} aria-hidden />
+        <Box sx={{ width: 10, height: 10, borderRadius: 999, bgcolor: "#7E9CD8", boxShadow: "0 0 12px rgba(126,156,216,0.8)", mb: 1.25 }} aria-hidden />
         <Typography variant="h4" component="h1">
           {title}
         </Typography>
@@ -72,7 +72,7 @@ export function StatCard({
   color?: string;
 }) {
   const theme = useTheme();
-  const c = color ?? (theme.palette.mode === "dark" ? "#DE8468" : "#C05C3C");
+  const c = color ?? (theme.palette.mode === "dark" ? "#7E9CD8" : "#4A6BA8");
   return (
     <Card
       sx={{
@@ -230,9 +230,9 @@ export function LoadingGrid({ rows = 3 }: { rows?: number }) {
   );
 }
 
-/** GitHub-style study consistency heatmap in terracotta steps. Data: [{date: yyyy-mm-dd, minutes}] */
+/** GitHub-style study consistency heatmap in Kanagawa wave steps. Data: [{date: yyyy-mm-dd, minutes}] */
 export function StudyHeatmap({ data }: { data: { date: string; minutes: number }[] }) {
-  const levels = ["#EADFD7", "#E0BFAE", "#D97757", "#B4552F", "#7F3A1F"];
+  const levels = ["#2A2A37", "#2D4F67", "#658594", "#6A9589", "#98BB6C"];
   const levelFor = (m: number) => (m === 0 ? 0 : m < 60 ? 1 : m < 150 ? 2 : m < 270 ? 3 : 4);
 
   // group into weeks (columns)

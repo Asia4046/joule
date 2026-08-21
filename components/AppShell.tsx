@@ -44,6 +44,7 @@ import SearchCommand from "@/components/SearchCommand";
 import NotificationBell from "@/components/NotificationBell";
 import { ClockCard, QuoteCard } from "@/components/SidebarWidgets";
 import { useThemeMode } from "@/components/Providers";
+import { K, ka } from "@/lib/kanagawa";
 
 const NAV = [
   {
@@ -106,33 +107,32 @@ function Brand() {
     <Stack direction="row" spacing={1.25} alignItems="center" sx={{ px: 0.5 }}>
       <Box
         sx={{
-          width: 36,
-          height: 36,
-          bgcolor: "#D97757",
-          border: "1.5px solid #000",
-          boxShadow: "3px 3px 0 #000",
+          width: 38,
+          height: 38,
+          borderRadius: 2,
+          background: "#111116",
+          border: `1px solid ${K.nightLine2}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <Typography className="jee-serif" sx={{ fontWeight: 700, fontSize: "1.15rem", color: "#1F1E1D", lineHeight: 1 }}>
-          J
+        <Typography sx={{ fontWeight: 700, fontSize: "1.05rem", color: "#FAFAFA", lineHeight: 1 }}>
+          波
         </Typography>
       </Box>
       <Box sx={{ minWidth: 0 }}>
         <Typography
-          sx={{ fontWeight: 800, fontSize: "0.95rem", color: "#F0EEE6", lineHeight: 1.15, letterSpacing: "0.02em" }}
+          sx={{ fontWeight: 650, fontSize: "0.92rem", color: "#FAFAFA", lineHeight: 1.15, letterSpacing: "0.04em" }}
         >
           JEE COMMAND
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{ color: "rgba(240,238,230,0.55)", fontSize: "0.62rem", letterSpacing: "0.14em", fontWeight: 700, textTransform: "uppercase" }}
-        >
-          Prep Platform
-        </Typography>
+        <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.35 }}>
+          {[K.crystalBlue, K.springGreen, K.carpYellow, K.waveRed, K.sakuraPink].map((c) => (
+            <Box key={c} sx={{ width: 4, height: 4, borderRadius: 999, bgcolor: c }} />
+          ))}
+        </Stack>
       </Box>
     </Stack>
   );
@@ -149,10 +149,11 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        bgcolor: "#1F1E1D",
+        bgcolor: K.night1,
+        borderRight: `1px solid ${K.nightLine}`,
       }}
     >
-      <Box sx={{ px: 2, pt: 2.25, pb: 2 }}>
+      <Box sx={{ px: 2.25, pt: 2.5, pb: 2 }}>
         <Brand />
       </Box>
       <Box sx={{ px: 2, pb: 2 }}>
@@ -160,14 +161,14 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
       </Box>
       <Box sx={{ px: 1.5, flex: 1, overflowY: "auto", pb: 1 }}>
         {NAV.map((group) => (
-          <Box key={group.section} sx={{ mb: 1.5 }}>
+          <Box key={group.section} sx={{ mb: 1.25 }}>
             <Typography
               variant="caption"
-              sx={{ px: 1.5, py: 0.5, display: "block", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", fontSize: "0.64rem", color: "rgba(240,238,230,0.52)" }}
+              sx={{ px: 1.5, py: 0.5, display: "block", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.6rem", color: K.textDim }}
             >
               {group.section}
             </Typography>
-            <List dense disablePadding>
+            <List dense disablePadding sx={{ display: "grid", gap: 0.5 }}>
               {group.items.map((item) => {
                 const active = pathname === item.href || pathname.startsWith(item.href + "/");
                 return (
@@ -176,31 +177,27 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
                     component={Link}
                     href={item.href}
                     sx={{
-                      mb: 0.25,
                       minHeight: 36,
                       position: "relative",
-                      transition: "all .15s ease",
+                      px: 1.5,
+                      border: `1px solid ${active ? K.nightLine2 : "transparent"}`,
+                      transition: "all .16s ease",
                       ...(active
                         ? {
-                            bgcolor: "#F0EEE6",
-                            color: "#1F1E1D",
-                            border: "1.5px solid #F0EEE6",
-                            boxShadow: "3px 3px 0 #D97757",
-                            // beat MUI's own .Mui-selected cascade (it would
-                            // repaint ink text on the ink rail — invisible)
-                            "&.Mui-selected": { bgcolor: "#F0EEE6", color: "#1F1E1D" },
-                            "&.Mui-selected:hover": { bgcolor: "#FFFDF8" },
-                            "&:hover": { bgcolor: "#FFFDF8" },
+                            bgcolor: "rgba(255,255,255,0.07)",
+                            color: "#FAFAFA",
+                            "&.Mui-selected": { bgcolor: "rgba(255,255,255,0.07)", color: "#FAFAFA" },
+                            "&.Mui-selected:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+                            "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
                           }
                         : {
-                            color: "rgba(240,238,230,0.8)",
-                            border: "1.5px solid transparent",
-                            "&.Mui-selected": { bgcolor: "transparent", color: "rgba(240,238,230,0.72)" },
-                            "&:hover": { bgcolor: "rgba(240,238,230,0.08)", color: "#F0EEE6" },
+                            color: K.textMid,
+                            "&.Mui-selected": { bgcolor: "transparent", color: K.textMid },
+                            "&:hover": { bgcolor: "rgba(255,255,255,0.05)", color: "#E4E4E7" },
                           }),
                       "& .MuiListItemIcon-root": {
                         minWidth: 34,
-                        color: active ? "#C05C3C" : "rgba(240,238,230,0.62)",
+                        color: active ? "#E4E4E7" : "rgba(161,161,170,0.85)",
                       },
                     }}
                     selected={active}
@@ -229,18 +226,19 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             alignItems: "center",
             gap: 1.25,
             p: 1.25,
-            border: "1.5px solid #57544C",
-            boxShadow: "3px 3px 0 #000",
-            bgcolor: "#2A2926",
+            borderRadius: 2.5,
+            border: `1px solid ${K.nightLine}`,
+            bgcolor: K.night2,
           }}
         >
           <Box
             sx={{
               width: 32,
               height: 32,
-              bgcolor: "#D97757",
-              border: "1.5px solid #000",
-              color: "#1F1E1D",
+              borderRadius: 2,
+              bgcolor: "#1D1D24",
+              border: `1px solid ${K.nightLine2}`,
+              color: "#E4E4E7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -252,10 +250,10 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             {initials}
           </Box>
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: "#F0EEE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: "#F4F4F5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {userName}
             </Typography>
-            <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.6)", fontSize: "0.65rem" }}>
+            <Typography variant="caption" sx={{ color: K.textDim, fontSize: "0.65rem" }}>
               Signed in
             </Typography>
           </Box>
@@ -269,7 +267,7 @@ export default function AppShell({ children, userName }: { children: React.React
   const pathname = usePathname();
   const router = useRouter();
   const theme = useTheme();
-  const { mode, resolved, setMode } = useThemeMode();
+  const { resolved, setMode } = useThemeMode();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -296,6 +294,20 @@ export default function AppShell({ children, userName }: { children: React.React
     router.refresh();
   }
 
+  const chrome = dark
+    ? {
+        bar: "rgba(0,0,0,0.72)",
+        line: K.nightLine,
+        field: "#0E0E11",
+        fieldLine: K.nightLine2,
+      }
+    : {
+        bar: "rgba(233,229,218,0.85)",
+        line: K.washiDivider,
+        field: "#FFFFFF",
+        fieldLine: K.washiDivider,
+      };
+
   return (
     <Box sx={{ display: "flex", minHeight: "100dvh", bgcolor: "background.default" }}>
       {/* Desktop sidebar */}
@@ -318,7 +330,7 @@ export default function AppShell({ children, userName }: { children: React.React
         variant="temporary"
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        sx={{ display: { xs: "block", md: "none" }, "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, border: "none", bgcolor: "#1F1E1D" } }}
+        sx={{ display: { xs: "block", md: "none" }, "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, border: "none", bgcolor: K.night1 } }}
       >
         <SidebarContent pathname={pathname} userName={userName} />
       </Drawer>
@@ -328,10 +340,10 @@ export default function AppShell({ children, userName }: { children: React.React
           position="sticky"
           elevation={0}
           sx={{
-            bgcolor: dark ? "rgba(27,26,24,0.9)" : "rgba(244,242,236,0.9)",
-            backdropFilter: "blur(8px)",
-            borderBottom: "1.5px solid",
-            borderBottomColor: dark ? "#3D3B35" : "#E4E0D6",
+            bgcolor: chrome.bar,
+            backdropFilter: "blur(12px)",
+            borderBottom: "1px solid",
+            borderBottomColor: chrome.line,
             color: "text.primary",
           }}
         >
@@ -353,17 +365,18 @@ export default function AppShell({ children, userName }: { children: React.React
                 cursor: "pointer",
                 width: { xs: "100%", sm: 380 },
                 textAlign: "left",
-                bgcolor: dark ? "#26251F" : "#FBFAF6",
-                border: "1.5px solid",
-                borderColor: dark ? "#E8E5DB" : "#1F1E1D",
-                boxShadow: dark ? "3px 3px 0 #000" : "3px 3px 0 #1F1E1D",
-                transition: "transform .15s ease, box-shadow .15s ease",
+                bgcolor: chrome.field,
+                border: "1px solid",
+                borderColor: chrome.fieldLine,
+                borderRadius: 2.5,
+                boxShadow: "none",
+                transition: "border-color .16s ease, background-color .16s ease",
                 "&:hover": {
-                  transform: "translate(-1px,-1px)",
-                  boxShadow: dark ? "4px 4px 0 #000" : "4px 4px 0 #1F1E1D",
+                  borderColor: dark ? "rgba(255,255,255,0.3)" : "#BFB8A4",
+                  bgcolor: dark ? "#131318" : "#FBF9F2",
                 },
                 "&:focus-visible": {
-                  outline: "2px solid #D97757",
+                  outline: `2px solid rgba(255,255,255,0.4)`,
                   outlineOffset: 2,
                 },
               }}
@@ -374,11 +387,13 @@ export default function AppShell({ children, userName }: { children: React.React
               </Typography>
               <Typography
                 variant="caption"
+                className="jee-mono"
                 color="text.secondary"
                 sx={{
                   display: { xs: "none", sm: "block" },
                   border: "1px solid",
                   borderColor: "divider",
+                  borderRadius: 1,
                   px: 0.75,
                   py: 0.25,
                   fontSize: "0.65rem",
@@ -430,10 +445,10 @@ export default function AppShell({ children, userName }: { children: React.React
           right: 0,
           display: { xs: "flex", md: "none" },
           zIndex: theme.zIndex.appBar,
-          borderTop: "1.5px solid",
-          borderColor: dark ? "#E8E5DB" : "#E4E0D6",
-          bgcolor: dark ? "rgba(38,37,31,0.95)" : "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(8px)",
+          borderTop: "1px solid",
+          borderColor: chrome.line,
+          bgcolor: dark ? "rgba(10,10,12,0.95)" : "rgba(245,242,233,0.95)",
+          backdropFilter: "blur(12px)",
         }}
       >
         {MOBILE_NAV.map((item) => {
@@ -451,10 +466,10 @@ export default function AppShell({ children, userName }: { children: React.React
                 alignItems: "center",
                 gap: 0.25,
                 py: 1,
-                color: active ? "primary.dark" : "text.secondary",
+                color: active ? "#FAFAFA" : "text.secondary",
                 textDecoration: "none",
                 "&:focus-visible": {
-                  outline: "2px solid #D97757",
+                  outline: `2px solid rgba(255,255,255,0.4)`,
                   outlineOffset: "-2px",
                 },
               }}
@@ -463,7 +478,8 @@ export default function AppShell({ children, userName }: { children: React.React
                 sx={{
                   px: 1.5,
                   py: 0.25,
-                  bgcolor: active ? alpha("#D97757", 0.16) : "transparent",
+                  borderRadius: 999,
+                  bgcolor: active ? "rgba(255,255,255,0.09)" : "transparent",
                   transition: "background-color .15s ease",
                 }}
               >

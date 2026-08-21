@@ -35,9 +35,10 @@ export default function CollisionSim() {
   const r1 = 0.1 * Math.cbrt(m1) + 0.06;
   const r2 = 0.1 * Math.cbrt(m2) + 0.06;
 
-  // bounces analytics
-  const totalH = (h0 * (1 + e * e)) / (1 - e * e);
-  const totalT = Math.sqrt((2 * h0) / g) * ((1 + e) / (1 - e));
+  // bounces analytics — e is clamped: e = 1 never settles (infinite geometric sum)
+  const eb = Math.min(e, 0.95);
+  const totalH = (h0 * (1 + eb * eb)) / (1 - eb * eb);
+  const totalT = Math.sqrt((2 * h0) / g) * ((1 + eb) / (1 - eb));
   // chain analytics — the famous count ≈ π√(M/m)
   const piTheory = Math.PI * Math.sqrt(ratio);
 
@@ -79,6 +80,8 @@ export default function CollisionSim() {
           s.vx1 = v1;
           s.vx2 = v2;
         }
+        // no catch-up possible (u1 ≤ u2) — balls drift apart forever unless restarted
+        if (s.rest > 6 || s.x1 > TRACK + 1 || s.x2 > TRACK + 1 || s.x2 - s.x1 > TRACK) reinit();
       } else {
         s.x1 += s.vx1 * dt;
         s.x2 += s.vx2 * dt;
@@ -147,7 +150,7 @@ export default function CollisionSim() {
       const pDir = pTot >= 0 ? 1 : -1;
       ctx.fillStyle = SIM.sky;
       ctx.fillRect(w / 2 - 110, ay, pDir * Math.abs(pTot) * pScale, 10);
-      ctx.strokeStyle = "rgba(148,163,184,0.35)";
+      ctx.strokeStyle = "rgba(161,161,170,0.35)";
       ctx.setLineDash([3, 4]);
       ctx.beginPath();
       ctx.moveTo(w / 2 - 110, ay - 2);
@@ -193,7 +196,7 @@ export default function CollisionSim() {
           s.dist += Math.abs(((vy0 + s.vy) / 2) * dtt);
           if (s.y <= 0 && s.vy < 0) {
             s.y = 0;
-            s.vy = -s.vy * e;
+            s.vy = -s.vy * eb;
             s.bounces += 1;
           }
         }
@@ -217,7 +220,7 @@ export default function CollisionSim() {
       ctx.lineTo(w - pad + 10, floorY);
       ctx.stroke();
       for (let x = pad - 10; x < w - pad + 10; x += 16) {
-        ctx.strokeStyle = "rgba(148,163,184,0.18)";
+        ctx.strokeStyle = "rgba(161,161,170,0.18)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(x, floorY);
@@ -244,9 +247,9 @@ export default function CollisionSim() {
 
       // peak annotations: apex of bounce n happens at t₀(1 + e + … + eⁿ), height h₀e²ⁿ
       const t0 = Math.sqrt((2 * h0) / g);
-      const peakT = (n: number) => t0 * (1 + (e * (1 - Math.pow(e, n))) / (1 - e));
+      const peakT = (n: number) => t0 * (1 + (eb * (1 - Math.pow(eb, n))) / (1 - eb));
       for (let n = 1; n <= 3; n++) {
-        const hp = h0 * Math.pow(e, 2 * n);
+        const hp = h0 * Math.pow(eb, 2 * n);
         if (hp < h0 * 0.03) break;
         label(ctx, `e^${2 * n}h₀`, px(peakT(n)), py(hp) - 8, SIM.dim, 8, "center");
       }
@@ -301,7 +304,7 @@ export default function CollisionSim() {
       ctx.strokeStyle = SIM.panelEdge;
       ctx.strokeRect(pad, trackY - 70, 14, 140);
       for (let y = trackY - 64; y < trackY + 66; y += 14) {
-        ctx.strokeStyle = "rgba(148,163,184,0.2)";
+        ctx.strokeStyle = "rgba(161,161,170,0.2)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(pad + 14, y);
@@ -363,26 +366,29 @@ export default function CollisionSim() {
               { value: "bounces", label: "Bouncing ball" },
               { value: "chain", label: "Wall–block chain" },
             ]}
-            onChange={(v) => setMode(v)}
+            onChange={(v) => {
+              setMode(v);
+              if (v === "bounces" && e > 0.95) setE(0.9);
+            }}
           />
           {mode === "headon" && (
             <>
-              <LabeledSlider label="Mass m₁ (kg)" value={m1} min={0.5} max={5} step={0.1} decimals={1} onChange={setM1} color="#818cf8" />
-              <LabeledSlider label="Mass m₂ (kg)" value={m2} min={0.5} max={5} step={0.1} decimals={1} onChange={setM2} color="#34d399" />
-              <LabeledSlider label="Restitution e" value={e} min={0} max={1} step={0.05} onChange={setE} color="#f87171" />
+              <LabeledSlider label="Mass m₁ (kg)" value={m1} min={0.5} max={5} step={0.1} decimals={1} onChange={setM1} color="#7E9CD8" />
+              <LabeledSlider label="Mass m₂ (kg)" value={m2} min={0.5} max={5} step={0.1} decimals={1} onChange={setM2} color="#98BB6C" />
+              <LabeledSlider label="Restitution e" value={e} min={0} max={1} step={0.05} onChange={setE} color="#E46876" />
               <LabeledSlider label="Initial u₁ (m/s)" value={u1} min={1} max={6} step={0.1} decimals={1} onChange={setU1} />
-              <LabeledSlider label="Initial u₂ (m/s)" value={u2} min={0} max={3} step={0.1} decimals={1} onChange={setU2} color="#fbbf24" />
+              <LabeledSlider label="Initial u₂ (m/s)" value={u2} min={0} max={3} step={0.1} decimals={1} onChange={setU2} color="#E6C384" />
             </>
           )}
           {mode === "bounces" && (
             <>
-              <LabeledSlider label="Drop height h₀ (m)" value={h0} min={1} max={4} step={0.1} decimals={1} onChange={setH0} color="#fbbf24" />
-              <LabeledSlider label="Restitution e" value={e} min={0.1} max={0.95} step={0.05} onChange={setE} color="#f87171" />
+              <LabeledSlider label="Drop height h₀ (m)" value={h0} min={1} max={4} step={0.1} decimals={1} onChange={setH0} color="#E6C384" />
+              <LabeledSlider label="Restitution e" value={e} min={0.1} max={0.95} step={0.05} onChange={setE} color="#E46876" />
             </>
           )}
           {mode === "chain" && (
             <>
-              <LabeledSlider label="Mass ratio M/m" value={ratio} min={1} max={200} step={1} decimals={0} onChange={setRatio} color="#818cf8" />
+              <LabeledSlider label="Mass ratio M/m" value={ratio} min={1} max={200} step={1} decimals={0} onChange={setRatio} color="#7E9CD8" />
               <LabeledSlider label="Block speed (m/s)" value={vBlock} min={1} max={4} step={0.2} decimals={1} onChange={setVBlock} />
             </>
           )}
@@ -393,26 +399,26 @@ export default function CollisionSim() {
         <>
           {mode === "headon" && (
             <>
-              <Readout label="v₁ after" value={`${v1.toFixed(2)} m/s`} color="#818cf8" />
-              <Readout label="v₂ after" value={`${v2.toFixed(2)} m/s`} color="#34d399" />
-              <Readout label="KE lost" value={`${lossPct.toFixed(1)}%`} color="#f87171" />
-              <Readout label="Momentum" value="always conserved" color="#38bdf8" />
+              <Readout label="v₁ after" value={`${v1.toFixed(2)} m/s`} color="#7E9CD8" />
+              <Readout label="v₂ after" value={`${v2.toFixed(2)} m/s`} color="#98BB6C" />
+              <Readout label="KE lost" value={`${lossPct.toFixed(1)}%`} color="#E46876" />
+              <Readout label="Momentum" value="always conserved" color="#7FB4CA" />
             </>
           )}
           {mode === "bounces" && (
             <>
-              <Readout label="Total height Σh" value={`${totalH.toFixed(2)} m`} color="#fbbf24" />
-              <Readout label="Total time Σt" value={`${totalT.toFixed(2)} s`} color="#34d399" />
-              <Readout label="Bounces (to rest)" value="count on canvas" color="#e879f9" />
-              <Readout label="Energy after n bounces" value="e²ⁿ of original" color="#f87171" />
+              <Readout label="Total height Σh" value={`${totalH.toFixed(2)} m`} color="#E6C384" />
+              <Readout label="Total time Σt" value={`${totalT.toFixed(2)} s`} color="#98BB6C" />
+              <Readout label="Bounces (to rest)" value="count on canvas" color="#D27E99" />
+              <Readout label="Energy after n bounces" value="e²ⁿ of original" color="#E46876" />
             </>
           )}
           {mode === "chain" && (
             <>
-              <Readout label="Predicted collisions" value={`≈ ${piTheory.toFixed(0)}`} color="#38bdf8" />
-              <Readout label="π√(M/m)" value={`${piTheory.toFixed(2)}`} color="#818cf8" />
-              <Readout label="Final block speed" value="≈ initial (M ≫ m)" color="#34d399" />
-              <Readout label="All collisions" value="e = 1, momentum + KE" color="#fbbf24" />
+              <Readout label="Predicted collisions" value={`≈ ${piTheory.toFixed(0)}`} color="#7FB4CA" />
+              <Readout label="π√(M/m)" value={`${piTheory.toFixed(2)}`} color="#7E9CD8" />
+              <Readout label="Final block speed" value="≈ initial (M ≫ m)" color="#98BB6C" />
+              <Readout label="All collisions" value="e = 1, momentum + KE" color="#E6C384" />
             </>
           )}
         </>

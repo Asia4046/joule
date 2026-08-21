@@ -87,8 +87,8 @@ export default function DriftSim() {
     ctx.arc(cx, wireY - 60, 34, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-    circle(ctx, cx, wireY - 60, 9, bright > 0.15 ? "#fde68a" : "#475569", bright > 0.15);
-    label(ctx, `P = ${P.toFixed(1)} W`, cx, wireY - 108, bright > 0.4 ? "#fbbf24" : SIM.dim, 11, "center");
+    circle(ctx, cx, wireY - 60, 9, bright > 0.15 ? "#E6C384" : "#54546D", bright > 0.15);
+    label(ctx, `P = ${P.toFixed(1)} W`, cx, wireY - 108, bright > 0.4 ? "#E6C384" : SIM.dim, 11, "center");
 
     // electrons in wires (top and bottom runs)
     s.phase = ((s.phase ?? 0) + (drift * dt) / (wx1 - wx0)) % 1;
@@ -117,14 +117,14 @@ export default function DriftSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="EMF ε (V)" value={V} min={1} max={12} step={0.1} decimals={1} onChange={setV} color="#fbbf24" />
-          <LabeledSlider label="Resistance R (Ω)" value={R} min={1} max={20} step={0.1} decimals={1} onChange={setR} color="#34d399" />
+          <LabeledSlider label="EMF ε (V)" value={V} min={1} max={12} step={0.1} decimals={1} onChange={setV} color="#E6C384" />
+          <LabeledSlider label="Resistance R (Ω)" value={R} min={1} max={20} step={0.1} decimals={1} onChange={setR} color="#98BB6C" />
           <ResetButton onClick={() => { state.current = { offsets: Array.from({ length: 64 }, () => Math.random()), phase: 0 }; }} />        </SimControls>
       }
       readouts={
         <>
-          <Readout label="Current I" value={`${I.toFixed(2)} A`} color="#38bdf8" />
-          <Readout label="Power P = I²R" value={`${P.toFixed(1)} W`} color="#fbbf24" />
+          <Readout label="Current I" value={`${I.toFixed(2)} A`} color="#7FB4CA" />
+          <Readout label="Power P = I²R" value={`${P.toFixed(1)} W`} color="#E6C384" />
           <Readout label="Drift speed" value="∝ I (fixed wire)" />
         </>
       }

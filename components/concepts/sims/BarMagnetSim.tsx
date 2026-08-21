@@ -83,7 +83,7 @@ export default function BarMagnetSim() {
     s.ang += d * Math.min(1, dt * 6);
 
     ctx.save();
-    ctx.fillStyle = "rgba(148,163,184,0.12)";
+    ctx.fillStyle = "rgba(161,161,170,0.12)";
     ctx.beginPath();
     ctx.arc(cx, cy, 26, 0, Math.PI * 2);
     ctx.fill();
@@ -121,8 +121,8 @@ export default function BarMagnetSim() {
       readouts={
         <>
           <Readout label="On-axis field" value="B = μ₀2M/4πr³" />
-          <Readout label="Equatorial field" value="B = μ₀M/4πr³ (half, reversed)" color="#38bdf8" />
-          <Readout label="Field lines" value="closed loops — no monopoles" color="#34d399" />
+          <Readout label="Equatorial field" value="B = μ₀M/4πr³ (half, reversed)" color="#7FB4CA" />
+          <Readout label="Field lines" value="closed loops — no monopoles" color="#98BB6C" />
         </>
       }
     />

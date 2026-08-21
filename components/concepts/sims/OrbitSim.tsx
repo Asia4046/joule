@@ -119,8 +119,8 @@ export default function OrbitSim() {
       readouts={
         <>
           <Readout label="v (units)" value={v.toFixed(3)} />
-          <Readout label="Escape speed √2·v_c" value={ve.toFixed(3)} color="#f87171" />
-          <Readout label="Kepler area law" value="L conserved ✓" color="#34d399" />
+          <Readout label="Escape speed √2·v_c" value={ve.toFixed(3)} color="#E46876" />
+          <Readout label="Kepler area law" value="L conserved ✓" color="#98BB6C" />
         </>
       }
     />

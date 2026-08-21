@@ -79,7 +79,7 @@ export default function EMWaveSim() {
       const x = x0 + 30 + i * ((x1 - 60 - x0) / 7);
       const ph = Math.sin(k * (x - x0) - V_PX * k * t * 0.01);
       const ey = cy - ph * amp * 0.55;
-      arrow(ctx, x, cy, x, ey, "rgba(248,113,113,0.6)", 1.4);
+      arrow(ctx, x, cy, x, ey, "rgba(228,104,118,0.6)", 1.4);
       const b = ph * amp * 0.4;
       arrow(ctx, x, cy, x + b * 0.5, cy - b * 0.5, "rgba(56,189,248,0.6)", 1.4);
       void ey;
@@ -99,8 +99,8 @@ export default function EMWaveSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Wavelength λ" value={lambda} min={60} max={300} step={5} decimals={0} onChange={setLambda} />
-          <LabeledSlider label="Amplitude" value={amp} min={15} max={55} step={1} decimals={0} onChange={setAmp} color="#f87171" />
-          <LabeledSlider label="Animation speed" value={speed} min={0} max={3} step={0.1} decimals={1} onChange={setSpeed} color="#34d399" />
+          <LabeledSlider label="Amplitude" value={amp} min={15} max={55} step={1} decimals={0} onChange={setAmp} color="#E46876" />
+          <LabeledSlider label="Animation speed" value={speed} min={0} max={3} step={0.1} decimals={1} onChange={setSpeed} color="#98BB6C" />
           <Box sx={{ pb: 0.5 }}>
             <Button size="small" variant="outlined" onClick={() => setPause((p) => !p)}>
               {pause ? "▶ Play" : "⏸ Pause"}
@@ -112,7 +112,7 @@ export default function EMWaveSim() {
         <>
           <Readout label="Frequency (v = 1)" value={f.toFixed(4)} />
           <Readout label="Speed" value="c = 3×10⁸ m/s in vacuum" />
-          <Readout label="Relation" value="E₀ = c·B₀" color="#34d399" />
+          <Readout label="Relation" value="E₀ = c·B₀" color="#98BB6C" />
         </>
       }
     />

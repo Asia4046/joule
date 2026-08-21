@@ -138,13 +138,13 @@ export default function GeneratorSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Rotation ω (rad/s)" value={omega} min={0.5} max={6} step={0.05} onChange={setOmega} />
-          <LabeledSlider label="Field B (T)" value={B} min={0.5} max={3} step={0.05} onChange={setB} color="#fbbf24" />
+          <LabeledSlider label="Field B (T)" value={B} min={0.5} max={3} step={0.05} onChange={setB} color="#E6C384" />
           <ResetButton onClick={() => { state.current = { ang: 0, trace: [], t: 0 }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Peak emf ε₀ = NBAω" value={`${eps0.toFixed(2)} V`} color="#34d399" />
+          <Readout label="Peak emf ε₀ = NBAω" value={`${eps0.toFixed(2)} V`} color="#98BB6C" />
           <Readout label="RMS emf" value={`${(eps0 / Math.SQRT2).toFixed(2)} V`} />
           <Readout label="Frequency f = ω/2π" value={`${(omega / (2 * Math.PI)).toFixed(2)} Hz`} />
         </>

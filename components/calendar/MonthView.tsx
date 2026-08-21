@@ -23,7 +23,7 @@ export type CalendarEvent = {
 };
 
 const KIND_COLOR: Record<CalendarEventKind, string> = {
-  study: "#C05C3C", // rust
+  study: "#7FB4CA", // spring blue
   test: "#BF4B4B", // error
   revision: "#C77D2E", // ochre
   journal: "#8A7CA8", // muted violet
@@ -144,7 +144,7 @@ export default function MonthView({
                   borderColor: isToday ? "primary.main" : "divider",
                   borderRadius: 0,
                   p: 0.75,
-                  bgcolor: isToday ? alpha("#D97757", 0.1) : "transparent",
+                  bgcolor: isToday ? "rgba(255,255,255,0.08)" : "transparent",
                   display: "flex",
                   flexDirection: "column",
                   gap: 0.5,

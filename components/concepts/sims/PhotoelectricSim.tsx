@@ -88,7 +88,7 @@ export default function PhotoelectricSim() {
     s.electrons.forEach((e) => {
       e.x += e.vx * dt;
       e.y += e.vy * dt;
-      circle(ctx, e.x, e.y, 3, "#38bdf8", true);
+      circle(ctx, e.x, e.y, 3, "#7FB4CA", true);
     });
 
     // status
@@ -134,16 +134,16 @@ export default function PhotoelectricSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Wavelength λ (nm)" value={lambda} min={200} max={750} step={5} decimals={0} onChange={setLambda} color={LIGHT_COLOR(lambda)} />
-          <LabeledSlider label="Intensity" value={intensity} min={0.05} max={1} step={0.05} onChange={setIntensity} color="#fbbf24" />
-          <LabeledSlider label="Work function φ (eV)" value={phi} min={1} max={4.5} step={0.1} decimals={1} onChange={setPhi} color="#f87171" />
+          <LabeledSlider label="Intensity" value={intensity} min={0.05} max={1} step={0.05} onChange={setIntensity} color="#E6C384" />
+          <LabeledSlider label="Work function φ (eV)" value={phi} min={1} max={4.5} step={0.1} decimals={1} onChange={setPhi} color="#E46876" />
         </SimControls>
       }
       readouts={
         <>
           <Readout label="Photon energy E = hc/λ" value={`${E.toFixed(2)} eV`} color={LIGHT_COLOR(lambda)} />
-          <Readout label="KEmax = hν − φ" value={KEmax > 0 ? `${KEmax.toFixed(2)} eV` : "no emission"} color={KEmax > 0 ? "#34d399" : "#f87171"} />
+          <Readout label="KEmax = hν − φ" value={KEmax > 0 ? `${KEmax.toFixed(2)} eV` : "no emission"} color={KEmax > 0 ? "#98BB6C" : "#E46876"} />
           <Readout label="Stopping voltage" value={`${V0.toFixed(2)} V`} />
-          <Readout label="Threshold λ₀ = hc/φ" value={`${lambda0.toFixed(0)} nm`} color="#fbbf24" />
+          <Readout label="Threshold λ₀ = hc/φ" value={`${lambda0.toFixed(0)} nm`} color="#E6C384" />
         </>
       }
     />

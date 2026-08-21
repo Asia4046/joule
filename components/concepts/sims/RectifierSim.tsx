@@ -105,9 +105,9 @@ export default function RectifierSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Peak voltage V₀ (V)" value={vpk} min={1} max={12} step={0.5} decimals={1} onChange={setVpk} color="#fbbf24" />
+          <LabeledSlider label="Peak voltage V₀ (V)" value={vpk} min={1} max={12} step={0.5} decimals={1} onChange={setVpk} color="#E6C384" />
           <LabeledSlider label="Frequency f (Hz)" value={f} min={0.5} max={3} step={0.1} decimals={1} onChange={setF} />
-          <LabeledSlider label="Capacitor smoothing" value={smoothing} min={0} max={1} step={0.05} onChange={setSmoothing} color="#38bdf8" />
+          <LabeledSlider label="Capacitor smoothing" value={smoothing} min={0} max={1} step={0.05} onChange={setSmoothing} color="#7FB4CA" />
           <SimToggleGroup
             label="Circuit"
             value={mode}
@@ -121,7 +121,7 @@ export default function RectifierSim() {
       }
       readouts={
         <>
-          <Readout label="Ripple frequency" value={`${rippleF.toFixed(1)} Hz`} color="#34d399" />
+          <Readout label="Ripple frequency" value={`${rippleF.toFixed(1)} Hz`} color="#98BB6C" />
           <Readout label="DC average" value={mode === "half" ? `${(vpk / Math.PI).toFixed(2)} V` : `${((2 * vpk) / Math.PI).toFixed(2)} V`} />
           <Readout label="Efficiency cap" value={mode === "half" ? "40.6%" : "81.2%"} />
         </>

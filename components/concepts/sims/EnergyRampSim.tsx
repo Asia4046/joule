@@ -96,7 +96,7 @@ export default function EnergyRampSim() {
 
     // height reference (dashed) from the top of the incline down to ground level
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.35)";
+    ctx.strokeStyle = "rgba(161,161,170,0.35)";
     ctx.setLineDash([3, 5]);
     ctx.beginPath();
     ctx.moveTo(rampTop.x, rampTop.y);
@@ -139,7 +139,7 @@ export default function EnergyRampSim() {
       const x = barsX0 + i * (barW + gap);
       const bh = PE0 > 0 ? (b.val / PE0) * barMaxH : 0;
       ctx.save();
-      ctx.fillStyle = "rgba(148,163,184,0.12)";
+      ctx.fillStyle = "rgba(161,161,170,0.12)";
       ctx.fillRect(x, barTop, barW, barMaxH);
       ctx.fillStyle = b.color;
       ctx.shadowColor = b.color;
@@ -174,16 +174,16 @@ export default function EnergyRampSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Incline angle θ (°)" value={theta} min={5} max={60} step={1} decimals={0} onChange={setTheta} color="#fbbf24" />
-          <LabeledSlider label="Friction μ" value={mu} min={0} max={0.6} step={0.01} onChange={setMu} color="#f87171" />
+          <LabeledSlider label="Incline angle θ (°)" value={theta} min={5} max={60} step={1} decimals={0} onChange={setTheta} color="#E6C384" />
+          <LabeledSlider label="Friction μ" value={mu} min={0} max={0.6} step={0.01} onChange={setMu} color="#E46876" />
           <ResetButton onClick={() => { state.current = { s: 0, v: 0, restartTimer: 0 }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Acceleration" value={`${a.toFixed(2)} m/s²`} color={a > 0 ? "#34d399" : "#f87171"} />
+          <Readout label="Acceleration" value={`${a.toFixed(2)} m/s²`} color={a > 0 ? "#98BB6C" : "#E46876"} />
           <Readout label="Initial PE = mgh" value={`${PE0.toFixed(0)} J`} />
-          <Readout label="Slides?" value={a > 0 ? "Yes" : "No — static friction holds"} color={a > 0 ? "#34d399" : "#f87171"} />
+          <Readout label="Slides?" value={a > 0 ? "Yes" : "No — static friction holds"} color={a > 0 ? "#98BB6C" : "#E46876"} />
         </>
       }
     />

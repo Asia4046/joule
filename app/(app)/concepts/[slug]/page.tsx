@@ -24,13 +24,15 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
   const Sim = SIM_REGISTRY[slug];
   if (!content || !Sim) notFound();
 
+  const subject = content.subject ?? "Physics";
+
   const chapter = await prisma.chapter.findUnique({
-    where: { subject_slug: { subject: "Physics", slug } },
+    where: { subject_slug: { subject, slug } },
     select: { id: true, name: true, weightageMain: true, weightageAdv: true, avgQuestionsMain: true, avgQuestionsAdv: true },
   });
 
   const related = await prisma.chapter.findMany({
-    where: { subject: "Physics", slug: { not: slug } },
+    where: { subject, slug: { not: slug } },
     select: { slug: true, name: true, weightageMain: true },
     orderBy: { weightageMain: "desc" },
     take: 5,

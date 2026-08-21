@@ -36,6 +36,10 @@ export default function FrictionSim() {
       s.v = 0;
     }
 
+    // friction right now: kinetic while moving (even if F has dropped below the static limit)
+    const moving = s.v > 1e-3;
+    const frictionNow = F > fsM || moving ? fkNow : F;
+
     clearPanel(ctx, w, h);
     const floorY = h * 0.62;
     const bw = 76;
@@ -73,16 +77,21 @@ export default function FrictionSim() {
     // FBD arrows
     arrow(ctx, bx + bw, by + bh / 2, bx + bw + 18 + (F / 60) * 70, by + bh / 2, SIM.green, 3);
     label(ctx, `F = ${F.toFixed(0)} N`, bx + bw + 24 + (F / 60) * 70, by + bh / 2 - 12, SIM.green, 11, "left");
-    arrow(ctx, bx - 18 - (friction / 60) * 70, by + bh / 2, bx, by + bh / 2, friction > 0 ? SIM.red : SIM.dim, 2);
-    label(ctx, `f = ${friction.toFixed(1)} N`, bx - 24 - (friction / 60) * 70, by + bh / 2 - 12, friction > 0 ? SIM.red : SIM.dim, 11, "right");
+    arrow(ctx, bx - 18 - (frictionNow / 60) * 70, by + bh / 2, bx, by + bh / 2, frictionNow > 0 ? SIM.red : SIM.dim, 2);
+    label(ctx, `f = ${frictionNow.toFixed(1)} N`, bx - 24 - (frictionNow / 60) * 70, by + bh / 2 - 12, frictionNow > 0 ? SIM.red : SIM.dim, 11, "right");
     arrow(ctx, cx, by, cx, by - 26 - (N / 60) * 26, SIM.sky, 2);
     label(ctx, `N = ${N.toFixed(0)} N`, cx + 8, by - 30 - (N / 60) * 26, SIM.sky, 11);
     arrow(ctx, cx, by + bh, cx, by + bh + 26 + (W / 60) * 26, SIM.amber, 2);
     label(ctx, `mg = ${W.toFixed(0)} N`, cx + 8, by + bh + 30 + (W / 60) * 26, SIM.amber, 11);
 
     // status banner
-    const status = F > fsMax ? `SLIDING — kinetic friction ${fk.toFixed(1)} N, a = ${((F - fk) / m).toFixed(2)} m/s²` : `STATIC — friction matches F = ${F.toFixed(0)} N (limit ${fsMax.toFixed(1)} N)`;
-    label(ctx, status, w / 2, 26, F > fsM ? SIM.red : SIM.green, 12, "center");
+    const status =
+      F > fsM
+        ? `SLIDING — kinetic friction ${fkNow.toFixed(1)} N, a = ${((F - fkNow) / m).toFixed(2)} m/s²`
+        : moving
+          ? `DECELERATING — still moving, kinetic friction ${fkNow.toFixed(1)} N`
+          : `STATIC — friction matches F = ${F.toFixed(0)} N (limit ${fsM.toFixed(1)} N)`;
+    label(ctx, status, w / 2, 26, F > fsM || moving ? SIM.red : SIM.green, 12, "center");
 
     // velocity readout bar
     label(ctx, `v = ${s.v.toFixed(2)} m/s`, w / 2, h - 24, SIM.bright, 12, "center");
@@ -96,17 +105,17 @@ export default function FrictionSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Applied force F (N)" value={F} min={0} max={60} step={0.5} decimals={1} onChange={setF} color="#34d399" />
+          <LabeledSlider label="Applied force F (N)" value={F} min={0} max={60} step={0.5} decimals={1} onChange={setF} color="#98BB6C" />
           <LabeledSlider label="Mass m (kg)" value={m} min={1} max={10} step={0.1} decimals={1} onChange={setM} />
-          <LabeledSlider label="Coefficient μₛ" value={mu} min={0.05} max={0.8} step={0.01} onChange={setMu} color="#f87171" />
+          <LabeledSlider label="Coefficient μₛ" value={mu} min={0.05} max={0.8} step={0.01} onChange={setMu} color="#E46876" />
           <ResetButton onClick={() => { state.current = { x: 0.12, v: 0 }; }} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Friction limit μₛN" value={`${fsMax.toFixed(1)} N`} color="#f87171" />
+          <Readout label="Friction limit μₛN" value={`${fsMax.toFixed(1)} N`} color="#E46876" />
           <Readout label="Kinetic μₖN (μₖ = 0.8μₛ)" value={`${fk.toFixed(1)} N`} />
-          <Readout label="Acceleration" value={sliding ? `${a.toFixed(2)} m/s²` : "0 (static)"} color={sliding ? "#34d399" : undefined} />
+          <Readout label="Acceleration" value={sliding ? `${a.toFixed(2)} m/s²` : "0 (static)"} color={sliding ? "#98BB6C" : undefined} />
         </>
       }
     />

@@ -79,7 +79,7 @@ export default function LensSim() {
     const ix = cx + v * scale;
     const imH = objH * m;
     if (Math.abs(imH) < h && Math.abs(v) < 5) {
-      arrow(ctx, ix, axisY, ix, axisY - imH, real ? SIM.red : "rgba(248,113,113,0.55)", 2.5);
+      arrow(ctx, ix, axisY, ix, axisY - imH, real ? SIM.red : "rgba(228,104,118,0.55)", 2.5);
       label(ctx, real ? "real image" : "virtual image", ix, axisY - imH - (imH > 0 ? 10 : -16), SIM.red, 10, "center");
     }
 
@@ -162,8 +162,8 @@ export default function LensSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Object distance u (×f)" value={u} min={0.3} max={4} step={0.05} onChange={setU} color="#34d399" />
-          <LabeledSlider label="Focal length |f|" value={f} min={0.5} max={1.5} step={0.05} onChange={setF} color="#fbbf24" />
+          <LabeledSlider label="Object distance u (×f)" value={u} min={0.3} max={4} step={0.05} onChange={setU} color="#98BB6C" />
+          <LabeledSlider label="Focal length |f|" value={f} min={0.5} max={1.5} step={0.05} onChange={setF} color="#E6C384" />
           <SimToggleGroup
             label="Lens"
             value={kind}
@@ -177,9 +177,9 @@ export default function LensSim() {
       }
       readouts={
         <>
-          <Readout label="Image distance v" value={`${v.toFixed(2)} f`} color={real ? "#34d399" : "#f87171"} />
+          <Readout label="Image distance v" value={`${v.toFixed(2)} f`} color={real ? "#98BB6C" : "#E46876"} />
           <Readout label="Magnification m" value={`${m.toFixed(2)}×`} />
-          <Readout label="Nature" value={real ? "Real — can be projected" : "Virtual — seen through lens"} color={real ? "#34d399" : "#fbbf24"} />
+          <Readout label="Nature" value={real ? "Real — can be projected" : "Virtual — seen through lens"} color={real ? "#98BB6C" : "#E6C384"} />
         </>
       }
     />

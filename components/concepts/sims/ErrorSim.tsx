@@ -96,7 +96,7 @@ export default function ErrorSim() {
 
     const sd = s.length > 1 ? Math.sqrt(s.reduce((a, b) => a + (b - meanL) ** 2, 0) / (s.length - 1)) : 0;
     ctx.save();
-    ctx.strokeStyle = "rgba(248,113,113,0.8)";
+    ctx.strokeStyle = "rgba(228,104,118,0.8)";
     ctx.setLineDash([4, 4]);
     [meanL - sd, meanL + sd].forEach((v) => {
       const xx = x0 + ((v - lo) / (hi - lo)) * (x1 - x0);
@@ -106,7 +106,7 @@ export default function ErrorSim() {
       ctx.stroke();
     });
     ctx.restore();
-    label(ctx, `±σ`, x0 + ((meanL + sd - lo) / (hi - lo)) * (x1 - x0) + 4, y0 + 26, "rgba(248,113,113,0.8)", 10);
+    label(ctx, `±σ`, x0 + ((meanL + sd - lo) / (hi - lo)) * (x1 - x0) + 4, y0 + 26, "rgba(228,104,118,0.8)", 10);
 
     // true value line
     ctx.save();
@@ -141,16 +141,16 @@ export default function ErrorSim() {
       controls={
         <SimControls>
           <LabeledSlider label="Least count (mm)" value={leastCount} min={0.01} max={0.5} step={0.01} onChange={setLeastCount} />
-          <LabeledSlider label="Number of readings n" value={n} min={5} max={100} step={1} decimals={0} onChange={(v) => { setN(v); }} color="#34d399" />
+          <LabeledSlider label="Number of readings n" value={n} min={5} max={100} step={1} decimals={0} onChange={(v) => { setN(v); }} color="#98BB6C" />
           <ResetButton onClick={() => takeSamples()} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Mean x̄" value={`${mean.toFixed(3)} mm`} color="#fbbf24" />
+          <Readout label="Mean x̄" value={`${mean.toFixed(3)} mm`} color="#E6C384" />
           <Readout label="Std dev σ" value={`${std.toFixed(3)} mm`} />
-          <Readout label="Standard error σ/√n" value={`${sem.toFixed(3)} mm`} color="#38bdf8" />
-          <Readout label="Quadruple n →" value="error halves (1/√n)" color="#34d399" />
+          <Readout label="Standard error σ/√n" value={`${sem.toFixed(3)} mm`} color="#7FB4CA" />
+          <Readout label="Quadruple n →" value="error halves (1/√n)" color="#98BB6C" />
         </>
       }
     />

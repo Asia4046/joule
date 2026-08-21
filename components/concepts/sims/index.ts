@@ -27,6 +27,9 @@ import RCCircuitSim from "./RCCircuitSim";
 import DecaySim from "./DecaySim";
 import StandingWaveSim from "./StandingWaveSim";
 import TrainTunnelSim from "./TrainTunnelSim";
+import LensSystemSim from "./LensSystemSim";
+import AtomicOrbitalSim from "./AtomicOrbitalSim";
+import PeriodicTrendsSim from "./PeriodicTrendsSim";
 
 /** Chapter slug → interactive simulation component. All sims are client components. */
 export const SIM_REGISTRY: Record<string, ComponentType> = {
@@ -59,4 +62,8 @@ export const SIM_REGISTRY: Record<string, ComponentType> = {
   "nuclear-decay": DecaySim,
   "standing-waves": StandingWaveSim,
   "train-in-tunnel": TrainTunnelSim,
+  "lens-systems": LensSystemSim,
+  // Chemistry labs
+  "atomic-structure": AtomicOrbitalSim,
+  "classification-of-elements-and-periodicity": PeriodicTrendsSim,
 };

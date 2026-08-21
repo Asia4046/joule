@@ -5,10 +5,12 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { ReactNode } from "react";
 import { useThemeMode } from "@/components/Providers";
+import { K, ka } from "@/lib/kanagawa";
 
-/** Ivory paper backdrop for the auth pages — a single sharp card floating on it. */
+/** Sumi-ink backdrop with a quiet wave glow — one floating card for the auth forms. */
 export default function AuthShell({ children, tagline }: { children: ReactNode; tagline: string }) {
   const { resolved } = useThemeMode();
+  const dark = resolved === "dark";
 
   return (
     <Box
@@ -20,12 +22,34 @@ export default function AuthShell({ children, tagline }: { children: ReactNode; 
         p: 2,
         position: "relative",
         overflow: "hidden",
-        bgcolor: resolved === "dark" ? "#1B1A18" : "#F4F2EC",
+        bgcolor: dark ? "#000000" : K.washiBg,
       }}
     >
-      {/* quiet terracotta corner marks */}
-      <Box aria-hidden sx={{ position: "absolute", top: 24, left: 24, width: 24, height: 24, borderLeft: "3px solid #D97757", borderTop: "3px solid #D97757" }} />
-      <Box aria-hidden sx={{ position: "absolute", bottom: 24, right: 24, width: 24, height: 24, borderRight: "3px solid #D97757", borderBottom: "3px solid #D97757" }} />
+      {/* quiet corner glows — crystal blue & sakura */}
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          top: -220,
+          left: -180,
+          width: 560,
+          height: 560,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, rgba(255,255,255,${dark ? 0.07 : 0.5}) 0%, transparent 68%)`,
+        }}
+      />
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          bottom: -240,
+          right: -160,
+          width: 560,
+          height: 560,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, rgba(255,255,255,${dark ? 0.04 : 0.3}) 0%, transparent 68%)`,
+        }}
+      />
 
       <Box sx={{ position: "relative", width: "100%", maxWidth: 400 }}>
         <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
@@ -33,20 +57,20 @@ export default function AuthShell({ children, tagline }: { children: ReactNode; 
             sx={{
               width: 54,
               height: 54,
-              bgcolor: "#D97757",
-              border: "1.5px solid #1F1E1D",
-              boxShadow: "4px 4px 0 #1F1E1D",
+              borderRadius: 3,
+              background: "#111116",
+              border: `1px solid ${K.nightLine2}`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Typography className="jee-serif" sx={{ fontWeight: 700, fontSize: "1.7rem", color: "#1F1E1D", lineHeight: 1 }}>
-              J
+            <Typography sx={{ fontWeight: 700, fontSize: "1.55rem", color: "#FAFAFA", lineHeight: 1 }}>
+              波
             </Typography>
           </Box>
           <Box sx={{ textAlign: "center" }}>
-            <Typography className="jee-serif" sx={{ fontWeight: 600, fontSize: "1.4rem", letterSpacing: "0.01em" }}>
+            <Typography sx={{ fontWeight: 700, fontSize: "1.35rem", letterSpacing: "0.01em" }}>
               JEE Command
             </Typography>
             <Typography variant="body2" color="text.secondary">

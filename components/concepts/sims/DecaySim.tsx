@@ -73,7 +73,7 @@ export default function DecaySim() {
       else if (st === 1) circle(ctx, x, y, cell * 0.28, SIM.amber, true);
       else {
         ctx.save();
-        ctx.strokeStyle = "rgba(248,113,113,0.5)";
+        ctx.strokeStyle = "rgba(228,104,118,0.5)";
         ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.arc(x, y, cell * 0.28, 0, Math.PI * 2);
@@ -105,7 +105,7 @@ export default function DecaySim() {
       ctx.moveTo(px0, py0);
       ctx.lineTo(px0, py1);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(148,163,184,0.14)";
+      ctx.strokeStyle = "rgba(161,161,170,0.14)";
       ctx.setLineDash([2, 4]);
       for (let n = 1; n <= 4; n++) {
         const y = py1 - Math.pow(2, -n) * (py1 - py0);
@@ -198,7 +198,7 @@ export default function DecaySim() {
         ctx.restore();
         plot((p) => p.a, SIM.green, 2);
         plot((p) => p.b, SIM.amber, 2);
-        plot((p) => p.s, "rgba(148,163,184,0.5)", 1.2);
+        plot((p) => p.s, "rgba(161,161,170,0.5)", 1.2);
         label(ctx, "parent (green) · daughter (amber) · stable (grey)", px1, py0 - 12, SIM.dim, 9, "right");
       }
       label(ctx, "t →", px1, py1 + 12, SIM.dim, 9, "right");
@@ -222,27 +222,27 @@ export default function DecaySim() {
             ]}
             onChange={(v) => setMode(v)}
           />
-          <LabeledSlider label="Parent half-life T½A (s)" value={halfLife} min={1} max={12} step={0.5} decimals={1} onChange={setHalfLife} color="#34d399" />
+          <LabeledSlider label="Parent half-life T½A (s)" value={halfLife} min={1} max={12} step={0.5} decimals={1} onChange={setHalfLife} color="#98BB6C" />
           {mode === "chain" && (
-            <LabeledSlider label="λ_B / λ_A" value={ratio} min={0.3} max={10} step={0.1} decimals={1} onChange={setRatio} color="#fbbf24" />
+            <LabeledSlider label="λ_B / λ_A" value={ratio} min={0.3} max={10} step={0.1} decimals={1} onChange={setRatio} color="#E6C384" />
           )}
           <ResetButton onClick={reinit} />
         </SimControls>
       }
       readouts={
         <>
-          <Readout label="Parent λ_A" value={`${lamA.toFixed(3)} s⁻¹`} color="#34d399" />
+          <Readout label="Parent λ_A" value={`${lamA.toFixed(3)} s⁻¹`} color="#98BB6C" />
           {mode === "chain" ? (
             <>
-              <Readout label="Daughter λ_B" value={`${lamB.toFixed(3)} s⁻¹`} color="#fbbf24" />
-              <Readout label="Daughter peaks at t*" value={`${tStar.toFixed(1)} s · N ≈ ${bPeak.toFixed(0)}`} color="#e879f9" />
-              <Readout label="λ_A ≪ λ_B limit" value="secular equilibrium" color="#38bdf8" />
+              <Readout label="Daughter λ_B" value={`${lamB.toFixed(3)} s⁻¹`} color="#E6C384" />
+              <Readout label="Daughter peaks at t*" value={`${tStar.toFixed(1)} s · N ≈ ${bPeak.toFixed(0)}`} color="#D27E99" />
+              <Readout label="λ_A ≪ λ_B limit" value="secular equilibrium" color="#7FB4CA" />
             </>
           ) : (
             <>
-              <Readout label="Mean life τ = 1/λ" value={`${(1 / lamA).toFixed(1)} s = 1.44·T½`} color="#e879f9" />
-              <Readout label="Activity A" value="λN — falls with N" color="#fbbf24" />
-              <Readout label="Rule" value="after n half-lives: N₀/2ⁿ" color="#38bdf8" />
+              <Readout label="Mean life τ = 1/λ" value={`${(1 / lamA).toFixed(1)} s = 1.44·T½`} color="#D27E99" />
+              <Readout label="Activity A" value="λN — falls with N" color="#E6C384" />
+              <Readout label="Rule" value="after n half-lives: N₀/2ⁿ" color="#7FB4CA" />
             </>
           )}
         </>

@@ -108,15 +108,15 @@ export default function FieldLinesSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Charge q₁ (+ right)" value={q1} min={-3} max={3} step={0.1} decimals={1} onChange={setQ1} color="#f87171" />
-          <LabeledSlider label="Charge q₂ (+ right)" value={q2} min={-3} max={3} step={0.1} decimals={1} onChange={setQ2} color="#38bdf8" />
+          <LabeledSlider label="Charge q₁ (+ right)" value={q1} min={-3} max={3} step={0.1} decimals={1} onChange={setQ1} color="#E46876" />
+          <LabeledSlider label="Charge q₂ (+ right)" value={q2} min={-3} max={3} step={0.1} decimals={1} onChange={setQ2} color="#7FB4CA" />
           <ResetButton onClick={() => { state.current.probes = []; }} />
         </SimControls>
       }
       readouts={
         <>
           <Readout label="Configuration" value={q1 * q2 < 0 ? "Dipole — lines flow + → −" : q1 * q2 > 0 ? "Like charges — neutral point between" : "Single charge"} />
-          <Readout label="Field ∝" value="1/r² from each charge" color="#34d399" />
+          <Readout label="Field ∝" value="1/r² from each charge" color="#98BB6C" />
         </>
       }
     />

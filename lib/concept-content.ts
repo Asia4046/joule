@@ -5,6 +5,8 @@ export type ConceptContent = {
   tagline: string;
   simTitle: string;
   simAbout: string;
+  /** Defaults to "Physics" — used for chapter lookups on the lab page. */
+  subject?: "Physics" | "Chemistry";
   sections: ConceptSection[];
   formulas: ConceptFormula[];
   tips: string[];
@@ -1193,6 +1195,139 @@ export const CONCEPT_CONTENT: Record<string, ConceptContent> = {
       "Rel. train vs rel. tunnel differ by exactly v — underline which one the question asks before substituting.",
       "As β → 1 the answers diverge — a sign that the incompressible model itself is breaking (real tunnels: pressure waves, ear pop).",
       "Front of train = compression (push), rear = suction (pull): the platform draft is this pressure profile wearing a safety announcement.",
+    ],
+  },
+
+  "lens-systems": {
+    title: "Lens Combinations",
+    tagline: "Two lenses in contact, two separated, telescope and microscope architectures — one matrix method rules them all.",
+    simTitle: "Lens combination bench",
+    simAbout: "Chain up to three convex/concave lenses at chosen separations; rays, intermediate images and the effective focal length update live.",
+    sections: [
+      {
+        heading: "Lenses in contact: powers just add",
+        body: [
+          "For thin lenses touching, the combined focal length obeys 1/F = 1/f₁ + 1/f₂ — equivalently P = P₁ + P₂ in dioptres. This is how an optometrist stacks trial lenses to hit a prescription, and why a convex + weaker concave pair behaves as one weaker convex lens.",
+          "The sim reproduces this exactly: drag two lenses to the same bench position and the effective focal length converges to the contact formula.",
+        ],
+      },
+      {
+        heading: "Separated lenses: the separation matters",
+        body: [
+          "With separation d, 1/F = 1/f₁ + 1/f₂ − d/(f₁f₂). A wide separation weakens the combination; in the limit d = f₁ + f₂ you get an afocal system (beam compressor / simple telescope) — parallel light in, parallel light out, effective f → ∞.",
+          "Microscopes and telescopes are the two JEE-favourite architectures: telescope = objective with long f₁ + eyepiece with short f₂, separation f₁ + f₂, magnification M = f₁/f₂; microscope = both short-focal, object just outside the objective's focus, large tube length L, M ≈ (L/f₀)(D/fₑ).",
+        ],
+      },
+      {
+        heading: "The matrix method: one tool for everything",
+        body: [
+          "Represent a ray by (height y, slope θ). Free space over distance d is [[1,d],[0,1]]; a thin lens is [[1,0],[−1/f,1]]. Multiply the matrices in order and the whole system is two equations. An image forms where the output height no longer depends on the input slope (B = 0) — that condition gives the image distance, and the magnification falls out as element D of the propagated matrix.",
+          "The same machinery handles intermediate images: after each lens, ask where the partial system focuses. The sim marks these in amber — the object for lens 2 is the image from lens 1, which is exactly how multi-stage problems are solved by hand.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "\\frac{1}{F} = \\frac{1}{f_1} + \\frac{1}{f_2}", label: "Lenses in contact" },
+      { tex: "\\frac{1}{F} = \\frac{1}{f_1} + \\frac{1}{f_2} - \\frac{d}{f_1 f_2}", label: "Separated by d" },
+      { tex: "P = P_1 + P_2 - d\\,P_1 P_2", label: "Power form (dioptres)" },
+      { tex: "M_{\\text{telescope}} = \\frac{f_1}{f_2},\\quad d = f_1 + f_2", label: "Afocal telescope" },
+      { tex: "\\begin{pmatrix} y' \\\\ \\theta' \\end{pmatrix} = \\begin{pmatrix} 1 & d \\\\ 0 & 1 \\end{pmatrix}\\begin{pmatrix} 1 & 0 \\\\ -1/f & 1 \\end{pmatrix}\\begin{pmatrix} y \\\\ \\theta \\end{pmatrix}", label: "Ray-transfer matrices" },
+    ],
+    tips: [
+      "Image from lens 1 = object for lens 2. If it forms to the right of lens 2, its distance becomes a virtual object (negative in the Cartesian convention) — the step most students flub.",
+      "Effective power of separated lenses is always less than the contact value; the d/(f₁f₂) term is the tell.",
+      "Magnifications multiply: m_total = m₁·m₂. Two inversions give an erect final image — count sign flips instead of re-deriving.",
+      "Afocal check: if the sim says 'output collimated', parallel rays in give parallel rays out — that's a telescope or beam expander, and the angular magnification is the diameter ratio of the beams.",
+      "Units discipline: dioptres require metres. A 25 cm lens is +4 D, and mixing cm with D is the #1 numerical error in optics.",
+    ],
+  },
+
+  "atomic-structure": {
+    title: "Atomic Structure",
+    subject: "Chemistry",
+    tagline: "Quantum numbers, orbitals and the hydrogen spectrum — where chemistry borrows physics' rulebook.",
+    simTitle: "Atomic orbital visualiser",
+    simAbout: "Pick any (n, l, m) up to 3d and watch the probability density |ψ|² take shape in a chosen plane slice.",
+    sections: [
+      {
+        heading: "Quantum numbers are an address, not a label",
+        body: [
+          "Solving the Schrödinger equation for hydrogen gives three quantum numbers that pin down an orbital: n (size/energy), l (shape, 0 to n−1: s, p, d, f…) and mₗ (orientation, −l to +l). A fourth, mₛ = ±½, labels the electron's spin — Pauli's exclusion principle says no two electrons in an atom share all four.",
+          "Orbitals are not orbits. |ψ|² is a probability density: the electron is a standing wave of the nucleus's electric field, and the lobes you see in the visualiser are where it is likely to be found, not paths it travels.",
+        ],
+      },
+      {
+        heading: "Nodes: the fingerprints of (n, l)",
+        body: [
+          "Radial nodes = n − l − 1 (spheres where the radial wavefunction crosses zero); angular nodes = l (planes/cones through the nucleus). Total nodes = n − 1. A 3p orbital (n=3, l=1) has 1 radial + 1 angular node; 3d has 0 radial + 2 angular.",
+          "Radial probability (4πr²R²) peaks at the Bohr radius for 1s but the density |ψ|² is maximum at the nucleus — examiners love this distinction.",
+        ],
+      },
+      {
+        heading: "The hydrogen spectrum",
+        body: [
+          "Eₙ = −13.6 Z²/n² eV. Lines come from transitions: Lyman (to n=1, UV), Balmer (to n=2, visible), Paschen/Brackett/Pfund (IR). The Rydberg formula 1/λ = RZ²(1/n₁² − 1/n₂²) computes every wavelength in the series.",
+          "de Broglie's λ = h/mv wrapped around a circumference (2πr = nλ) reproduces Bohr quantisation — the bridge between particle pictures and wave pictures that JEE questions repeatedly probe.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "E_n = -\\frac{13.6\\,Z^2}{n^2}\\ \\text{eV}", label: "Hydrogen-like energy levels" },
+      { tex: "\\text{radial nodes} = n - l - 1,\\quad \\text{angular nodes} = l", label: "Node counting" },
+      { tex: "\\frac{1}{\\lambda} = RZ^2\\left(\\frac{1}{n_1^2} - \\frac{1}{n_2^2}\\right)", label: "Rydberg formula" },
+      { tex: "\\psi_{nlm} = R_{nl}(r)\\,Y_l^m(\\theta, \\phi)", label: "Wavefunction factorisation" },
+      { tex: "2\\pi r = n\\lambda = \\frac{nh}{mv}", label: "de Broglie → Bohr" },
+    ],
+    tips: [
+      "Orbital counting: number of orbitals in the n-th shell = n²; electrons = 2n². Half-filled and fully-filled subshells gain exchange-energy stability — hence Cr = [Ar]3d⁵4s¹.",
+      "Node questions are free marks: total nodes n−1, radial n−l−1, angular l. Verify with the visualiser.",
+      "Energy order for H-like species depends only on n (3s = 3p = 3d); multi-electron atoms break the degeneracy (3d > 3p > 3s) because of penetration/shielding.",
+      "Series limits: Lyman 91.2 nm, Balmer 364.6 nm — the shortest wavelength of each series is the n₂ → ∞ limit.",
+      "Heisenberg: Δx·Δp ≥ h/4π — it forbids exact orbits, not measurement of one variable.",
+    ],
+  },
+
+  "classification-of-elements-and-periodicity": {
+    title: "Classification & Periodicity",
+    subject: "Chemistry",
+    tagline: "The periodic table is not trivia — its trends are the master key to almost every inorganic question.",
+    simTitle: "Periodic trends explorer",
+    simAbout: "Colour the table by atomic radius, electronegativity, ionisation energy or electron affinity and trace group/period trends.",
+    sections: [
+      {
+        heading: "Why trends exist",
+        body: [
+          "Across a period, nuclear charge (Z) grows while electrons enter the same shell — shielding stays roughly constant, so effective nuclear charge Z_eff rises and atoms contract. Down a group, each new shell outruns the added charge, so size grows.",
+          "Every other trend follows from radius: ionisation energy and electronegativity rise across a period (harder to remove/hold electrons closer), and fall down a group. Electron affinity is the odd one — irregular because of subshell structure (N's half-filled 2p³ resists gaining, Be's empty 2p is inaccessible).",
+        ],
+      },
+      {
+        heading: "The anomalies examiners test",
+        body: [
+          "IE order anomalies: Be > B (2s² is tighter than 2p¹) and N > O (half-filled 2p³ beats 2p⁴). Down a group, IE drops but not monotonically for heavy elements where relativistic contraction complicates things.",
+          "Metallic character, basicity of oxides and reducing power all move opposite to electronegativity; acidic character of oxides moves with it. Once you anchor radius and Z_eff, you can derive these on the fly instead of memorising rows.",
+        ],
+      },
+      {
+        heading: "Modern periodic law",
+        body: [
+          "Moseley's atomic number (Z), not Mendeleev's atomic mass, is the true sorting key — that single fix resolved the Te/I and Co/Ni inversions. s/p/d/f blocks mirror the subshell being filled.",
+          "Predict positions from electron configuration: an element ending in ns² np⁵ is a halogen (group 17); (n−1)d¹⁰ ns² is group 12. The block tells the group faster than counting boxes.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "Z_{\\text{eff}} = Z - \\sigma", label: "Slater screening" },
+      { tex: "IE_2 > IE_1 \\text{ (always)}", label: "Successive ionisation energies" },
+      { tex: "\\text{EN} \\propto \\frac{Z_{\\text{eff}}}{r}", label: "Electronegativity scaling" },
+      { tex: "r_{\\text{cation}} < r_{\\text{atom}} < r_{\\text{anion}}", label: "Ionic radii order" },
+    ],
+    tips: [
+      "Ionisation energy comparisons: always check the electron being removed — which shell, which subshell, half/fully-filled bonus.",
+      "Diagonal relationships (Li–Mg, Be–Al, B–Si) arise because similar charge density beats the group trend.",
+      "Second IE of Na is huge (breaks into the neon core); for Mg it is IE₃. Jump positions identify the group.",
+      "Electron affinity ≠ electronegativity: EA is a thermodynamic quantity for the isolated atom (Cl > F), EN is a bonded-atom rating (F > Cl).",
+      "Lanthanoid contraction makes 5d elements unusually small — why Zr ≈ Hf and why Hg is liquid.",
     ],
   },
 };

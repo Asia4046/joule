@@ -45,23 +45,23 @@ export function ClockCard() {
     <Box
       sx={{
         p: 1.75,
-        border: "1.5px solid #57544C",
-        boxShadow: "3px 3px 0 #000",
-        bgcolor: "#2A2926",
+        borderRadius: 2.5,
+        border: "1px solid rgba(255,255,255,0.08)",
+        bgcolor: "#0E0E11",
       }}
     >
       <Stack direction="row" alignItems="baseline" spacing={0.75}>
         <Typography
-          className="jee-serif jee-num"
-          sx={{ fontSize: "1.7rem", fontWeight: 600, color: "#F0EEE6", lineHeight: 1, letterSpacing: "0.02em" }}
+          className="jee-mono jee-num"
+          sx={{ fontSize: "1.6rem", fontWeight: 600, color: "#F4F4F5", lineHeight: 1, letterSpacing: "0.02em" }}
         >
           {now ? `${hh}:${mm}` : "--:--"}
         </Typography>
-        <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.65)", fontWeight: 600 }}>
+        <Typography variant="caption" sx={{ color: "#A1A1AA", fontWeight: 600 }}>
           {now ? time.toLocaleDateString("en-IN", { weekday: "short" }) : ""}
         </Typography>
       </Stack>
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.65)", display: "block", mt: 0.5, fontWeight: 500 }}>
+      <Typography variant="caption" sx={{ color: "#A1A1AA", display: "block", mt: 0.5, fontWeight: 500 }}>
         {now
           ? time.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
           : " "}
@@ -72,11 +72,11 @@ export function ClockCard() {
         sx={{
           mt: 1.25,
           height: 4,
-          bgcolor: "rgba(240,238,230,0.15)",
-          "& .MuiLinearProgress-bar": { backgroundColor: "#D97757" },
+          bgcolor: "rgba(255,255,255,0.09)",
+          "& .MuiLinearProgress-bar": { backgroundColor: "#E4E4E7" },
         }}
       />
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.55)", display: "block", mt: 0.5, fontSize: "0.66rem" }}>
+      <Typography variant="caption" sx={{ color: "#71717A", display: "block", mt: 0.5, fontSize: "0.66rem" }}>
         {Math.round(dayPct)}% of today
       </Typography>
     </Box>
@@ -97,24 +97,24 @@ export function QuoteCard() {
     <Box
       sx={{
         p: 1.75,
-        border: "1.5px solid #57544C",
-        boxShadow: "3px 3px 0 #000",
-        bgcolor: "#2A2926",
+        borderRadius: 2.5,
+        border: "1px solid rgba(255,255,255,0.08)",
+        bgcolor: "#0E0E11",
       }}
     >
       <Typography
         className="jee-serif"
-        sx={{ fontSize: "1.4rem", lineHeight: 1, color: "#D97757", fontWeight: 600 }}
+        sx={{ fontSize: "1.6rem", lineHeight: 1, color: "#A1A1AA", fontWeight: 700 }}
       >
         &ldquo;
       </Typography>
       <Typography
         className="jee-serif"
-        sx={{ fontSize: "0.8rem", fontStyle: "italic", color: "rgba(240,238,230,0.95)", lineHeight: 1.55 }}
+        sx={{ fontSize: "0.8rem", fontStyle: "italic", color: "rgba(228,228,231,0.86)", lineHeight: 1.55 }}
       >
         {quote.text}
       </Typography>
-      <Typography variant="caption" sx={{ color: "rgba(240,238,230,0.6)", display: "block", mt: 0.75, fontWeight: 600 }}>
+      <Typography variant="caption" sx={{ color: "#71717A", display: "block", mt: 0.75, fontWeight: 600 }}>
         — {quote.author}
       </Typography>
     </Box>

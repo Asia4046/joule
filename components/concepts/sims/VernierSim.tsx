@@ -139,7 +139,7 @@ export default function VernierSim() {
       controls={
         <SimControls>
           <Box sx={{ flex: "1 1 260px" }}>
-            <Readout label="Jaw position (your reading)" value={`${(jaw / 10).toFixed(1)} mm`} color="#38bdf8" />
+            <Readout label="Jaw position (your reading)" value={`${(jaw / 10).toFixed(1)} mm`} color="#7FB4CA" />
           </Box>
           <input
             type="range"
@@ -151,7 +151,7 @@ export default function VernierSim() {
               setJaw(Number(e.target.value));
               setShowAnswer(false);
             }}
-            style={{ flex: "2 1 200px", accentColor: "#38bdf8" }}
+            style={{ flex: "2 1 200px", accentColor: "#7FB4CA" }}
           />
           <ResetButton onClick={nextQ} />
         </SimControls>
@@ -162,11 +162,11 @@ export default function VernierSim() {
           {showAnswer ? (
             <>
               <Readout label="Main scale (MSR)" value={`${msd} mm`} />
-              <Readout label="Coinciding VSD" value={`${vsd}`} color="#34d399" />
-              <Readout label="True reading" value={`${reading.toFixed(1)} mm`} color="#34d399" />
+              <Readout label="Coinciding VSD" value={`${vsd}`} color="#98BB6C" />
+              <Readout label="True reading" value={`${reading.toFixed(1)} mm`} color="#98BB6C" />
             </>
           ) : (
-            <Readout label="Hidden" value="check to reveal" color="#fbbf24" />
+            <Readout label="Hidden" value="check to reveal" color="#E6C384" />
           )}
         </>
       }

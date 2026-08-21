@@ -89,7 +89,7 @@ export default function TrainTunnelSim() {
       ctx.moveTo(0, wy2 - 0.5);
       ctx.lineTo(w, wy2 - 0.5);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(148,163,184,0.14)";
+      ctx.strokeStyle = "rgba(161,161,170,0.14)";
       for (let x = -off; x < w; x += 90) {
         ctx.beginPath();
         ctx.moveTo(x, wy + 2);
@@ -101,7 +101,7 @@ export default function TrainTunnelSim() {
 
     // track (rail + sleepers) in the bottom of the bore
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.22)";
+    ctx.strokeStyle = "rgba(161,161,170,0.22)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(0, y1 - 8);
@@ -272,7 +272,7 @@ export default function TrainTunnelSim() {
     };
     label(ctx, "static pressure along tunnel", 14, h - 42, SIM.dim, 9);
     ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.35)";
+    ctx.strokeStyle = "rgba(161,161,170,0.35)";
     ctx.setLineDash([3, 5]);
     ctx.beginPath();
     ctx.moveTo(xP0, yP);
@@ -282,7 +282,7 @@ export default function TrainTunnelSim() {
     for (let x = xP0; x < xP1; x += 4) {
       const p = P(x);
       if (Math.abs(p) < 0.4) continue;
-      ctx.fillStyle = p > 0 ? "rgba(248,113,113,0.32)" : "rgba(56,189,248,0.3)";
+      ctx.fillStyle = p > 0 ? "rgba(228,104,118,0.32)" : "rgba(56,189,248,0.3)";
       ctx.fillRect(x, Math.min(yP, yP - p), 4, Math.abs(p));
     }
     ctx.strokeStyle = "rgba(241,245,249,0.75)";
@@ -310,9 +310,9 @@ export default function TrainTunnelSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Train speed v (m/s)" value={vTrain} min={10} max={60} step={1} decimals={0} onChange={setVTrain} color="#fbbf24" />
-          <LabeledSlider label="Blockage β = A₁/A₂" value={beta} min={0.3} max={0.9} step={0.01} decimals={2} onChange={setBeta} color="#38bdf8" />
-          <LabeledSlider label="Tunnel area A₂ (m²)" value={a2} min={30} max={80} step={1} decimals={0} onChange={setA2} color="#e879f9" />
+          <LabeledSlider label="Train speed v (m/s)" value={vTrain} min={10} max={60} step={1} decimals={0} onChange={setVTrain} color="#E6C384" />
+          <LabeledSlider label="Blockage β = A₁/A₂" value={beta} min={0.3} max={0.9} step={0.01} decimals={2} onChange={setBeta} color="#7FB4CA" />
+          <LabeledSlider label="Tunnel area A₂ (m²)" value={a2} min={30} max={80} step={1} decimals={0} onChange={setA2} color="#D27E99" />
           <ResetButton
             onClick={() => {
               state.current.t = 0;
@@ -326,16 +326,16 @@ export default function TrainTunnelSim() {
           <Readout
             label="Gap air · rel. train u′ = v/(1−β)"
             value={`${uPrime.toFixed(0)} m/s${uPrime > SOUND ? " · ⚠ >Mach 1" : ""}`}
-            color="#fbbf24"
+            color="#E6C384"
           />
-          <Readout label="Gap air · rel. tunnel (backward)" value={`${uTunnel.toFixed(0)} m/s`} color="#38bdf8" />
-          <Readout label="Speed-up u′/v = 1/(1−β)" value={`${(1 / (1 - beta)).toFixed(2)}×`} color="#34d399" />
+          <Readout label="Gap air · rel. tunnel (backward)" value={`${uTunnel.toFixed(0)} m/s`} color="#7FB4CA" />
+          <Readout label="Speed-up u′/v = 1/(1−β)" value={`${(1 / (1 - beta)).toFixed(2)}×`} color="#98BB6C" />
           <Readout
             label="Bernoulli drop ½ρ(u′²−v²)"
             value={dP >= 1000 ? `${(dP / 1000).toFixed(2)} kPa` : `${dP.toFixed(0)} Pa`}
-            color="#f87171"
+            color="#E46876"
           />
-          <Readout label="Displaced flow Q = v·A₁" value={`${qFlow.toFixed(0)} m³/s`} color="#e879f9" />
+          <Readout label="Displaced flow Q = v·A₁" value={`${qFlow.toFixed(0)} m³/s`} color="#D27E99" />
         </>
       }
     />
