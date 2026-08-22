@@ -18,7 +18,7 @@ import {
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
 import { subjectColor } from "@/lib/constants";
-import { chartTooltipStyle } from "@/components/ui";
+import { chartAxisTick, chartGridProps, chartTooltipStyle } from "@/components/ui";
 
 type TrendPoint = {
   name: string;
@@ -54,9 +54,9 @@ export default function MockAnalyticsCharts({
             <div style={{ width: "100%", height: 280, marginTop: 12 }}>
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.secondary.main} strokeWidth={2} dot={{ r: 3 }} />
@@ -77,9 +77,9 @@ export default function MockAnalyticsCharts({
             <div style={{ width: "100%", height: 280, marginTop: 12 }}>
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Line type="monotone" dataKey="accuracy" name="Accuracy %" stroke={theme.palette.warning.main} strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
@@ -96,9 +96,9 @@ export default function MockAnalyticsCharts({
             <div style={{ width: "100%", height: 280, marginTop: 12 }}>
               <ResponsiveContainer>
                 <LineChart data={trend.map((t, i) => ({ ...t, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="physics" name="Physics" stroke={subjectColor("Physics", dark)} strokeWidth={2} dot={{ r: 2 }} connectNulls />
@@ -118,9 +118,9 @@ export default function MockAnalyticsCharts({
             <div style={{ width: "100%", height: 280, marginTop: 12 }}>
               <ResponsiveContainer>
                 <BarChart data={attempts.map((a, i) => ({ ...a, label: labelFor(i) }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="correct" name="Correct" stackId="a" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={26} />

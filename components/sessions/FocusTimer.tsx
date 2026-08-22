@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -42,6 +42,11 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
   const [saved, setSaved] = useState(false);
   const [elapsedTotal, setElapsedTotal] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Wall-clock accounting: background tabs throttle setInterval, so the
+  // countdown derives from deadlines instead of counting ticks.
+  const endsAtRef = useRef<number | null>(null);
+  const segmentStartRef = useRef(0);
+  const elapsedAtSegmentStartRef = useRef(0);
   const router = useRouter();
 
   const breakMinutes = 5;
@@ -50,24 +55,48 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
   useEffect(() => {
     if (state !== "running") {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = null;
       return;
     }
     intervalRef.current = setInterval(() => {
-      setRemaining((r) => {
-        if (r <= 1) {
-          setState("done");
-          return 0;
-        }
-        return r - 1;
-      });
-      if (mode === "focus") setElapsedTotal((e) => e + 1);
-    }, 1000);
+      const now = Date.now();
+      const end = endsAtRef.current ?? now;
+      const left = Math.max(0, Math.round((end - now) / 1000));
+      setRemaining(left);
+      if (mode === "focus") {
+        const ran = Math.max(0, Math.min(now, end) - segmentStartRef.current);
+        setElapsedTotal(elapsedAtSegmentStartRef.current + Math.round(ran / 1000));
+      }
+      if (left <= 0) {
+        endsAtRef.current = null;
+        setState("done");
+      }
+    }, 250);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [state, mode]);
 
+  function startRunning() {
+    segmentStartRef.current = Date.now();
+    endsAtRef.current = Date.now() + remaining * 1000;
+    elapsedAtSegmentStartRef.current = elapsedTotal;
+    setState("running");
+  }
+
+  function pause() {
+    const now = Date.now();
+    const end = endsAtRef.current;
+    if (end != null && mode === "focus") {
+      const ran = Math.max(0, Math.min(now, end) - segmentStartRef.current);
+      setElapsedTotal(elapsedAtSegmentStartRef.current + Math.round(ran / 1000));
+    }
+    endsAtRef.current = null;
+    setState("paused");
+  }
+
   function reset(nextMode: Mode = mode, minutes?: number) {
+    endsAtRef.current = null;
     setState("idle");
     setSaved(false);
     const m = minutes ?? (nextMode === "focus" ? presetMinutes : breakMinutes);
@@ -189,17 +218,17 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
 
                 <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 1.5, justifyContent: { xs: "center", sm: "flex-start" } }}>
                   {state === "idle" && (
-                    <Button variant="contained" startIcon={<PlayArrowIcon />} onClick={() => setState("running")}>
+                    <Button variant="contained" startIcon={<PlayArrowIcon />} onClick={startRunning}>
                       Start
                     </Button>
                   )}
                   {state === "running" && (
-                    <Button variant="outlined" startIcon={<PauseIcon />} onClick={() => setState("paused")}>
+                    <Button variant="outlined" startIcon={<PauseIcon />} onClick={pause}>
                       Pause
                     </Button>
                   )}
                   {state === "paused" && (
-                    <Button variant="contained" startIcon={<PlayArrowIcon />} onClick={() => setState("running")}>
+                    <Button variant="contained" startIcon={<PlayArrowIcon />} onClick={startRunning}>
                       Resume
                     </Button>
                   )}

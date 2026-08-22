@@ -313,10 +313,6 @@ function GlobalThemeStyles() {
         const dark = theme.palette.mode === "dark";
         const accent = dark ? J.accent.dark : J.accent.light;
         return {
-          "@keyframes jee-fade-up": {
-            from: { opacity: 0, transform: "translateY(10px)" },
-            to: { opacity: 1, transform: "none" },
-          },
           html: { scrollBehavior: "smooth" },
           "::selection": {
             backgroundColor: dark ? "rgba(242,169,203,0.30)" : "rgba(172,62,112,0.22)",

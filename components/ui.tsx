@@ -27,6 +27,16 @@ export function chartTooltipStyle(theme: Theme) {
   };
 }
 
+/** Shared Recharts axis tick styling. */
+export function chartAxisTick(theme: Theme) {
+  return { fontSize: 12, fill: theme.palette.text.secondary };
+}
+
+/** Shared Recharts CartesianGrid props — hairline horizontal rules. */
+export function chartGridProps(theme: Theme) {
+  return { strokeDasharray: "3 3", stroke: theme.palette.divider, vertical: false };
+}
+
 /** Button that navigates — safe to render from Server Components (no function props cross the boundary). */
 export function LinkButton({ href, children, ...rest }: { href: string; children: ReactNode } & ButtonProps) {
   return (

@@ -22,18 +22,22 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const itemRefs = useRef<Array<HTMLElement | null>>([]);
 
   useEffect(() => {
     if (open) {
       setQuery("");
       setResults([]);
+      setActiveIndex(0);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [open]);
 
   useEffect(() => {
+    setActiveIndex(0);
     if (query.trim().length < 2) {
       setResults([]);
       return;
@@ -53,9 +57,35 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
     return () => clearTimeout(t);
   }, [query]);
 
+  // Keep the keyboard-selected result visible as arrows move past the fold.
+  useEffect(() => {
+    itemRefs.current[activeIndex]?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex]);
+
   function go(href: string) {
     onClose();
     router.push(href);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+      return;
+    }
+    if (results.length === 0 || loading) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
+      e.preventDefault(); // keep the text cursor from jumping
+      setActiveIndex((i) => {
+        if (e.key === "ArrowDown") return (i + 1) % results.length;
+        if (e.key === "ArrowUp") return (i - 1 + results.length) % results.length;
+        if (e.key === "Home") return 0;
+        return results.length - 1;
+      });
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      go(results[activeIndex]?.href ?? results[0].href);
+    }
   }
 
   return (
@@ -101,13 +131,31 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
             placeholder="Search chapters, tests, journal, mistakes…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") onClose();
-              if (e.key === "Enter" && results[0]) go(results[0].href);
+            onKeyDown={handleKeyDown}
+            inputProps={{
+              role: "combobox",
+              "aria-expanded": results.length > 0,
+              "aria-controls": "jee-search-results",
+              "aria-activedescendant":
+                results.length > 0 ? `jee-search-option-${activeIndex}` : undefined,
             }}
           />
         </Box>
-        <List dense disablePadding sx={{ maxHeight: 380, overflowY: "auto", py: 1 }}>
+        <Typography
+          variant="caption"
+          component="div"
+          aria-live="polite"
+          sx={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}
+        >
+          {loading ? "Searching" : results.length > 0 ? `${results.length} results` : ""}
+        </Typography>
+        <List
+          id="jee-search-results"
+          role="listbox"
+          dense
+          disablePadding
+          sx={{ maxHeight: 380, overflowY: "auto", py: 1 }}
+        >
           {loading && (
             <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 2, py: 1 }}>
               <CircularProgress size={16} thickness={4} />
@@ -125,7 +173,19 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
             </Stack>
           )}
           {results.map((r, i) => (
-            <ListItemButton key={`${r.href}-${i}`} onClick={() => go(r.href)} sx={{ px: 2 }}>
+            <ListItemButton
+              key={`${r.href}-${i}`}
+              id={`jee-search-option-${i}`}
+              ref={(el) => {
+                itemRefs.current[i] = el;
+              }}
+              role="option"
+              aria-selected={i === activeIndex}
+              selected={i === activeIndex}
+              onClick={() => go(r.href)}
+              onMouseEnter={() => setActiveIndex(i)}
+              sx={{ px: 2 }}
+            >
               <ListItemText
                 primary={r.label}
                 primaryTypographyProps={{ noWrap: true, fontSize: "0.875rem" }}

@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import { chartTooltipStyle } from "@/components/ui";
+import { chartAxisTick, chartGridProps, chartTooltipStyle } from "@/components/ui";
 
 type SessionLite = { startedAt: string; durationMinutes: number; subject: string };
 
@@ -38,9 +38,9 @@ export default function DashboardCharts({ sessions }: { sessions: SessionLite[] 
     <div style={{ width: "100%", height: 220 }}>
       <ResponsiveContainer>
         <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-          <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
+          <CartesianGrid {...chartGridProps(theme)} />
+          <XAxis dataKey="label" tick={chartAxisTick(theme)} interval={4} axisLine={false} tickLine={false} />
+          <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} unit="h" />
           <Tooltip
             cursor={{ fill: theme.palette.action.hover }}
             formatter={(v) => [`${v}h`, "Studied"]}

@@ -77,6 +77,15 @@ export default function NotificationBell() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   async function markAllRead() {
     try {
       const res = await fetch("/api/notifications", {
@@ -100,6 +109,7 @@ export default function NotificationBell() {
         onClick={() => setOpen((o) => !o)}
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ""}`}
         aria-expanded={open}
+        aria-haspopup="dialog"
       >
         <Badge color="error" variant="dot" invisible={unread === 0}>
           <NotificationsOutlinedIcon />

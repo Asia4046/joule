@@ -28,6 +28,7 @@ export function useCanvas(draw: DrawFn) {
     let raf = 0;
     let w = 0;
     let h = 0;
+    let last = performance.now();
     const start = performance.now();
 
     const resize = () => {
@@ -40,21 +41,43 @@ export function useCanvas(draw: DrawFn) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-    resize();
-
-    let last = performance.now();
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       drawRef.current(ctx, w, h, (now - start) / 1000, dt);
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+
+    // Skip drawing while the canvas is offscreen — sims below the fold
+    // shouldn't burn rAF budget. `last` resets on resume so dt never jumps
+    // past its clamp after a long pause.
+    const stopLoop = () => {
+      if (raf !== 0) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+    const startLoop = () => {
+      if (raf === 0) {
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      }
+    };
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    resize();
+
+    const io = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? startLoop() : stopLoop()),
+      { rootMargin: "120px" }
+    );
+    io.observe(canvas);
+    startLoop();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
+      io.disconnect();
       ro.disconnect();
     };
   }, []);

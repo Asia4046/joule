@@ -5,11 +5,13 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import type { ReactNode } from "react";
+import { cloneElement, type ReactElement, type ReactNode } from "react";
 
 /**
  * Standard chrome around every simulation: a card with the sim title, a caption,
  * the dark canvas panel (fixed aspect), a controls row and live readouts.
+ * The canvas is cloned with role="img"/aria-label so the animation is not
+ * invisible to assistive tech.
  */
 export default function SimFrame({
   title,
@@ -23,7 +25,7 @@ export default function SimFrame({
   title: string;
   about?: string;
   height?: number;
-  canvas: ReactNode;
+  canvas: ReactElement<React.HTMLAttributes<HTMLElement>>;
   controls?: ReactNode;
   readouts?: ReactNode;
   action?: ReactNode;
@@ -58,7 +60,10 @@ export default function SimFrame({
             "& canvas": { display: "block", width: "100%", height: "100%" },
           }}
         >
-          {canvas}
+          {cloneElement(canvas, {
+            role: "img",
+            "aria-label": `Interactive simulation: ${title}`,
+          })}
         </Box>
         {controls && (
           <Box sx={{ mt: 2 }}>

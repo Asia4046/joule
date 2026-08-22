@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from "recharts";
 import { subjectColor } from "@/lib/constants";
-import { chartTooltipStyle } from "@/components/ui";
+import { chartAxisTick, chartGridProps, chartTooltipStyle } from "@/components/ui";
 
 export default function PerformanceView({
   dailyMinutes,
@@ -39,9 +39,9 @@ export default function PerformanceView({
             <div style={{ width: "100%", height: 240 }}>
               <ResponsiveContainer>
                 <BarChart data={dailyMinutes} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} unit="h" />
                   <Tooltip {...tooltipProps} />
                   <Bar dataKey="hours" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
@@ -87,9 +87,9 @@ export default function PerformanceView({
             <div style={{ width: "100%", height: 240, marginTop: 12 }}>
               <ResponsiveContainer>
                 <LineChart data={scoreTrendData.map((t, i) => ({ ...t, label: `Test ${i + 1}` }))} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} vertical={false} />
-                  <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                  <CartesianGrid {...chartGridProps(theme)} />
+                  <XAxis dataKey="label" tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
+                  <YAxis tick={chartAxisTick(theme)} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.secondary.main} strokeWidth={2} dot={{ r: 3 }} />
