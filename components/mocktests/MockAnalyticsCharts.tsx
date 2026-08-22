@@ -17,7 +17,7 @@ import {
   Legend,
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
-import { SUBJECT_COLORS } from "@/lib/constants";
+import { subjectColor } from "@/lib/constants";
 import { chartTooltipStyle } from "@/components/ui";
 
 type TrendPoint = {
@@ -40,6 +40,7 @@ export default function MockAnalyticsCharts({
   negatives: { name: string; negative: number }[];
 }) {
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
   const hasNegatives = negatives.some((n) => n.negative > 0);
 
   const labelFor = (i: number) => `Test ${i + 1}`;
@@ -58,7 +59,7 @@ export default function MockAnalyticsCharts({
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.secondary.main} strokeWidth={2} dot={{ r: 3 }} />
                   {trend.some((t) => t.percentile != null) && (
                     <Line type="monotone" dataKey="percentile" name="Percentile" stroke={theme.palette.success.main} strokeWidth={2} dot={{ r: 3 }} />
                   )}
@@ -100,9 +101,9 @@ export default function MockAnalyticsCharts({
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={chartTooltipStyle(theme)} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="physics" name="Physics" stroke={SUBJECT_COLORS.Physics} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                  <Line type="monotone" dataKey="chemistry" name="Chemistry" stroke={SUBJECT_COLORS.Chemistry} strokeWidth={2} dot={{ r: 2 }} connectNulls />
-                  <Line type="monotone" dataKey="maths" name="Maths" stroke={SUBJECT_COLORS.Mathematics} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                  <Line type="monotone" dataKey="physics" name="Physics" stroke={subjectColor("Physics", dark)} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                  <Line type="monotone" dataKey="chemistry" name="Chemistry" stroke={subjectColor("Chemistry", dark)} strokeWidth={2} dot={{ r: 2 }} connectNulls />
+                  <Line type="monotone" dataKey="maths" name="Maths" stroke={subjectColor("Mathematics", dark)} strokeWidth={2} dot={{ r: 2 }} connectNulls />
                 </LineChart>
               </ResponsiveContainer>
             </div>

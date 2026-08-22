@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from "recharts";
-import { SUBJECT_COLORS } from "@/lib/constants";
+import { subjectColor } from "@/lib/constants";
 import { chartTooltipStyle } from "@/components/ui";
 
 export default function PerformanceView({
@@ -21,6 +21,7 @@ export default function PerformanceView({
   completedChapters: number;
 }) {
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
   const tooltipProps = {
     contentStyle: chartTooltipStyle(theme),
   };
@@ -42,7 +43,7 @@ export default function PerformanceView({
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={Math.max(0, Math.floor(dailyMinutes.length / 10) - 1)} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="h" />
                   <Tooltip {...tooltipProps} />
-                  <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
+                  <Bar dataKey="hours" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -59,7 +60,7 @@ export default function PerformanceView({
                   <PieChart>
                     <Pie data={pie} dataKey="value" nameKey="name" innerRadius={50} outerRadius={75} paddingAngle={3}>
                       {pie.map((d) => (
-                        <Cell key={d.name} fill={SUBJECT_COLORS[d.name] ?? theme.palette.grey[500]} />
+                        <Cell key={d.name} fill={subjectColor(d.name, dark)} />
                       ))}
                     </Pie>
                     <Tooltip {...tooltipProps} />
@@ -91,7 +92,7 @@ export default function PerformanceView({
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.primary.main} strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="scorePct" name="Score %" stroke={theme.palette.secondary.main} strokeWidth={2} dot={{ r: 3 }} />
                   {scoreTrendData.some((t) => t.percentile != null) && (
                     <Line type="monotone" dataKey="percentile" name="Percentile" stroke={theme.palette.success.main} strokeWidth={2} dot={{ r: 3 }} />
                   )}

@@ -9,7 +9,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Divider from "@mui/material/Divider";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SUBJECTS, SUBJECT_COLORS, CHAPTER_STATUSES, labelFor } from "@/lib/constants";
+import { SUBJECTS, subjectBean, CHAPTER_STATUSES, labelFor } from "@/lib/constants";
 import { subjectProgress } from "@/lib/analytics";
 import { PageHeader } from "@/components/ui";
 import SyllabusControls, { ChapterMenu } from "@/components/syllabus/SyllabusControls";
@@ -77,7 +77,8 @@ export default async function SyllabusPage(props: {
               height: 6,
               mb: 2,
               bgcolor: "action.hover",
-              "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[group.subject] },
+              "& .MuiLinearProgress-bar": { bgcolor: subjectBean(group.subject).deep },
+              "[data-jee-theme=\"dark\"] & .MuiLinearProgress-bar": { bgcolor: subjectBean(group.subject).fill },
             }}
           />
           <Stack spacing={1.5}>

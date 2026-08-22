@@ -14,6 +14,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
+import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
   ResponsiveContainer,
@@ -25,7 +26,7 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
-import { SUBJECT_COLORS, SUBJECTS } from "@/lib/constants";
+import { SUBJECTS, subjectColor } from "@/lib/constants";
 import { chartTooltipStyle } from "@/components/ui";
 
 type ChapterW = {
@@ -39,10 +40,58 @@ type ChapterW = {
   weightageAdv: number;
 };
 
+/** Word-wrap a chapter name into short lines for the chart's category axis. */
+function wrapName(name: string, maxChars: number): string[] {
+  const words = name.split(" ");
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    if (cur && `${cur} ${w}`.length > maxChars) {
+      lines.push(cur);
+      cur = w;
+    } else {
+      cur = cur ? `${cur} ${w}` : w;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+/** Chart tick that renders a chapter name word-wrapped onto 2–3 lines. */
+function NameTick({
+  x = 0,
+  y = 0,
+  payload,
+  maxChars,
+  fontSize,
+  fill,
+}: {
+  x?: number;
+  y?: number;
+  payload?: { value?: string | number };
+  maxChars: number;
+  fontSize: number;
+  fill: string;
+}) {
+  const lines = wrapName(String(payload?.value ?? ""), maxChars);
+  const startDy = `${-((lines.length - 1) / 2) * 1.15}em`;
+  return (
+    <text x={x} y={y} textAnchor="end" fontSize={fontSize} fill={fill}>
+      {lines.map((l, i) => (
+        <tspan key={i} x={x} dy={i === 0 ? startDy : "1.15em"}>
+          {l}
+        </tspan>
+      ))}
+    </text>
+  );
+}
+
 export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
   const [exam, setExam] = useState<"main" | "advanced">("main");
   const [subject, setSubject] = useState<number>(0); // 0 = All
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const tooltipProps = {
     contentStyle: chartTooltipStyle(theme),
@@ -64,11 +113,11 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
   const chartData = useMemo(() => {
     const top = tableRows.filter((r) => r.w > 0).slice(0, 15);
     return top.map((c) => ({
-      name: c.name.length > 28 ? c.name.slice(0, 26) + "…" : c.name,
+      name: c.name,
       weightage: c.w,
-      fill: SUBJECT_COLORS[c.subject],
+      fill: subjectColor(c.subject, dark),
     }));
-  }, [tableRows]);
+  }, [tableRows, dark]);
 
   const priorityFor = (w: number) => (w >= 5 ? "Very High" : w >= 3.5 ? "High" : w >= 2.5 ? "Medium" : w > 0 ? "Low" : "Not in syllabus");
 
@@ -91,12 +140,12 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Top chapters by weightage — {exam === "main" ? "JEE Main" : "JEE Advanced"} 2026
           </Typography>
-          <div style={{ width: "100%", height: Math.max(320, chartData.length * 24) }}>
+          <div style={{ width: "100%", height: Math.max(96, chartData.length * (isMobile ? 48 : 30) + 12) }}>
             <ResponsiveContainer>
               <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 16, left: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="name" width={isMobile ? 132 : 200} interval={0} axisLine={false} tickLine={false} tick={<NameTick maxChars={isMobile ? 15 : 24} fontSize={isMobile ? 10.5 : 12} fill={theme.palette.text.secondary} />} />
                 <Tooltip formatter={(v) => [`${v}%`, "Weightage"]} {...tooltipProps} />
                 <Bar dataKey="weightage" radius={[0, 0, 0, 0]} maxBarSize={16}>
                   {chartData.map((d, i) => (
@@ -131,7 +180,7 @@ export default function WeightageView({ chapters }: { chapters: ChapterW[] }) {
                     <TableCell sx={{ fontWeight: 600 }}>{c.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[c.subject] }} />
+                        <Box sx={{ width: 8, height: 8, bgcolor: subjectColor(c.subject, dark) }} />
                         <Typography variant="body2">{c.subject}</Typography>
                       </Stack>
                     </TableCell>

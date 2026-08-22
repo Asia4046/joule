@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import type { ReactNode } from "react";
 import { useThemeMode } from "@/components/Providers";
+import BrandMark from "@/components/BrandMark";
 import { J, withA } from "@/lib/jellybeans";
 
 /** Paper backdrop with print registration marks — one squared dossier card
@@ -12,7 +13,6 @@ import { J, withA } from "@/lib/jellybeans";
 export default function AuthShell({ children, tagline }: { children: ReactNode; tagline: string }) {
   const { resolved } = useThemeMode();
   const dark = resolved === "dark";
-  const ink = dark ? J.boneDark : J.inkLight;
 
   const mark = (position: Record<string, number | string>) => (
     <Box
@@ -48,22 +48,8 @@ export default function AuthShell({ children, tagline }: { children: ReactNode; 
 
       <Box sx={{ position: "relative", width: "100%", maxWidth: 400 }}>
         <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
-          <Box
-            sx={{
-              width: 54,
-              height: 54,
-              borderRadius: "2px",
-              background: J.bean.bubblegum.fill,
-              border: `1.5px solid ${ink}`,
-              boxShadow: `4px 4px 0 ${dark ? "rgba(0,0,0,0.8)" : "rgba(34,31,26,0.18)"}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.6rem", color: "#221F1A", lineHeight: 1 }}>
-              J
-            </Typography>
+          <Box sx={{ boxShadow: `4px 4px 0 ${dark ? "rgba(0,0,0,0.8)" : "rgba(34,31,26,0.18)"}` }}>
+            <BrandMark size={54} />
           </Box>
           <Box sx={{ textAlign: "center" }}>
             <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.35rem", letterSpacing: "0.02em" }}>

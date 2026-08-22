@@ -47,7 +47,7 @@ export default function DashboardCharts({ sessions }: { sessions: SessionLite[] 
             labelFormatter={(label) => `Day ${label}`}
             contentStyle={chartTooltipStyle(theme)}
           />
-          <Bar dataKey="hours" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
+          <Bar dataKey="hours" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
         </BarChart>
       </ResponsiveContainer>
       <Typography variant="caption" color="text.secondary" sx={{ display: "block", textAlign: "center" }}>

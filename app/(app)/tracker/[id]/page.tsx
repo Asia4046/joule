@@ -13,7 +13,7 @@ import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { accuracy } from "@/lib/analytics";
-import { CHAPTER_STATUSES, SUBJECT_COLORS, labelFor, DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
+import { CHAPTER_STATUSES, subjectBean, labelFor, DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
 import { PageHeader, StatCard, ProgressRing, LinkButton } from "@/components/ui";
 import ChapterDetailControls, { ScheduleRevision } from "@/components/tracker/ChapterDetailControls";
 import { CONCEPT_CONTENT } from "@/lib/concept-content";
@@ -97,7 +97,7 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
         </Card>
 
         <Stack spacing={2} sx={{ width: { xs: "100%", md: 320 } }}>
-          <StatCard label="Accuracy" value={acc != null ? `${acc}%` : "—"} sub={state ? `${state.questionsSolved} questions solved` : "No data yet"} color={SUBJECT_COLORS[chapter.subject]} />
+          <StatCard label="Accuracy" value={acc != null ? `${acc}%` : "—"} sub={state ? `${state.questionsSolved} questions solved` : "No data yet"} bean={subjectBean(chapter.subject)} />
           <StatCard
             label="Last studied"
             value={daysSince == null ? "Never" : daysSince === 0 ? "Today" : `${daysSince} day${daysSince === 1 ? "" : "s"} ago`}

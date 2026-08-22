@@ -361,7 +361,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const apply = () => {
-      setResolved(mode === "system" ? (mq.matches ? "dark" : "light") : mode);
+      const next = mode === "system" ? (mq.matches ? "dark" : "light") : mode;
+      setResolved(next);
+      // mirror the resolved theme onto <html> so sx CSS can switch bean
+      // variants (deep/fill) in Server Components, which can't call useTheme
+      document.documentElement.setAttribute("data-jee-theme", next);
     };
     apply();
     mq.addEventListener("change", apply);

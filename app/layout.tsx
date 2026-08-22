@@ -32,7 +32,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${display.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      data-jee-theme="dark"
+      className={`${inter.variable} ${display.variable} ${mono.variable}`}
+    >
       <body>
         <Providers>{children}</Providers>
       </body>

@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SUBJECTS, SUBJECT_COLORS, CHAPTER_STATUSES, labelFor } from "@/lib/constants";
+import { SUBJECTS, subjectBarSx, CHAPTER_STATUSES, labelFor } from "@/lib/constants";
 import { accuracy, subjectProgress } from "@/lib/analytics";
 import { PageHeader, EmptyState } from "@/components/ui";
 
@@ -93,7 +93,7 @@ export default async function TrackerPage() {
                             <LinearProgress
                               variant="determinate"
                               value={pct}
-                              sx={{ height: 5, mt: 1, maxWidth: 360, bgcolor: "action.hover", "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[subject] } }}
+                              sx={{ height: 5, mt: 1, maxWidth: 360, bgcolor: "action.hover", ...subjectBarSx(subject) }}
                             />
                           </Box>
                           <Stack direction="row" spacing={2} sx={{ flexShrink: 0, alignItems: "center" }}>

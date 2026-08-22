@@ -27,7 +27,7 @@ import {
   weakAreas,
   computePriorities,
 } from "@/lib/analytics";
-import { SUBJECTS, SUBJECT_COLORS } from "@/lib/constants";
+import { SUBJECTS, subjectBarSx } from "@/lib/constants";
 import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend } from "@/components/ui";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 
@@ -197,7 +197,7 @@ export default async function DashboardPage() {
                 <LinearProgress
                   variant="determinate"
                   value={pct}
-                  sx={{ height: 8, bgcolor: "action.hover", "& .MuiLinearProgress-bar": { bgcolor: SUBJECT_COLORS[subject] } }}
+                  sx={{ height: 8, bgcolor: "action.hover", ...subjectBarSx(subject) }}
                 />
               </Box>
             ))}
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
                     <LinearProgress
                       variant="determinate"
                       value={Math.min(100, (g.current / g.target) * 100)}
-                      color={done ? "success" : "primary"}
+                      color={done ? "success" : "secondary"}
                       sx={{ height: 6, mt: 0.5 }}
                     />
                   </Box>

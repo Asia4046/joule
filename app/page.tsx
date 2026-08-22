@@ -12,6 +12,7 @@ import { getSessionUser } from "@/lib/auth";
 import { CONCEPT_CONTENT } from "@/lib/concept-content";
 import { SIM_REGISTRY } from "@/components/concepts/sims";
 import Reveal from "@/components/Reveal";
+import BrandMark from "@/components/BrandMark";
 import { J, withA, type BeanName } from "@/lib/jellybeans";
 
 export const dynamic = "force-dynamic";
@@ -192,22 +193,7 @@ function ProductMock() {
         {/* rail */}
         <Box sx={{ display: { xs: "none", sm: "block" }, borderRight: `1px solid ${HAIR}`, p: 2 }}>
           <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 2.5 }}>
-            <Box
-              sx={{
-                width: 30,
-                height: 30,
-                borderRadius: "2px",
-                background: bubblegum,
-                border: `1.5px solid ${INK}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography className="jee-display" sx={{ fontSize: "0.95rem", fontWeight: 700, color: "#221F1A", lineHeight: 1 }}>
-                J
-              </Typography>
-            </Box>
+            <BrandMark size={30} />
             <Typography className="jee-display" sx={{ fontSize: "0.72rem", fontWeight: 700, color: INK, letterSpacing: "0.06em" }}>
               JOULE
             </Typography>
@@ -371,22 +357,7 @@ export default async function Landing() {
       >
         <Stack direction="row" alignItems="center" spacing={2} sx={{ maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: 1.75 }}>
           <Stack direction="row" spacing={1.25} alignItems="center" component="a" href="/">
-            <Box
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: "2px",
-                background: bean("bubblegum").fill,
-                border: `1.5px solid ${INK}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.1rem", color: "#221F1A", lineHeight: 1 }}>
-                J
-              </Typography>
-            </Box>
+            <BrandMark size={36} />
             <Box>
               <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "0.9rem", letterSpacing: "0.06em" }}>
                 JOULE
@@ -753,9 +724,7 @@ export default async function Landing() {
       <Box component="footer" sx={{ position: "relative", borderTop: `1px solid ${HAIR}` }}>
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="space-between" alignItems="center" sx={{ maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: 4 }}>
           <Stack direction="row" spacing={1.25} alignItems="center">
-            <Box sx={{ width: 22, height: 22, borderRadius: "2px", background: bean("bubblegum").fill, border: `1px solid ${INK}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Typography className="jee-display" sx={{ fontSize: "0.72rem", fontWeight: 700, color: "#221F1A", lineHeight: 1 }}>J</Typography>
-            </Box>
+            <BrandMark size={22} />
             <Typography className="jee-mono" sx={{ fontSize: "0.66rem", color: INK_DIM, letterSpacing: "0.08em" }}>
               JOULE — A PREP DOSSIER, PRINTED ON LICORICE WITH EIGHT JELLYBEANS.
             </Typography>

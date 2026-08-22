@@ -18,7 +18,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { EmptyState, PageHeader } from "@/components/ui";
-import { RESOURCE_TYPES, SUBJECT_COLORS, labelFor } from "@/lib/constants";
+import { useTheme } from "@mui/material/styles";
+import { RESOURCE_TYPES, subjectColor, labelFor } from "@/lib/constants";
 import { deleteResourceAction, toggleResourceFlagAction } from "@/app/actions/data";
 import ResourceFormDialog from "./ResourceFormDialog";
 
@@ -38,6 +39,8 @@ export default function ResourcesView({ resources }: { resources: ResourceItem[]
   const [query, setQuery] = useState("");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -160,7 +163,7 @@ export default function ResourcesView({ resources }: { resources: ResourceItem[]
                                 label={r.subject}
                                 size="small"
                                 variant="outlined"
-                                sx={{ borderColor: SUBJECT_COLORS[r.subject] ?? undefined }}
+                                sx={{ borderColor: subjectColor(r.subject, dark) }}
                               />
                             )}
                             {tags.map((t) => (

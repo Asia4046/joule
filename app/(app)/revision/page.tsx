@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SUBJECT_COLORS } from "@/lib/constants";
+import { subjectBorderSx, subjectDotSx } from "@/lib/constants";
 import { EmptyState, PageHeader } from "@/components/ui";
 import ScheduleRevisionForm from "@/components/revision/ScheduleRevisionForm";
 import CompleteRevisionButton from "@/components/revision/CompleteRevisionButton";
@@ -75,7 +75,7 @@ export default async function RevisionPage() {
                             label={r.subject}
                             size="small"
                             variant="outlined"
-                            sx={{ borderColor: SUBJECT_COLORS[r.subject] ?? undefined }}
+                            sx={subjectBorderSx(r.subject)}
                           />
                           {r.dueAt < new Date() && <Chip label="Overdue" size="small" color="error" variant="outlined" />}
                         </Stack>
@@ -112,7 +112,7 @@ export default async function RevisionPage() {
               {upcoming.map((r) => (
                 <Stack key={r.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1 }}>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[r.subject] ?? "#999" }} />
+                    <Box sx={{ width: 8, height: 8, ...subjectDotSx(r.subject) }} />
                     <Typography variant="body2">
                       {r.topic.chapter.name} — {r.topic.name}
                     </Typography>

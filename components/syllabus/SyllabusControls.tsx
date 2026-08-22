@@ -92,6 +92,7 @@ export function ChapterMenu({
           <LinearProgress
             variant="determinate"
             value={(doneTopics / totalTopics) * 100}
+            color="secondary"
             sx={{ height: 5 }}
           />
           <Box component="span" sx={{ fontSize: "0.7rem", color: "text.secondary" }}>

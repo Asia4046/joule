@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme, alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
-import { J, HEAT_LIGHT, HEAT_DARK } from "@/lib/jellybeans";
+import { J, HEAT_LIGHT, HEAT_DARK, type Bean } from "@/lib/jellybeans";
 import { sectionIndexFor } from "@/lib/nav";
 
 /** Shared Recharts tooltip contentStyle — dossier tile. */
@@ -91,16 +91,23 @@ export function StatCard({
   sub,
   icon,
   color,
+  bean,
 }: {
   label: string;
   value: ReactNode;
   sub?: string;
   icon?: ReactNode;
   color?: string;
+  /** Bean pair (e.g. a subject) — resolved mode-aware; overrides `color`. */
+  bean?: Bean;
 }) {
   const theme = useTheme();
   const dark = theme.palette.mode === "dark";
-  const c = color ?? (dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep);
+  const c = bean
+    ? dark
+      ? bean.fill
+      : bean.deep
+    : color ?? (dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep);
   return (
     <Card
       sx={{
@@ -188,7 +195,7 @@ export function ProgressRing({
         value={Math.min(100, Math.max(0, value))}
         size={size}
         thickness={thickness}
-        sx={{ color: theme.palette.primary.main, "& .MuiCircularProgress-circle": { strokeLinecap: "butt" } }}
+        sx={{ color: theme.palette.secondary.main, "& .MuiCircularProgress-circle": { strokeLinecap: "butt" } }}
       />
       <Box
         sx={{

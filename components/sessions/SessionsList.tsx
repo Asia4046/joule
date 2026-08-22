@@ -15,7 +15,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
-import { STUDY_TYPES, SUBJECTS, SUBJECT_COLORS, labelFor } from "@/lib/constants";
+import { useTheme } from "@mui/material/styles";
+import { STUDY_TYPES, SUBJECTS, subjectColor, labelFor } from "@/lib/constants";
 import { deleteSessionAction } from "@/app/actions/study";
 import SessionFormDialog from "./SessionFormDialog";
 import { EmptyState } from "@/components/ui";
@@ -44,6 +45,8 @@ export default function SessionsList({
   const [subjectFilter, setSubjectFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
 
   const filtered = useMemo(
     () =>
@@ -103,7 +106,7 @@ export default function SessionsList({
               key={s}
               label={`${s}: ${fmt(stats.bySubject[s])} (${Math.round((stats.bySubject[s] / totalSubject) * 100)}%)`}
               variant="outlined"
-              sx={{ borderColor: SUBJECT_COLORS[s] }}
+              sx={{ borderColor: subjectColor(s, dark) }}
             />
           ))}
         </Stack>
@@ -120,7 +123,7 @@ export default function SessionsList({
               <Stack key={s.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1.25 }}>
                 <Box sx={{ minWidth: 0 }}>
                   <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                    <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[s.subject] ?? "#999" }} />
+                    <Box sx={{ width: 8, height: 8, bgcolor: subjectColor(s.subject, dark) }} />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       {s.chapterName ?? s.topic ?? s.subject}
                     </Typography>

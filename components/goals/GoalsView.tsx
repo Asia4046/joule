@@ -132,7 +132,7 @@ export default function GoalsView({ goals, subtitle }: { goals: GoalItem[]; subt
                             <LinearProgress
                               variant="determinate"
                               value={Math.min(100, (g.current / g.target) * 100)}
-                              color={done ? "success" : "primary"}
+                              color={done ? "success" : "secondary"}
                               sx={{ height: 6, width: "100%", mr: 1.5, bgcolor: "action.hover" }}
                             />
                             <Typography variant="caption" color="text.secondary" sx={{ fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>

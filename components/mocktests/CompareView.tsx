@@ -16,7 +16,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
-import { SUBJECT_COLORS } from "@/lib/constants";
+import { subjectColor } from "@/lib/constants";
 import { EmptyState, chartTooltipStyle } from "@/components/ui";
 
 type TestItem = {
@@ -37,6 +37,7 @@ type TestItem = {
 export default function CompareView({ tests }: { tests: TestItem[] }) {
   const [selectedIds, setSelectedIds] = useState<string[]>(tests.slice(0, 2).map((t) => t.id));
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
 
   const selected = useMemo(
     () => tests.filter((t) => selectedIds.includes(t.id)),
@@ -164,9 +165,9 @@ export default function CompareView({ tests }: { tests: TestItem[] }) {
                     <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                     <Tooltip contentStyle={chartTooltipStyle(theme)} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Bar dataKey="Physics" fill={SUBJECT_COLORS.Physics} radius={[0, 0, 0, 0]} maxBarSize={28} />
-                    <Bar dataKey="Chemistry" fill={SUBJECT_COLORS.Chemistry} radius={[0, 0, 0, 0]} maxBarSize={28} />
-                    <Bar dataKey="Maths" fill={SUBJECT_COLORS.Mathematics} radius={[0, 0, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Physics" fill={subjectColor("Physics", dark)} radius={[0, 0, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Chemistry" fill={subjectColor("Chemistry", dark)} radius={[0, 0, 0, 0]} maxBarSize={28} />
+                    <Bar dataKey="Maths" fill={subjectColor("Mathematics", dark)} radius={[0, 0, 0, 0]} maxBarSize={28} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

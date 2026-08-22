@@ -26,7 +26,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { SUBJECTS, SUBJECT_COLORS } from "@/lib/constants";
+import { SUBJECTS, subjectColor } from "@/lib/constants";
 import { deleteQuestionLogAction } from "@/app/actions/study";
 import { EmptyState, chartTooltipStyle } from "@/components/ui";
 import QuestionLogDialog from "./QuestionLogDialog";
@@ -54,6 +54,7 @@ export default function QuestionsView({
 }) {
   const [open, setOpen] = useState(false);
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
 
   const daily = useMemo(() => {
     const byDay = new Map<string, number>();
@@ -112,7 +113,7 @@ export default function QuestionsView({
                   <XAxis dataKey="label" tick={{ fontSize: 12, fill: theme.palette.text.secondary }} interval={4} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 12, fill: theme.palette.text.secondary }} axisLine={false} tickLine={false} />
                   <Tooltip {...tooltipProps} />
-                  <Bar dataKey="questions" fill={theme.palette.primary.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
+                  <Bar dataKey="questions" fill={theme.palette.success.main} radius={[0, 0, 0, 0]} maxBarSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -126,7 +127,7 @@ export default function QuestionsView({
                 <PieChart>
                   <Pie data={subjectDist} dataKey="value" nameKey="name" innerRadius={50} outerRadius={75} paddingAngle={3}>
                     {subjectDist.map((d) => (
-                      <Cell key={d.name} fill={SUBJECT_COLORS[d.name]} />
+                      <Cell key={d.name} fill={subjectColor(d.name, dark)} />
                     ))}
                   </Pie>
                   <Tooltip {...tooltipProps} />
@@ -175,7 +176,7 @@ export default function QuestionsView({
                 <Stack key={l.id} direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 1.25 }}>
                   <Box>
                     <Stack direction="row" spacing={1} alignItems="center">
-                      <Box sx={{ width: 8, height: 8, bgcolor: SUBJECT_COLORS[l.subject] ?? "#999" }} />
+                      <Box sx={{ width: 8, height: 8, bgcolor: subjectColor(l.subject, dark) }} />
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>{l.chapterName ?? l.topic ?? l.subject}</Typography>
                       <Typography variant="caption" color="text.secondary">
                         {l.total} Q · {l.correct}✓ {l.incorrect}✗ · {Math.round((l.correct / Math.max(1, l.correct + l.incorrect)) * 100)}%

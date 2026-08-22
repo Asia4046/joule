@@ -146,7 +146,7 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
                   sx={{
                     position: "absolute",
                     left: 0,
-                    color: mode === "focus" ? "primary.main" : "secondary.main",
+                    color: mode === "focus" ? "secondary.main" : "info.main",
                     transition: "color .3s ease",
                     "& .MuiCircularProgress-circle": { strokeLinecap: "butt", transition: "stroke-dashoffset 1s linear" },
                   }}
@@ -174,7 +174,7 @@ export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOp
                       fontWeight: 700,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
-                      color: mode === "focus" ? "primary.main" : "secondary.main",
+                      color: mode === "focus" ? "secondary.main" : "info.main",
                     }}
                   >
                     {state === "done" ? "complete" : mode === "focus" ? "focus" : "break"}

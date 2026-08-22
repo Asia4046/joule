@@ -15,6 +15,7 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import BrandMark from "@/components/BrandMark";
 import AppBar from "@mui/material/AppBar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
@@ -38,23 +39,8 @@ function Brand() {
   const ink = dark ? J.boneDark : J.inkLight;
   return (
     <Stack direction="row" spacing={1.25} alignItems="center" sx={{ px: 0.5 }}>
-      <Box
-        sx={{
-          width: 38,
-          height: 38,
-          borderRadius: "2px",
-          background: J.bean.bubblegum.fill,
-          border: `1.5px solid ${dark ? J.boneDark : J.inkLight}`,
-          boxShadow: `3px 3px 0 ${dark ? "rgba(0,0,0,0.8)" : "rgba(34,31,26,0.18)"}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.15rem", color: "#221F1A", lineHeight: 1 }}>
-          J
-        </Typography>
+      <Box sx={{ boxShadow: `3px 3px 0 ${dark ? "rgba(0,0,0,0.8)" : "rgba(34,31,26,0.18)"}` }}>
+        <BrandMark size={38} />
       </Box>
       <Box sx={{ minWidth: 0 }}>
         <Typography

@@ -1,4 +1,4 @@
-import { J, SUBJECT_COLORS as BEAN_SUBJECTS } from "@/lib/jellybeans";
+import { J, SUBJECT_COLORS as BEAN_SUBJECTS, beanOn } from "@/lib/jellybeans";
 
 export const SUBJECTS = ["Physics", "Chemistry", "Mathematics"] as const;
 export type Subject = (typeof SUBJECTS)[number];
@@ -11,6 +11,39 @@ export const SUBJECT_COLORS: Record<string, string> = Object.fromEntries(
 
 export const subjectBean = (subject: string): { fill: string; deep: string } =>
   BEAN_SUBJECTS[subject] ?? J.bean.bubblegum;
+
+/** Mode-aware subject color for charts/graphs — deep on light paper, fill on dark. */
+export const subjectColor = (subject: string, dark: boolean) =>
+  beanOn(subjectBean(subject), dark);
+
+/**
+ * Mode-aware sx for subject-colored data in Server Components (which can't
+ * call useTheme): the deep variant applies by default and the pastel fill
+ * takes over under [data-jee-theme="dark"], set by Providers on <html>.
+ */
+export const subjectBarSx = (subject: string) => {
+  const bean = subjectBean(subject);
+  return {
+    "& .MuiLinearProgress-bar": { bgcolor: bean.deep },
+    '[data-jee-theme="dark"] & .MuiLinearProgress-bar': { bgcolor: bean.fill },
+  };
+};
+
+export const subjectDotSx = (subject: string) => {
+  const bean = subjectBean(subject);
+  return {
+    bgcolor: bean.deep,
+    '[data-jee-theme="dark"] &': { bgcolor: bean.fill },
+  };
+};
+
+export const subjectBorderSx = (subject: string) => {
+  const bean = subjectBean(subject);
+  return {
+    borderColor: bean.deep,
+    '[data-jee-theme="dark"] &': { borderColor: bean.fill },
+  };
+};
 
 export const CHAPTER_STATUSES = [
   { value: "not_started", label: "Not Started", color: "#8A857B" },
