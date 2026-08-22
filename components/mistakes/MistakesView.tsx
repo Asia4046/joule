@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { MISTAKE_TYPES, SUBJECTS, labelFor } from "@/lib/constants";
+import { daysAgo } from "@/lib/analytics";
 import { deleteMistakeAction, updateMistakeStatusAction } from "@/app/actions/data";
 import { EmptyState } from "@/components/ui";
 import MistakeFormDialog from "./MistakeFormDialog";
@@ -60,7 +61,7 @@ export default function MistakesView({ mistakes, chapters }: { mistakes: Mistake
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const monthAgo = Date.now() - 30 * 86400000;
+  const monthAgo = daysAgo(30).getTime();
   const monthTypeCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const m of mistakes) {

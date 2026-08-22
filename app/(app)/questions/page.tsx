@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { overallAccuracy, questionsOn } from "@/lib/analytics";
+import { overallAccuracy, questionsOn, daysAgo } from "@/lib/analytics";
 import { PageHeader, StatCard } from "@/components/ui";
 import QuestionsView from "@/components/questions/QuestionsView";
 
@@ -21,8 +21,8 @@ export default async function QuestionsPage() {
   ]);
 
   const today = new Date();
-  const weekAgo = new Date(Date.now() - 7 * 86400000);
-  const monthAgo = new Date(Date.now() - 30 * 86400000);
+  const weekAgo = daysAgo(7);
+  const monthAgo = daysAgo(30);
 
   const todayCount = questionsOn(logs, today);
   const weekCount = logs.filter((l) => l.date >= weekAgo).reduce((s, l) => s + l.total, 0);

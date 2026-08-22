@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { accuracy } from "@/lib/analytics";
+import { accuracy, daysSince } from "@/lib/analytics";
 import { CHAPTER_STATUSES, subjectBean, labelFor, DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
 import { PageHeader, StatCard, ProgressRing, LinkButton } from "@/components/ui";
 import ChapterDetailControls, { ScheduleRevision } from "@/components/tracker/ChapterDetailControls";
@@ -38,7 +38,7 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
   const pct = chapter.topics.length ? Math.round((doneCount / chapter.topics.length) * 100) : 0;
   const acc = state ? accuracy(state.questionsCorrect, state.questionsSolved) : null;
   const daysSince = state?.lastStudiedAt
-    ? Math.floor((Date.now() - state.lastStudiedAt.getTime()) / 86400000)
+    ? daysSince(state.lastStudiedAt)
     : null;
 
   return (

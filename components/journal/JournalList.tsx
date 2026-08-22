@@ -100,7 +100,7 @@ export default function JournalList({ entries }: { entries: JournalEntryInput[] 
             description="Write a short daily reflection — what you studied, mistakes made, and the plan for tomorrow."
             action={
               <Button variant="contained" onClick={openNew}>
-                Write today's entry
+                Write today&apos;s entry
               </Button>
             }
           />

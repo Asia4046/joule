@@ -26,6 +26,7 @@ import {
   subjectProgress,
   weakAreas,
   computePriorities,
+  daysAgo,
 } from "@/lib/analytics";
 import { SUBJECTS, subjectBarSx } from "@/lib/constants";
 import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend } from "@/components/ui";
@@ -45,7 +46,7 @@ export default async function DashboardPage() {
   const [profile, sessions, logs, tests, states, chapterCounts, goals, revisionsDue] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user.id } }),
     prisma.studySession.findMany({
-      where: { userId: user.id, startedAt: { gte: new Date(Date.now() - 200 * 86400000) } },
+      where: { userId: user.id, startedAt: { gte: daysAgo(200) } },
       orderBy: { startedAt: "desc" },
     }),
     prisma.questionLog.findMany({ where: { userId: user.id } }),
@@ -65,7 +66,7 @@ export default async function DashboardPage() {
   const target = profile?.dailyStudyTargetMinutes ?? 360;
   const streak = currentStreak(sessions);
   const totalQuestions = logs.reduce((s, l) => s + l.total, 0);
-  const acc = overallAccuracy(logs.filter((l) => l.date >= new Date(Date.now() - 30 * 86400000)));
+  const acc = overallAccuracy(logs.filter((l) => l.date >= daysAgo(30)));
   const avg = avgScore(tests);
   const bestPct = bestPercentile(tests);
 

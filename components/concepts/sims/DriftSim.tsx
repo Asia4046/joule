@@ -9,7 +9,11 @@ import { useCanvas, SIM, clearPanel, label, circle } from "@/components/concepts
 export default function DriftSim() {
   const [V, setV] = useState(6);
   const [R, setR] = useState(4);
-  const state = useRef<{ offsets: number[]; phase?: number }>({ offsets: Array.from({ length: 64 }, () => Math.random()) });
+  // Deterministic pseudo-random scatter (golden-ratio hash) — stable across
+  // renders and avoids impure Math.random() calls during render.
+  const state = useRef<{ offsets: number[]; phase?: number }>({
+    offsets: Array.from({ length: 64 }, (_, i) => ((i * 2654435761) % 1000) / 1000),
+  });
 
   const I = V / R;
   const P = (I * I * R);

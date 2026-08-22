@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
-import { studyMinutesInRange, subjectMinutes } from "@/lib/analytics";
+import { studyMinutesInRange, subjectMinutes, daysAgo } from "@/lib/analytics";
 import SessionsList from "@/components/sessions/SessionsList";
 import FocusTimer from "@/components/sessions/FocusTimer";
 
@@ -24,7 +24,7 @@ export default async function SessionsPage(props: { searchParams: Promise<{ time
 
   const week = studyMinutesInRange(sessions, 7);
   const month = studyMinutesInRange(sessions, 30);
-  const bySubject = subjectMinutes(sessions.filter((s) => s.startedAt >= new Date(Date.now() - 30 * 86400000)));
+  const bySubject = subjectMinutes(sessions.filter((s) => s.startedAt >= daysAgo(30)));
 
   return (
     <Box>

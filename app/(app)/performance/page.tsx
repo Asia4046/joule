@@ -12,6 +12,7 @@ import {
   longestStreak,
   overallAccuracy,
   scoreTrend,
+  daysAgo,
 } from "@/lib/analytics";
 import { PageHeader, StatCard, StudyHeatmap, LinkButton } from "@/components/ui";
 import PerformanceView from "@/components/performance/PerformanceView";
@@ -30,7 +31,7 @@ export default async function PerformancePage(props: { searchParams: Promise<{ r
     prisma.chapterState.findMany({ where: { userId: user.id } }),
   ]);
 
-  const cutoff = new Date(Date.now() - range * 86400000);
+  const cutoff = daysAgo(range);
   const rangeSessions = sessions.filter((s) => s.startedAt >= cutoff);
   const rangeLogs = logs.filter((l) => l.date >= cutoff);
 

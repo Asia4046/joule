@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -51,7 +51,7 @@ export default function NotificationBell() {
   const [items, setItems] = useState<Item[]>([]);
   const [unread, setUnread] = useState(0);
   const [open, setOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
@@ -105,8 +105,10 @@ export default function NotificationBell() {
   return (
     <>
       <IconButton
-        ref={anchorRef}
-        onClick={() => setOpen((o) => !o)}
+        onClick={(e) => {
+          setAnchorEl(e.currentTarget);
+          setOpen((o) => !o);
+        }}
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ""}`}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -117,7 +119,7 @@ export default function NotificationBell() {
       </IconButton>
       <Popper
         open={open}
-        anchorEl={anchorRef.current}
+        anchorEl={anchorEl}
         placement="bottom-end"
         role="dialog"
         aria-label="Notifications panel"

@@ -181,13 +181,11 @@ export default function AngularMomentumSim() {
     }
   });
 
-  // Read ref values once for render (refs are mutated in animation loop, safe to read here)
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- reading ref.current in render is the intended pattern
+  // Read ref values once for render (refs are mutated in the animation loop;
+  // sampled values refresh on re-render — see eslint override for sims/)
   const I0 = I(r);
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- reading ref.current in render is the intended pattern
   const wNow = state.current.L / I0;
   const KE = 0.5 * I0 * wNow * wNow;
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- reading ref.current in render is the intended pattern
   const LNow = state.current.L;
 
   return (

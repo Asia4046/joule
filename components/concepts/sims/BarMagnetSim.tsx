@@ -106,7 +106,7 @@ export default function BarMagnetSim() {
       height={330}
       canvas={
         <BarMagnetCanvasWithDrag
-          draw={canvasRef}
+          canvasRef={canvasRef}
           onCompass={(p) => {
             state.current.compass = p;
           }}
@@ -129,16 +129,16 @@ export default function BarMagnetSim() {
   );
 }
 
-/** Wraps the physics canvas with a pointer-drag layer for the compass. */
+/** Wraps the physics canvas with a pointer-drag layer for the compass.
+ *  Receives the useCanvas ref (and SimFrame's injected a11y attrs) as props. */
 function BarMagnetCanvasWithDrag({
-  draw,
+  canvasRef,
   onCompass,
+  ...canvasProps
 }: {
-  draw: React.RefObject<HTMLCanvasElement | null>;
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
   onCompass: (p: { x: number; y: number }) => void;
-}) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  
+} & React.HTMLAttributes<HTMLElement>) {
   return (
     <Box
       sx={{ position: "absolute", inset: 0, cursor: "crosshair" }}
@@ -150,12 +150,7 @@ function BarMagnetCanvasWithDrag({
         });
       }}
     >
-      <canvas ref={(el) => {
-        canvasRef.current = el;
-        if (draw && 'current' in draw) {
-          (draw as React.MutableRefObject<HTMLCanvasElement | null>).current = el;
-        }
-      }} />
+      <canvas ref={canvasRef} {...canvasProps} />
     </Box>
   );
 }

@@ -27,23 +27,27 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
 
+  // Stale results from a longer query must not render once the query
+  // drops below the minimum length — derive instead of resetting in an effect.
+  const visible = query.trim().length >= 2 ? results : [];
+
+  function handleClose() {
+    setQuery("");
+    setResults([]);
+    setActiveIndex(0);
+    onClose();
+  }
+
   useEffect(() => {
     if (open) {
-      setQuery("");
-      setResults([]);
-      setActiveIndex(0);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [open]);
 
   useEffect(() => {
-    setActiveIndex(0);
-    if (query.trim().length < 2) {
-      setResults([]);
-      return;
-    }
-    setLoading(true);
+    if (query.trim().length < 2) return;
     const t = setTimeout(async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
@@ -69,29 +73,29 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
-      onClose();
+      handleClose();
       return;
     }
-    if (results.length === 0 || loading) return;
+    if (visible.length === 0 || loading) return;
     if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Home" || e.key === "End") {
       e.preventDefault(); // keep the text cursor from jumping
       setActiveIndex((i) => {
-        if (e.key === "ArrowDown") return (i + 1) % results.length;
-        if (e.key === "ArrowUp") return (i - 1 + results.length) % results.length;
+        if (e.key === "ArrowDown") return (i + 1) % visible.length;
+        if (e.key === "ArrowUp") return (i - 1 + visible.length) % visible.length;
         if (e.key === "Home") return 0;
-        return results.length - 1;
+        return visible.length - 1;
       });
     }
     if (e.key === "Enter") {
       e.preventDefault();
-      go(results[activeIndex]?.href ?? results[0].href);
+      go(visible[activeIndex]?.href ?? visible[0].href);
     }
   }
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       fullWidth
       maxWidth="sm"
       aria-labelledby="jee-search-dialog-title"
@@ -130,14 +134,17 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
             fullWidth
             placeholder="Search chapters, tests, journal, mistakes…"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActiveIndex(0);
+            }}
             onKeyDown={handleKeyDown}
             inputProps={{
               role: "combobox",
-              "aria-expanded": results.length > 0,
+              "aria-expanded": visible.length > 0,
               "aria-controls": "jee-search-results",
               "aria-activedescendant":
-                results.length > 0 ? `jee-search-option-${activeIndex}` : undefined,
+                visible.length > 0 ? `jee-search-option-${activeIndex}` : undefined,
             }}
           />
         </Box>
@@ -147,7 +154,7 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
           aria-live="polite"
           sx={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clipPath: "inset(50%)" }}
         >
-          {loading ? "Searching" : results.length > 0 ? `${results.length} results` : ""}
+          {loading ? "Searching" : visible.length > 0 ? `${visible.length} results` : ""}
         </Typography>
         <List
           id="jee-search-results"
@@ -164,7 +171,7 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
               </Typography>
             </Stack>
           )}
-          {!loading && query.trim().length >= 2 && results.length === 0 && (
+          {!loading && query.trim().length >= 2 && visible.length === 0 && (
             <Stack direction="row" alignItems="center" spacing={1} sx={{ px: 2, py: 1.5 }}>
               <SearchOffOutlinedIcon fontSize="small" color="action" />
               <Typography variant="body2" color="text.secondary">
@@ -172,7 +179,7 @@ export default function SearchCommand({ open, onClose }: { open: boolean; onClos
               </Typography>
             </Stack>
           )}
-          {results.map((r, i) => (
+          {visible.map((r, i) => (
             <ListItemButton
               key={`${r.href}-${i}`}
               id={`jee-search-option-${i}`}

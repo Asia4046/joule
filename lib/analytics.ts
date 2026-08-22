@@ -7,6 +7,17 @@ export const dayKey = (d: Date | string) => {
   return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
 };
 
+/** Date exactly `n` calendar days ago. Keeps impure clock reads out of components. */
+export const daysAgo = (n: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d;
+};
+
+/** Whole days elapsed since `date` (0 if in the future). */
+export const daysSince = (date: Date) =>
+  Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+
 export const minutesOn = (sessions: StudySession[], date: Date) =>
   sessions
     .filter((s) => dayKey(s.startedAt) === dayKey(date))

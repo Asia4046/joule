@@ -17,7 +17,10 @@ export type DrawFn = (
 export function useCanvas(draw: DrawFn) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const drawRef = useRef(draw);
-  drawRef.current = draw;
+  // Keep the loop's draw fn fresh without touching refs during render.
+  useEffect(() => {
+    drawRef.current = draw;
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
