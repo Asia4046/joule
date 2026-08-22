@@ -1,7 +1,7 @@
-# JEE Command — "Jellybean Dossier" Design System
+# Joule — "Jellybean Dossier" Design System
 
 Master source of truth for the visual language. Page-level overrides may live
-in `design-system/jee-command/pages/`; if present, they override this file.
+in `design-system/joule/pages/`; if present, they override this file.
 
 Direction: the editorial "technical dossier" school (ryoku.dev ×
 supermemory.ai) printed with a candy jar. A strict ink-on-paper monochrome

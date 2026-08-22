@@ -188,7 +188,7 @@ function ProductMock() {
               </Typography>
             </Box>
             <Typography className="jee-display" sx={{ fontSize: "0.72rem", fontWeight: 700, color: INK, letterSpacing: "0.06em" }}>
-              JEE COMMAND
+              JOULE
             </Typography>
           </Stack>
           {["OVERVIEW", "PREP", "PRACTICE", "ANALYTICS", "PERSONAL", "SYSTEM"].map((s, i) => (
@@ -368,7 +368,7 @@ export default async function Landing() {
             </Box>
             <Box>
               <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "0.9rem", letterSpacing: "0.06em" }}>
-                JEE COMMAND
+                JOULE
               </Typography>
               <Typography className="jee-mono" sx={{ fontSize: "0.56rem", letterSpacing: "0.22em", color: INK_DIM, fontWeight: 700 }}>
                 PREP DOSSIER · ED. 0026
@@ -447,13 +447,13 @@ export default async function Landing() {
               textWrap: "balance",
             }}
           >
-            Toppers aren&apos;t born.{" "}
+            Motivation is optional.{" "}
             <Box component="span" sx={{ color: bean("bubblegum").fill }}>
-              They&apos;re logged.
+              The system isn&apos;t.
             </Box>
           </Typography>
           <Typography sx={{ fontSize: { xs: "1rem", md: "1.15rem" }, color: INK_MID, lineHeight: 1.7, maxWidth: 620 }}>
-            JEE Command is the command center for your preparation — concept labs with real simulations,
+            Joule is the command center for your preparation — concept labs with real simulations,
             mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself.
           </Typography>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ pt: 1.5 }}>
@@ -667,7 +667,7 @@ export default async function Landing() {
               <Typography className="jee-display" sx={{ fontSize: "0.72rem", fontWeight: 700, color: "#221F1A", lineHeight: 1 }}>J</Typography>
             </Box>
             <Typography className="jee-mono" sx={{ fontSize: "0.66rem", color: INK_DIM, letterSpacing: "0.08em" }}>
-              JEE COMMAND — A PREP DOSSIER, PRINTED ON LICORICE WITH EIGHT JELLYBEANS.
+              JOULE — A PREP DOSSIER, PRINTED ON LICORICE WITH EIGHT JELLYBEANS.
             </Typography>
           </Stack>
           <Stack direction="row" spacing={2.5}>

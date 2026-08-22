@@ -61,7 +61,7 @@ function Brand() {
           className="jee-display"
           sx={{ fontWeight: 700, fontSize: "0.92rem", color: ink, lineHeight: 1.15, letterSpacing: "0.05em" }}
         >
-          JEE COMMAND
+          JOULE
         </Typography>
         <Stack direction="row" spacing={0.6} alignItems="center" sx={{ mt: 0.4 }}>
           {Object.values(J.bean).map((b) => (

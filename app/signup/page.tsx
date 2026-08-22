@@ -18,7 +18,7 @@ export default function SignupPage() {
   const theme = useTheme();
 
   return (
-    <AuthShell tagline="Your personal JEE command center.">
+    <AuthShell tagline="Your rank, measured daily.">
       <Card>
         <CardContent sx={{ p: { xs: 2.5, sm: 3.5 } }}>
           <Typography variant="h5" sx={{ textAlign: "center" }}>

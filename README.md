@@ -1,4 +1,4 @@
-# JEE Command — Preparation Platform
+# Joule — JEE Preparation Platform
 
 A self-hosted personal command center for JEE (Main + Advanced) preparation. Track the full syllabus, log study time and practice, run spaced-repetition revisions, analyse mock tests, and get actionable insights — all in one responsive web app.
 
@@ -115,8 +115,8 @@ proxy.ts              Auth redirects for protected paths
 ### 1. Clone & install
 
 ```bash
-git clone <your-repo-url> jee-command
-cd jee-command
+git clone <your-repo-url> joule
+cd joule
 yarn install
 ```
 

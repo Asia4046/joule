@@ -9,16 +9,16 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   title: {
-    default: "JEE Command — Preparation Platform",
-    template: "%s · JEE Command",
+    default: "Joule — JEE Preparation Platform",
+    template: "%s · Joule",
   },
   description:
-    "Personal JEE command center: syllabus tracking, mock-test analytics, revision scheduling and insights.",
-  applicationName: "JEE Command",
+    "The personal JEE prep dossier: syllabus tracking, mock-test analytics, revision scheduling and insights. Work, measured.",
+  applicationName: "Joule",
   openGraph: {
-    title: "JEE Command — Preparation Platform",
+    title: "Joule — JEE Preparation Platform",
     description:
-      "Concept labs with real simulations, mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself.",
+      "Concept labs with real simulations, mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself. Work, measured.",
     type: "website",
   },
 };

@@ -67,7 +67,7 @@ export default function AuthShell({ children, tagline }: { children: ReactNode; 
           </Box>
           <Box sx={{ textAlign: "center" }}>
             <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.35rem", letterSpacing: "0.02em" }}>
-              JEE Command
+              Joule
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {tagline}

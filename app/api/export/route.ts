@@ -33,7 +33,7 @@ export async function GET(_req: NextRequest) {
   return new NextResponse(JSON.stringify(payload, null, 2), {
     headers: {
       "Content-Type": "application/json",
-      "Content-Disposition": `attachment; filename="jee-command-export.json"`,
+      "Content-Disposition": `attachment; filename="joule-export.json"`,
     },
   });
 }
