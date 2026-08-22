@@ -37,7 +37,7 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
   const doneCount = doneSet.size;
   const pct = chapter.topics.length ? Math.round((doneCount / chapter.topics.length) * 100) : 0;
   const acc = state ? accuracy(state.questionsCorrect, state.questionsSolved) : null;
-  const daysSince = state?.lastStudiedAt
+  const staleDays = state?.lastStudiedAt
     ? daysSince(state.lastStudiedAt)
     : null;
 
@@ -98,7 +98,7 @@ export default async function ChapterDetailPage(props: { params: Promise<{ id: s
           <StatCard label="Accuracy" value={acc != null ? `${acc}%` : "—"} sub={state ? `${state.questionsSolved} questions solved` : "No data yet"} bean={subjectBean(chapter.subject)} />
           <StatCard
             label="Last studied"
-            value={daysSince == null ? "Never" : daysSince === 0 ? "Today" : `${daysSince} day${daysSince === 1 ? "" : "s"} ago`}
+            value={staleDays == null ? "Never" : staleDays === 0 ? "Today" : `${staleDays} day${staleDays === 1 ? "" : "s"} ago`}
             sub={state?.nextRevisionAt ? `Next revision ${state.nextRevisionAt.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : "No revision scheduled"}
           />
           <Card>
