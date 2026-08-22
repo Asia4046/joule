@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Button, { type ButtonProps } from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -12,14 +13,16 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme, alpha, type Theme } from "@mui/material/styles";
 import type { ReactNode } from "react";
+import { J, HEAT_LIGHT, HEAT_DARK } from "@/lib/jellybeans";
+import { sectionIndexFor } from "@/lib/nav";
 
-/** Shared Recharts tooltip contentStyle — Kanagawa quiet tile. */
+/** Shared Recharts tooltip contentStyle — dossier tile. */
 export function chartTooltipStyle(theme: Theme) {
   return {
-    background: theme.palette.mode === "dark" ? "#101014" : theme.palette.background.paper,
-    border: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === "dark" ? J.railDark : J.cardLight,
+    border: `1px solid ${theme.palette.mode === "dark" ? J.hairDarkStrong : J.inkLight}`,
     boxShadow: "none",
-    borderRadius: 10,
+    borderRadius: 2,
     fontSize: 12,
   };
 }
@@ -33,17 +36,41 @@ export function LinkButton({ href, children, ...rest }: { href: string; children
   );
 }
 
+/**
+ * Dossier page header — mono section index ("03 // PRACTICE") with the
+ * section's bean, Space Grotesk title, hairline rule underneath.
+ */
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
+  const pathname = usePathname();
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const meta = sectionIndexFor(pathname);
+  const bean = meta ? J.bean[meta.bean] : J.bean.bubblegum;
+  const beanColor = dark ? bean.fill : bean.deep;
+
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
       justifyContent="space-between"
       alignItems={{ xs: "flex-start", sm: "center" }}
       spacing={1.5}
-      sx={{ mb: 3 }}
+      sx={{ mb: 3, pb: 2, borderBottom: "1px solid", borderBottomColor: "divider" }}
     >
       <Box>
-        <Box sx={{ width: 10, height: 10, borderRadius: 999, bgcolor: "#7E9CD8", boxShadow: "0 0 12px rgba(126,156,216,0.8)", mb: 1.25 }} aria-hidden />
+        {meta && (
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+            <Box
+              sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: beanColor }}
+              aria-hidden
+            />
+            <Typography
+              className="jee-mono"
+              sx={{ fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.16em", color: beanColor, textTransform: "uppercase" }}
+            >
+              {`${meta.index} // ${meta.section}`}
+            </Typography>
+          </Stack>
+        )}
         <Typography variant="h4" component="h1">
           {title}
         </Typography>
@@ -72,7 +99,8 @@ export function StatCard({
   color?: string;
 }) {
   const theme = useTheme();
-  const c = color ?? (theme.palette.mode === "dark" ? "#7E9CD8" : "#4A6BA8");
+  const dark = theme.palette.mode === "dark";
+  const c = color ?? (dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep);
   return (
     <Card
       sx={{
@@ -81,10 +109,8 @@ export function StatCard({
         overflow: "hidden",
         "&:hover": {
           transform: "translate(-2px,-2px)",
-          boxShadow:
-            theme.palette.mode === "dark"
-              ? "6px 6px 0 #000"
-              : "5px 5px 0 rgba(31,30,29,0.16)",
+          boxShadow: dark ? "4px 4px 0 rgba(0,0,0,0.85)" : "4px 4px 0 rgba(34,31,26,0.16)",
+          borderColor: dark ? J.hairDarkStrong : "#CFC7B4",
         },
       }}
     >
@@ -95,10 +121,11 @@ export function StatCard({
               sx={{
                 width: 38,
                 height: 38,
+                borderRadius: 2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                bgcolor: alpha(c, theme.palette.mode === "dark" ? 0.22 : 0.14),
+                bgcolor: alpha(c, dark ? 0.2 : 0.14),
                 border: `1.5px solid ${c}`,
                 color: c,
                 flexShrink: 0,
@@ -108,13 +135,18 @@ export function StatCard({
             </Box>
           )}
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700, display: "block", letterSpacing: "0.08em", textTransform: "uppercase", fontSize: "0.66rem" }}>
+            <Typography
+              className="jee-mono"
+              variant="caption"
+              color="text.secondary"
+              sx={{ fontWeight: 700, display: "block", letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.62rem" }}
+            >
               {label}
             </Typography>
             <Typography
               variant="h5"
-              className="jee-num"
-              sx={{ mt: 0.25, fontSize: "1.4rem", fontWeight: 600, letterSpacing: "-0.02em" }}
+              className="jee-display jee-num"
+              sx={{ mt: 0.25, fontSize: "1.4rem", fontWeight: 700, letterSpacing: "-0.02em" }}
             >
               {value}
             </Typography>
@@ -187,6 +219,8 @@ export function EmptyState({
   icon?: ReactNode;
 }) {
   const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const accent = dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep;
   return (
     <Card>
       <CardContent sx={{ py: 6, textAlign: "center" }}>
@@ -195,14 +229,15 @@ export function EmptyState({
             sx={{
               width: 56,
               height: 56,
+              borderRadius: 2,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               mx: "auto",
               mb: 1.5,
-              bgcolor: alpha(theme.palette.primary.main, 0.12),
-              border: `1.5px solid ${theme.palette.primary.main}`,
-              color: theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.dark,
+              bgcolor: alpha(accent, 0.12),
+              border: `1.5px solid ${accent}`,
+              color: accent,
             }}
           >
             {icon}
@@ -224,15 +259,31 @@ export function LoadingGrid({ rows = 3 }: { rows?: number }) {
   return (
     <Stack spacing={2}>
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} variant="rectangular" height={90} />
+        <Skeleton key={i} variant="rectangular" height={90} sx={{ borderRadius: 2 }} />
       ))}
     </Stack>
   );
 }
 
-/** GitHub-style study consistency heatmap in Kanagawa wave steps. Data: [{date: yyyy-mm-dd, minutes}] */
+/** Heatmap ramp legend — mint bean scale, mode-aware. */
+export function HeatLegend() {
+  const theme = useTheme();
+  const levels = theme.palette.mode === "dark" ? HEAT_DARK : HEAT_LIGHT;
+  return (
+    <Stack direction="row" spacing={0.75} alignItems="center">
+      <Typography variant="caption" color="text.secondary">Less</Typography>
+      {levels.map((c) => (
+        <Box key={c} sx={{ width: 11, height: 11, borderRadius: 1, bgcolor: c, outline: "0.5px solid rgba(34,31,26,0.14)", outlineOffset: "-0.5px" }} />
+      ))}
+      <Typography variant="caption" color="text.secondary">More</Typography>
+    </Stack>
+  );
+}
+
+/** GitHub-style study consistency heatmap on the mint-bean ramp. Data: [{date: yyyy-mm-dd, minutes}] */
 export function StudyHeatmap({ data }: { data: { date: string; minutes: number }[] }) {
-  const levels = ["#2A2A37", "#2D4F67", "#658594", "#6A9589", "#98BB6C"];
+  const theme = useTheme();
+  const levels = theme.palette.mode === "dark" ? HEAT_DARK : HEAT_LIGHT;
   const levelFor = (m: number) => (m === 0 ? 0 : m < 60 ? 1 : m < 150 ? 2 : m < 270 ? 3 : 4);
 
   // group into weeks (columns)
@@ -266,8 +317,9 @@ export function StudyHeatmap({ data }: { data: { date: string; minutes: number }
                     sx={{
                       width: 11,
                       height: 11,
+                      borderRadius: 1,
                       bgcolor: levels[levelFor(d.minutes)],
-                      outline: "0.5px solid rgba(31,30,29,0.18)",
+                      outline: "0.5px solid rgba(34,31,26,0.16)",
                       outlineOffset: "-0.5px",
                       transition: "transform .12s ease",
                       "&:hover": { transform: "scale(1.35)" },

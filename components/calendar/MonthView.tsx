@@ -12,7 +12,8 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+import { J } from "@/lib/jellybeans";
 
 export type CalendarEventKind = "study" | "test" | "revision" | "journal" | "goal";
 
@@ -22,12 +23,12 @@ export type CalendarEvent = {
   label: string;
 };
 
-const KIND_COLOR: Record<CalendarEventKind, string> = {
-  study: "#7FB4CA", // spring blue
-  test: "#BF4B4B", // error
-  revision: "#C77D2E", // ochre
-  journal: "#8A7CA8", // muted violet
-  goal: "#43806B", // sage
+const KIND_BEAN: Record<CalendarEventKind, { fill: string; deep: string }> = {
+  study: J.bean.sky,
+  test: J.bean.cherry,
+  revision: J.bean.lemon,
+  journal: J.bean.lavender,
+  goal: J.bean.mint,
 };
 
 const KIND_LABEL: Record<CalendarEventKind, string> = {
@@ -55,6 +56,9 @@ export default function MonthView({
   events: CalendarEvent[];
 }) {
   const router = useRouter();
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const kindColor = (k: CalendarEventKind) => (dark ? KIND_BEAN[k].fill : KIND_BEAN[k].deep);
 
   const byDate = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
@@ -108,9 +112,9 @@ export default function MonthView({
 
         {/* legend */}
         <Stack direction="row" spacing={1.5} sx={{ mb: 1.5, flexWrap: "wrap", gap: 1 }}>
-          {(Object.keys(KIND_COLOR) as CalendarEventKind[]).map((k) => (
+          {(Object.keys(KIND_BEAN) as CalendarEventKind[]).map((k) => (
             <Stack key={k} direction="row" spacing={0.5} alignItems="center">
-              <Box sx={{ width: 8, height: 8, bgcolor: KIND_COLOR[k] }} />
+              <Box sx={{ width: 8, height: 8, borderRadius: 999, bgcolor: kindColor(k) }} />
               <Typography variant="caption" color="text.secondary">
                 {KIND_LABEL[k]}
               </Typography>
@@ -157,7 +161,7 @@ export default function MonthView({
                 <Stack direction="row" spacing={0.5} sx={{ flexWrap: "wrap", gap: 0.5 }}>
                   {dayEvents.slice(0, 3).map((e, j) => (
                     <Tooltip key={`${e.label}-${j}`} title={`${KIND_LABEL[e.kind]} · ${e.label}`}>
-                      <Box sx={{ width: 7, height: 7, bgcolor: KIND_COLOR[e.kind] }} />
+                      <Box sx={{ width: 7, height: 7, borderRadius: 999, bgcolor: kindColor(e.kind) }} />
                     </Tooltip>
                   ))}
                   {dayEvents.length > 3 && (

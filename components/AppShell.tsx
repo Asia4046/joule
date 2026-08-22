@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
@@ -17,120 +17,55 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import AppBar from "@mui/material/AppBar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme, alpha } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/SearchOutlined";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
-import TrackChangesOutlinedIcon from "@mui/icons-material/TrackChangesOutlined";
-import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
-import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import QuizOutlinedIcon from "@mui/icons-material/QuizOutlined";
-import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
-import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-import InsightsOutlinedIcon from "@mui/icons-material/InsightsOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
-import BookOutlinedIcon from "@mui/icons-material/MenuBook";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import SearchCommand from "@/components/SearchCommand";
 import NotificationBell from "@/components/NotificationBell";
 import { ClockCard, QuoteCard } from "@/components/SidebarWidgets";
 import { useThemeMode } from "@/components/Providers";
-import { K, ka } from "@/lib/kanagawa";
-
-const NAV = [
-  {
-    section: "Overview",
-    items: [{ href: "/dashboard", label: "Dashboard", icon: DashboardOutlinedIcon }],
-  },
-  {
-    section: "Preparation",
-    items: [
-      { href: "/syllabus", label: "Syllabus", icon: MenuBookOutlinedIcon },
-      { href: "/concepts", label: "Concept Labs", icon: ScienceOutlinedIcon },
-      { href: "/tracker", label: "Tracker", icon: TrackChangesOutlinedIcon },
-      { href: "/sessions", label: "Study Sessions", icon: TimerOutlinedIcon },
-      { href: "/revision", label: "Revision", icon: AutorenewOutlinedIcon },
-      { href: "/goals", label: "Goals", icon: FlagOutlinedIcon },
-    ],
-  },
-  {
-    section: "Practice",
-    items: [
-      { href: "/questions", label: "Questions", icon: QuizOutlinedIcon },
-      { href: "/mistakes", label: "Mistakes", icon: BugReportOutlinedIcon },
-      { href: "/mock-tests", label: "Mock Tests", icon: AssignmentOutlinedIcon },
-    ],
-  },
-  {
-    section: "Analytics",
-    items: [
-      { href: "/performance", label: "Performance", icon: InsightsOutlinedIcon },
-      { href: "/weightage", label: "JEE Weightage", icon: BarChartOutlinedIcon },
-      { href: "/insights", label: "Insights", icon: TipsAndUpdatesOutlinedIcon },
-    ],
-  },
-  {
-    section: "Personal",
-    items: [
-      { href: "/journal", label: "Journal", icon: BookOutlinedIcon },
-      { href: "/calendar", label: "Calendar", icon: CalendarMonthOutlinedIcon },
-      { href: "/resources", label: "Resources", icon: FolderOutlinedIcon },
-    ],
-  },
-  {
-    section: "System",
-    items: [{ href: "/settings", label: "Settings", icon: SettingsOutlinedIcon }],
-  },
-];
-
-const MOBILE_NAV = [
-  { href: "/dashboard", label: "Home", icon: DashboardOutlinedIcon },
-  { href: "/syllabus", label: "Syllabus", icon: MenuBookOutlinedIcon },
-  { href: "/sessions", label: "Study", icon: TimerOutlinedIcon },
-  { href: "/mock-tests", label: "Tests", icon: AssignmentOutlinedIcon },
-  { href: "/performance", label: "Stats", icon: InsightsOutlinedIcon },
-];
+import { NAV, MOBILE_NAV } from "@/lib/nav";
+import { J, withA } from "@/lib/jellybeans";
 
 const SIDEBAR_WIDTH = 264;
 
 function Brand() {
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const ink = dark ? J.boneDark : J.inkLight;
   return (
     <Stack direction="row" spacing={1.25} alignItems="center" sx={{ px: 0.5 }}>
       <Box
         sx={{
           width: 38,
           height: 38,
-          borderRadius: 2,
-          background: "#111116",
-          border: `1px solid ${K.nightLine2}`,
+          borderRadius: "2px",
+          background: J.bean.bubblegum.fill,
+          border: `1.5px solid ${dark ? J.boneDark : J.inkLight}`,
+          boxShadow: `3px 3px 0 ${dark ? "rgba(0,0,0,0.8)" : "rgba(34,31,26,0.18)"}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <Typography sx={{ fontWeight: 700, fontSize: "1.05rem", color: "#FAFAFA", lineHeight: 1 }}>
-          波
+        <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "1.15rem", color: "#221F1A", lineHeight: 1 }}>
+          J
         </Typography>
       </Box>
       <Box sx={{ minWidth: 0 }}>
         <Typography
-          sx={{ fontWeight: 650, fontSize: "0.92rem", color: "#FAFAFA", lineHeight: 1.15, letterSpacing: "0.04em" }}
+          className="jee-display"
+          sx={{ fontWeight: 700, fontSize: "0.92rem", color: ink, lineHeight: 1.15, letterSpacing: "0.05em" }}
         >
           JEE COMMAND
         </Typography>
-        <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mt: 0.35 }}>
-          {[K.crystalBlue, K.springGreen, K.carpYellow, K.waveRed, K.sakuraPink].map((c) => (
-            <Box key={c} sx={{ width: 4, height: 4, borderRadius: 999, bgcolor: c }} />
+        <Stack direction="row" spacing={0.6} alignItems="center" sx={{ mt: 0.4 }}>
+          {Object.values(J.bean).map((b) => (
+            <Box key={b.fill} sx={{ width: 5, height: 5, borderRadius: 999, bgcolor: dark ? b.fill : b.deep }} />
           ))}
         </Stack>
       </Box>
@@ -139,18 +74,19 @@ function Brand() {
 }
 
 function SidebarContent({ pathname, userName }: { pathname: string; userName: string }) {
-  const initials = useMemo(
-    () => userName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase(),
-    [userName]
-  );
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const initials = userName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const ink = dark ? J.boneDark : J.inkLight;
+
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        bgcolor: K.night1,
-        borderRight: `1px solid ${K.nightLine}`,
+        bgcolor: dark ? J.railDark : J.paperLight,
+        borderRight: `1px solid ${dark ? J.hairDark : J.hairLight}`,
       }}
     >
       <Box sx={{ px: 2.25, pt: 2.5, pb: 2 }}>
@@ -160,61 +96,79 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
         <ClockCard />
       </Box>
       <Box sx={{ px: 1.5, flex: 1, overflowY: "auto", pb: 1 }}>
-        {NAV.map((group) => (
-          <Box key={group.section} sx={{ mb: 1.25 }}>
-            <Typography
-              variant="caption"
-              sx={{ px: 1.5, py: 0.5, display: "block", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.6rem", color: K.textDim }}
-            >
-              {group.section}
-            </Typography>
-            <List dense disablePadding sx={{ display: "grid", gap: 0.5 }}>
-              {group.items.map((item) => {
-                const active = pathname === item.href || pathname.startsWith(item.href + "/");
-                return (
-                  <ListItemButton
-                    key={item.href}
-                    component={Link}
-                    href={item.href}
-                    sx={{
-                      minHeight: 36,
-                      position: "relative",
-                      px: 1.5,
-                      border: `1px solid ${active ? K.nightLine2 : "transparent"}`,
-                      transition: "all .16s ease",
-                      ...(active
-                        ? {
-                            bgcolor: "rgba(255,255,255,0.07)",
-                            color: "#FAFAFA",
-                            "&.Mui-selected": { bgcolor: "rgba(255,255,255,0.07)", color: "#FAFAFA" },
-                            "&.Mui-selected:hover": { bgcolor: "rgba(255,255,255,0.1)" },
-                            "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
-                          }
-                        : {
-                            color: K.textMid,
-                            "&.Mui-selected": { bgcolor: "transparent", color: K.textMid },
-                            "&:hover": { bgcolor: "rgba(255,255,255,0.05)", color: "#E4E4E7" },
-                          }),
-                      "& .MuiListItemIcon-root": {
-                        minWidth: 34,
-                        color: active ? "#E4E4E7" : "rgba(161,161,170,0.85)",
-                      },
-                    }}
-                    selected={active}
-                  >
-                    <ListItemIcon sx={{ minWidth: 34 }}>
-                      <item.icon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.label}
-                      primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: active ? 700 : 500 }}
-                    />
-                  </ListItemButton>
-                );
-              })}
-            </List>
-          </Box>
-        ))}
+        {NAV.map((group, gi) => {
+          const bean = J.bean[group.bean];
+          const beanColor = dark ? bean.fill : bean.deep;
+          return (
+            <Box key={group.section} sx={{ mb: 1.5 }}>
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ px: 1.5, py: 0.5 }}>
+                <Typography
+                  className="jee-mono"
+                  sx={{ fontWeight: 700, letterSpacing: "0.12em", fontSize: "0.6rem", color: beanColor }}
+                >
+                  {String(gi + 1).padStart(2, "0")}
+                </Typography>
+                <Typography
+                  className="jee-mono"
+                  variant="caption"
+                  sx={{ fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.6rem", color: "text.secondary" }}
+                >
+                  {group.section}
+                </Typography>
+              </Stack>
+              <List dense disablePadding sx={{ display: "grid", gap: 0.5 }}>
+                {group.items.map((item) => {
+                  const active = pathname === item.href || pathname.startsWith(item.href + "/");
+                  return (
+                    <ListItemButton
+                      key={item.href}
+                      component={Link}
+                      href={item.href}
+                      sx={{
+                        minHeight: 36,
+                        position: "relative",
+                        px: 1.5,
+                        borderRadius: "2px",
+                        border: `1px solid ${active ? (dark ? J.boneDark : J.inkLight) : "transparent"}`,
+                        borderLeft: `3px solid ${active ? beanColor : "transparent"}`,
+                        transition: "all .16s ease",
+                        ...(active
+                          ? {
+                              bgcolor: dark ? J.boneDark : J.inkLight,
+                              color: dark ? J.paperDark : "#FAF7EF",
+                              "&.Mui-selected": { bgcolor: dark ? J.boneDark : J.inkLight, color: dark ? J.paperDark : "#FAF7EF" },
+                              "&.Mui-selected:hover": { bgcolor: dark ? "#EFE8DA" : "#3D3931" },
+                              "&:hover": { bgcolor: dark ? "#EFE8DA" : "#3D3931" },
+                            }
+                          : {
+                              color: "text.secondary",
+                              "&.Mui-selected": { bgcolor: "transparent", color: "text.secondary" },
+                              "&:hover": {
+                                bgcolor: dark ? withA(J.boneDark, 0.07) : withA(J.inkLight, 0.05),
+                                color: dark ? J.boneDark : J.inkLight,
+                              },
+                            }),
+                        "& .MuiListItemIcon-root": {
+                          minWidth: 34,
+                          color: active ? "inherit" : undefined,
+                        },
+                      }}
+                      selected={active}
+                    >
+                      <ListItemIcon sx={{ minWidth: 34 }}>
+                        <item.icon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.label}
+                        primaryTypographyProps={{ fontSize: "0.85rem", fontWeight: active ? 700 : 500 }}
+                      />
+                    </ListItemButton>
+                  );
+                })}
+              </List>
+            </Box>
+          );
+        })}
       </Box>
       <Box sx={{ px: 2, pb: 1.5 }}>
         <QuoteCard />
@@ -226,19 +180,18 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             alignItems: "center",
             gap: 1.25,
             p: 1.25,
-            borderRadius: 2.5,
-            border: `1px solid ${K.nightLine}`,
-            bgcolor: K.night2,
+            borderRadius: "2px",
+            border: `1px solid ${dark ? J.hairDark : J.hairLight}`,
+            bgcolor: dark ? J.cardDark : J.cardLight,
           }}
         >
           <Box
             sx={{
               width: 32,
               height: 32,
-              borderRadius: 2,
-              bgcolor: "#1D1D24",
-              border: `1px solid ${K.nightLine2}`,
-              color: "#E4E4E7",
+              borderRadius: "2px",
+              bgcolor: dark ? J.boneDark : J.inkLight,
+              color: dark ? J.paperDark : "#FAF7EF",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -250,11 +203,11 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             {initials}
           </Box>
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: "#F4F4F5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {userName}
             </Typography>
-            <Typography variant="caption" sx={{ color: K.textDim, fontSize: "0.65rem" }}>
-              Signed in
+            <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", fontSize: "0.6rem", letterSpacing: "0.08em" }}>
+              SIGNED IN
             </Typography>
           </Box>
         </Box>
@@ -274,6 +227,7 @@ export default function AppShell({ children, userName }: { children: React.React
   const dark = resolved === "dark";
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot sync: close the drawer when the route changes
     setMobileOpen(false);
   }, [pathname]);
 
@@ -296,16 +250,16 @@ export default function AppShell({ children, userName }: { children: React.React
 
   const chrome = dark
     ? {
-        bar: "rgba(0,0,0,0.72)",
-        line: K.nightLine,
-        field: "#0E0E11",
-        fieldLine: K.nightLine2,
+        bar: "rgba(10,9,8,0.82)",
+        line: J.hairDark,
+        field: J.fieldDark,
+        fieldLine: J.hairDarkStrong,
       }
     : {
-        bar: "rgba(233,229,218,0.85)",
-        line: K.washiDivider,
+        bar: "rgba(250,247,239,0.85)",
+        line: J.hairLight,
         field: "#FFFFFF",
-        fieldLine: K.washiDivider,
+        fieldLine: "#CFC7B4",
       };
 
   return (
@@ -330,7 +284,7 @@ export default function AppShell({ children, userName }: { children: React.React
         variant="temporary"
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        sx={{ display: { xs: "block", md: "none" }, "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, border: "none", bgcolor: K.night1 } }}
+        sx={{ display: { xs: "block", md: "none" }, "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, border: "none", bgcolor: dark ? J.railDark : J.paperLight } }}
       >
         <SidebarContent pathname={pathname} userName={userName} />
       </Drawer>
@@ -368,15 +322,15 @@ export default function AppShell({ children, userName }: { children: React.React
                 bgcolor: chrome.field,
                 border: "1px solid",
                 borderColor: chrome.fieldLine,
-                borderRadius: 2.5,
+                borderRadius: "2px",
                 boxShadow: "none",
                 transition: "border-color .16s ease, background-color .16s ease",
                 "&:hover": {
-                  borderColor: dark ? "rgba(255,255,255,0.3)" : "#BFB8A4",
-                  bgcolor: dark ? "#131318" : "#FBF9F2",
+                  borderColor: dark ? J.boneDark : J.inkLight,
+                  bgcolor: dark ? "#171411" : "#FFFFFF",
                 },
                 "&:focus-visible": {
-                  outline: `2px solid rgba(255,255,255,0.4)`,
+                  outline: `2px solid ${dark ? J.accent.dark : J.accent.light}`,
                   outlineOffset: 2,
                 },
               }}
@@ -386,21 +340,21 @@ export default function AppShell({ children, userName }: { children: React.React
                 Search chapters, tests, journal…
               </Typography>
               <Typography
-                variant="caption"
                 className="jee-mono"
+                variant="caption"
                 color="text.secondary"
                 sx={{
                   display: { xs: "none", sm: "block" },
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 1,
+                  border: "1px dashed",
+                  borderColor: dark ? J.hairDarkStrong : "#CFC7B4",
+                  borderRadius: "2px",
                   px: 0.75,
                   py: 0.25,
-                  fontSize: "0.65rem",
+                  fontSize: "0.62rem",
                   fontWeight: 600,
                 }}
               >
-                Ctrl K
+                CTRL K
               </Typography>
             </Paper>
             <Box sx={{ flexGrow: 1 }} />
@@ -447,12 +401,15 @@ export default function AppShell({ children, userName }: { children: React.React
           zIndex: theme.zIndex.appBar,
           borderTop: "1px solid",
           borderColor: chrome.line,
-          bgcolor: dark ? "rgba(10,10,12,0.95)" : "rgba(245,242,233,0.95)",
+          bgcolor: dark ? "rgba(16,15,13,0.96)" : "rgba(250,247,239,0.96)",
           backdropFilter: "blur(12px)",
         }}
       >
         {MOBILE_NAV.map((item) => {
           const active = pathname.startsWith(item.href);
+          const meta = NAV.find((g) => g.items.some((it) => it.href === item.href));
+          const bean = meta ? J.bean[meta.bean] : J.bean.bubblegum;
+          const beanColor = dark ? bean.fill : bean.deep;
           return (
             <Box
               key={item.href}
@@ -466,25 +423,16 @@ export default function AppShell({ children, userName }: { children: React.React
                 alignItems: "center",
                 gap: 0.25,
                 py: 1,
-                color: active ? "#FAFAFA" : "text.secondary",
+                color: active ? (dark ? J.boneDark : J.inkLight) : "text.secondary",
                 textDecoration: "none",
+                borderTop: `3px solid ${active ? beanColor : "transparent"}`,
                 "&:focus-visible": {
-                  outline: `2px solid rgba(255,255,255,0.4)`,
+                  outline: `2px solid ${dark ? J.accent.dark : J.accent.light}`,
                   outlineOffset: "-2px",
                 },
               }}
             >
-              <Box
-                sx={{
-                  px: 1.5,
-                  py: 0.25,
-                  borderRadius: 999,
-                  bgcolor: active ? "rgba(255,255,255,0.09)" : "transparent",
-                  transition: "background-color .15s ease",
-                }}
-              >
-                <item.icon fontSize="small" />
-              </Box>
+              <item.icon fontSize="small" />
               <Typography variant="caption" sx={{ fontSize: "0.65rem", fontWeight: active ? 700 : 500 }}>
                 {item.label}
               </Typography>

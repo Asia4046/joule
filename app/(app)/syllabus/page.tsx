@@ -17,7 +17,7 @@ import SyllabusControls, { ChapterMenu } from "@/components/syllabus/SyllabusCon
 export const dynamic = "force-dynamic";
 
 const statusColor = (status: string) =>
-  CHAPTER_STATUSES.find((s) => s.value === status)?.color ?? "#94a3b8";
+  CHAPTER_STATUSES.find((s) => s.value === status)?.color ?? "#8A857B";
 
 export default async function SyllabusPage(props: {
   searchParams: Promise<{ subject?: string; branch?: string; status?: string }>;

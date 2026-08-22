@@ -9,7 +9,7 @@ import {
 } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import GlobalStyles from "@mui/material/GlobalStyles";
-import { K, ka } from "@/lib/kanagawa";
+import { J } from "@/lib/jellybeans";
 
 export type ThemeMode = "light" | "dark" | "system";
 type Resolved = "light" | "dark";
@@ -25,28 +25,38 @@ const ThemeModeContext = createContext<{
 export const useThemeMode = () => useContext(ThemeModeContext);
 
 const SANS = "var(--font-inter), system-ui, -apple-system, sans-serif";
+const DISPLAY = "var(--font-display), var(--font-inter), system-ui, sans-serif";
 const MONO = "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace";
 
 const typography = {
   fontFamily: SANS,
-  h1: { fontWeight: 650, letterSpacing: "-0.035em" },
-  h2: { fontWeight: 650, letterSpacing: "-0.03em" },
-  h3: { fontWeight: 650, letterSpacing: "-0.025em" },
-  h4: { fontSize: "1.5rem", fontWeight: 650, letterSpacing: "-0.02em" },
-  h5: { fontSize: "1.2rem", fontWeight: 600, letterSpacing: "-0.015em" },
-  h6: { fontSize: "1.05rem", fontWeight: 600, letterSpacing: "-0.01em" },
+  h1: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: "-0.03em" },
+  h2: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: "-0.028em" },
+  h3: { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: "-0.024em" },
+  h4: { fontFamily: DISPLAY, fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em" },
+  h5: { fontFamily: DISPLAY, fontSize: "1.2rem", fontWeight: 700, letterSpacing: "-0.015em" },
+  h6: { fontFamily: DISPLAY, fontSize: "1.02rem", fontWeight: 700, letterSpacing: "-0.01em" },
   subtitle2: { fontWeight: 600 },
   body2: { fontSize: "0.8125rem" },
   button: { textTransform: "none" as const, fontWeight: 600, letterSpacing: "0" },
 };
 
 /**
- * Reference-grade skin: true black canvas, hairline white borders, flat
- * surfaces, neutral text. Color appears only in small marks and data.
+ * Jellybean Dossier skin: ink on paper, hairline borders, squared 2px corners,
+ * zero blur shadows. Candy exists only as beans — pill chips and marks — and
+ * one bubblegum accent for focus, links and active states. Interactive
+ * elements press like taffy: hover lifts into a hard offset shadow, release
+ * squashes back flat.
  */
 const skin = (theme: Theme) => {
-  const up = theme.palette.mode === "dark";
-  const primary = theme.palette.primary.main;
+  const dark = theme.palette.mode === "dark";
+  const ink = dark ? J.boneDark : J.inkLight; // strong border / block color
+  const hair = dark ? J.hairDark : J.hairLight;
+  const hairStrong = dark ? J.hairDarkStrong : "#CFC7B4";
+  const card = dark ? J.cardDark : J.cardLight;
+  const field = dark ? J.fieldDark : J.fieldLight;
+  const shadowHard = dark ? "4px 4px 0 rgba(0,0,0,0.85)" : "4px 4px 0 rgba(34,31,26,0.14)";
+  const shadowPress = dark ? "3px 3px 0 rgba(0,0,0,0.8)" : "3px 3px 0 rgba(34,31,26,0.16)";
   return {
     MuiPaper: {
       styleOverrides: { root: { backgroundImage: "none" } },
@@ -55,47 +65,54 @@ const skin = (theme: Theme) => {
       defaultProps: { elevation: 0 },
       styleOverrides: {
         root: {
-          borderRadius: 14,
-          border: `1px solid ${up ? K.nightLine : K.washiDivider}`,
-          backgroundColor: up ? K.night2 : theme.palette.background.paper,
+          borderRadius: 2,
+          border: `1px solid ${hair}`,
+          backgroundColor: card,
           boxShadow: "none",
-          transition: "border-color .2s ease, background-color .2s ease",
+          transition: "border-color .18s ease, box-shadow .18s ease, transform .18s ease",
         },
       },
     },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: { borderRadius: 999, transition: "all .15s ease" },
+        root: {
+          borderRadius: 2,
+          transition: "transform .14s ease, box-shadow .14s ease, background-color .14s ease, border-color .14s ease",
+        },
         containedPrimary: {
-          backgroundColor: up ? "#FAFAFA" : primary,
-          color: up ? "#09090B" : "#FFFFFF",
+          backgroundColor: ink,
+          color: dark ? J.paperDark : "#FAF7EF",
           paddingLeft: 18,
           paddingRight: 18,
+          border: `1px solid ${ink}`,
           "&:hover": {
-            backgroundColor: up ? "#FFFFFF" : "#3A5787",
-            transform: "translateY(-1px)",
+            backgroundColor: ink,
+            transform: "translate(-1px,-1px)",
+            boxShadow: shadowPress,
           },
-          "&:active": { transform: "translateY(0)" },
+          "&:active": { transform: "translate(1px,1px)", boxShadow: "none" },
         },
         outlinedPrimary: {
-          border: `1px solid ${up ? K.nightLine2 : "#4A6BA8"}`,
-          color: up ? "#E4E4E7" : "#4A6BA8",
+          border: `1px solid ${ink}`,
+          color: theme.palette.text.primary,
           paddingLeft: 18,
           paddingRight: 18,
           "&:hover": {
-            border: `1px solid ${up ? "rgba(255,255,255,0.32)" : "#3A5787"}`,
-            backgroundColor: up ? "rgba(255,255,255,0.06)" : ka("#4A6BA8", 0.08),
+            border: `1px solid ${ink}`,
+            backgroundColor: dark ? "rgba(222,213,198,0.07)" : "rgba(34,31,26,0.05)",
+            transform: "translate(-1px,-1px)",
+            boxShadow: shadowPress,
           },
+          "&:active": { transform: "translate(1px,1px)", boxShadow: "none" },
         },
         outlined: {
-          border: `1px solid ${up ? K.nightLine : K.washiDivider}`,
-          color: up ? "#D4D4D8" : K.washiInk,
+          border: `1px solid ${hairStrong}`,
           paddingLeft: 18,
           paddingRight: 18,
           "&:hover": {
-            border: `1px solid ${up ? K.nightLine2 : "#BFB8A4"}`,
-            backgroundColor: up ? "rgba(255,255,255,0.06)" : ka(K.washiInk, 0.05),
+            border: `1px solid ${ink}`,
+            backgroundColor: dark ? "rgba(222,213,198,0.06)" : "rgba(34,31,26,0.04)",
           },
         },
       },
@@ -103,75 +120,108 @@ const skin = (theme: Theme) => {
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: up ? K.textMid : K.washiDim,
-          borderRadius: 10,
-          "&:hover": { color: up ? "#FAFAFA" : K.washiInk, backgroundColor: up ? "rgba(255,255,255,0.07)" : ka(K.washiInk, 0.06) },
+          color: theme.palette.text.secondary,
+          borderRadius: 2,
+          border: "1px solid transparent",
+          transition: "all .15s ease",
+          "&:hover": {
+            color: theme.palette.text.primary,
+            backgroundColor: dark ? "rgba(222,213,198,0.08)" : "rgba(34,31,26,0.06)",
+            borderColor: hair,
+          },
         },
       },
     },
     MuiChip: {
       defaultProps: { size: "small" },
       styleOverrides: {
-        root: { borderRadius: 999, fontWeight: 600, letterSpacing: "0.01em", border: `1px solid ${up ? K.nightLine : K.washiDivider}` },
+        // Beans — the only pills in the system.
+        root: {
+          borderRadius: 999,
+          fontWeight: 600,
+          letterSpacing: "0.01em",
+          border: `1px solid ${hairStrong}`,
+        },
       },
     },
     MuiLink: {
       defaultProps: { underline: "hover" },
       styleOverrides: {
-        root: { color: up ? "#C7C7CC" : "#3A5787", fontWeight: 500, "&:hover": { color: up ? "#FAFAFA" : "#2C4468" } },
+        root: {
+          color: dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep,
+          fontWeight: 500,
+          "&:hover": { color: dark ? "#F7C2DA" : "#8E315C" },
+        },
       },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
-          backgroundColor: up ? K.night0 : "#FFFFFF",
-          "& .MuiOutlinedInput-notchedOutline": { borderColor: up ? K.nightLine2 : K.washiDivider },
-          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: up ? "rgba(255,255,255,0.28)" : "#BFB8A4" },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: up ? "rgba(255,255,255,0.4)" : "#4A6BA8" },
+          borderRadius: 2,
+          backgroundColor: field,
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: hairStrong },
+          "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: ink },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: ink, borderWidth: "1.5px" },
         },
       },
     },
-    MuiFilledInput: { styleOverrides: { root: { borderRadius: 10 } } },
-    MuiAlert: { styleOverrides: { root: { borderRadius: 10, border: `1px solid ${up ? K.nightLine : K.washiDivider}` } } },
+    MuiFilledInput: { styleOverrides: { root: { borderRadius: 2 } } },
+    MuiAlert: {
+      styleOverrides: {
+        root: { borderRadius: 2, border: `1px solid ${hair}`, boxShadow: "none" },
+      },
+    },
     MuiTooltip: {
       defaultProps: { arrow: false },
       styleOverrides: {
         tooltip: {
-          backgroundColor: up ? "#1C1C22" : K.washiInk,
-          color: up ? "#FAFAFA" : K.washiPaper,
-          fontSize: "0.72rem",
+          backgroundColor: ink,
+          color: dark ? J.paperDark : "#FAF7EF",
+          fontFamily: MONO,
+          fontSize: "0.68rem",
           fontWeight: 500,
-          borderRadius: 8,
+          borderRadius: 2,
+          border: `1px solid ${dark ? J.hairDarkStrong : J.inkLight}`,
           padding: "6px 10px",
         },
       },
     },
     MuiLinearProgress: {
-      styleOverrides: { root: { borderRadius: 999, backgroundColor: up ? "rgba(255,255,255,0.09)" : "#DFDACB" }, bar: { borderRadius: 999 } },
+      // Candy bar — pill track with a bean-colored fill.
+      styleOverrides: {
+        root: { borderRadius: 999, backgroundColor: dark ? "rgba(222,213,198,0.10)" : "#ECE6D6" },
+        bar: { borderRadius: 999 },
+      },
     },
     MuiTableCell: {
-      styleOverrides: { root: { borderColor: up ? K.nightLine : K.washiDivider } },
+      styleOverrides: { root: { borderColor: hair } },
     },
     MuiTab: {
-      styleOverrides: { root: { minHeight: 40, fontWeight: 600, textTransform: "none" as const, borderRadius: 8 } },
+      styleOverrides: {
+        root: { minHeight: 40, fontWeight: 600, textTransform: "none" as const, borderRadius: 2 },
+      },
     },
     MuiTabs: {
-      styleOverrides: { indicator: { height: 2, borderRadius: 999, backgroundColor: up ? "#FAFAFA" : "#4A6BA8" } },
+      styleOverrides: {
+        indicator: { height: 2, borderRadius: 0, backgroundColor: ink },
+      },
     },
     MuiToggleButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
-          borderColor: up ? K.nightLine : K.washiDivider,
-          color: up ? K.textMid : K.washiDim,
-          "&:hover": { color: up ? "#FAFAFA" : K.washiInk, backgroundColor: up ? "rgba(255,255,255,0.05)" : ka(K.washiInk, 0.05) },
+          borderRadius: 2,
+          borderColor: hairStrong,
+          color: theme.palette.text.secondary,
+          "&:hover": {
+            color: theme.palette.text.primary,
+            backgroundColor: dark ? "rgba(222,213,198,0.06)" : "rgba(34,31,26,0.04)",
+          },
           "&.Mui-selected": {
-            backgroundColor: up ? K.night3 : ka("#4A6BA8", 0.1),
-            color: up ? "#FAFAFA" : "#3A5787",
-            borderColor: up ? "rgba(255,255,255,0.22)" : ka("#4A6BA8", 0.4),
+            backgroundColor: ink,
+            color: dark ? J.paperDark : "#FAF7EF",
+            borderColor: ink,
             fontWeight: 700,
-            "&:hover": { backgroundColor: up ? "#1D1D24" : ka("#4A6BA8", 0.16) },
+            "&:hover": { backgroundColor: ink },
           },
         },
       },
@@ -179,10 +229,10 @@ const skin = (theme: Theme) => {
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 16,
-          border: `1px solid ${up ? K.nightLine2 : K.washiDivider}`,
-          backgroundColor: up ? K.night1 : K.washiPaper,
-          boxShadow: up ? "0 24px 80px rgba(0,0,0,0.8)" : "0 24px 80px rgba(42,42,55,0.22)",
+          borderRadius: 2,
+          border: `1px solid ${ink}`,
+          backgroundColor: dark ? J.railDark : J.paperLight,
+          boxShadow: shadowHard,
           backgroundImage: "none",
         },
       },
@@ -190,23 +240,32 @@ const skin = (theme: Theme) => {
     MuiMenu: {
       styleOverrides: {
         paper: {
-          borderRadius: 12,
-          border: `1px solid ${up ? K.nightLine2 : K.washiDivider}`,
-          backgroundColor: up ? K.night1 : K.washiPaper,
-          boxShadow: up ? "0 16px 48px rgba(0,0,0,0.7)" : "0 16px 48px rgba(42,42,55,0.18)",
+          borderRadius: 2,
+          border: `1px solid ${hairStrong}`,
+          backgroundColor: dark ? J.railDark : J.cardLight,
+          boxShadow: shadowHard,
           backgroundImage: "none",
         },
       },
     },
     MuiSlider: {
       styleOverrides: {
-        root: { color: up ? "#E4E4E7" : "#4A6BA8" },
+        root: { color: dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep },
       },
     },
     MuiListItemButton: {
       styleOverrides: {
-        root: { borderRadius: 9 },
+        root: { borderRadius: 2 },
       },
+    },
+    MuiAccordion: {
+      defaultProps: { elevation: 0, disableGutters: true },
+      styleOverrides: {
+        root: { borderRadius: 2, border: `1px solid ${hair}`, backgroundColor: "transparent", "&:before": { display: "none" } },
+      },
+    },
+    MuiSnackbarContent: {
+      styleOverrides: { root: { borderRadius: 2, border: `1px solid ${hairStrong}`, boxShadow: shadowHard } },
     },
   } as const;
 };
@@ -214,17 +273,17 @@ const skin = (theme: Theme) => {
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    primary: { main: "#FAFAFA", light: "#FFFFFF", dark: "#E4E4E7", contrastText: "#09090B" },
-    secondary: { main: K.springViolet1 },
-    success: { main: K.springGreen },
-    warning: { main: K.carpYellow },
-    error: { main: K.waveRed },
-    info: { main: K.springBlue },
-    background: { default: K.night0, paper: K.night2 },
-    text: { primary: K.textHi, secondary: K.textMid },
-    divider: K.nightLine,
+    primary: { main: J.boneDark, light: "#F0E9DC", dark: "#C9C0B0", contrastText: J.paperDark },
+    secondary: { main: J.bean.bubblegum.fill },
+    success: { main: J.bean.mint.fill },
+    warning: { main: J.bean.lemon.fill },
+    error: { main: J.bean.cherry.fill },
+    info: { main: J.bean.sky.fill },
+    background: { default: J.paperDark, paper: J.cardDark },
+    text: { primary: J.boneDark, secondary: J.boneMidDark },
+    divider: J.hairDark,
   },
-  shape: { borderRadius: 10 },
+  shape: { borderRadius: 2 },
   typography,
   components: skin(createTheme({ palette: { mode: "dark" } })),
 });
@@ -232,17 +291,17 @@ const darkTheme = createTheme({
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: { main: "#4A6BA8", light: "#5C7BB8", dark: "#3A5787", contrastText: "#FFFFFF" },
-    secondary: { main: K.washiDim },
-    success: { main: "#6E9B4E" },
-    warning: { main: "#B8863B" },
-    error: { main: K.autumnRed },
-    info: { main: "#4E7E96" },
-    background: { default: K.washiBg, paper: K.washiPaper },
-    text: { primary: K.washiInk, secondary: K.washiDim },
-    divider: K.washiDivider,
+    primary: { main: J.inkLight, light: "#3D3931", dark: "#141210", contrastText: "#FAF7EF" },
+    secondary: { main: J.bean.bubblegum.deep },
+    success: { main: J.bean.mint.deep },
+    warning: { main: J.bean.lemon.deep },
+    error: { main: J.bean.cherry.deep },
+    info: { main: J.bean.sky.deep },
+    background: { default: J.paperLight, paper: J.cardLight },
+    text: { primary: J.inkLight, secondary: J.inkMidLight },
+    divider: J.hairLight,
   },
-  shape: { borderRadius: 10 },
+  shape: { borderRadius: 2 },
   typography,
   components: skin(createTheme({ palette: { mode: "light" } })),
 });
@@ -250,33 +309,41 @@ const lightTheme = createTheme({
 function GlobalThemeStyles() {
   return (
     <GlobalStyles
-      styles={(theme: Theme) => ({
-        "@keyframes jee-fade-up": {
-          from: { opacity: 0, transform: "translateY(10px)" },
-          to: { opacity: 1, transform: "none" },
-        },
-        html: { scrollBehavior: "smooth" },
-        "::selection": {
-          backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.22)" : ka("#4A6BA8", 0.25),
-        },
-        "*::-webkit-scrollbar": { width: 10, height: 10 },
-        "*::-webkit-scrollbar-track": { background: "transparent" },
-        "*::-webkit-scrollbar-thumb": {
-          background: theme.palette.mode === "dark" ? "#232329" : "#C7C0AE",
-          borderRadius: 999,
-          "&:hover": { background: theme.palette.mode === "dark" ? "#33333B" : "#B5AD98" },
-        },
-        ".jee-page-enter": {
-          animation: "jee-fade-up .4s cubic-bezier(.22,1,.36,1) both",
-        },
-        ".jee-serif": { fontFamily: SANS, fontWeight: 650, letterSpacing: "-0.02em" },
-        ".jee-mono": { fontFamily: MONO },
-        ".jee-num": { fontVariantNumeric: "tabular-nums lining-nums" },
-        // accessible dimmed text for raw (non-MUI) tables — mode-aware
-        ".jee-dim": {
-          color: theme.palette.mode === "dark" ? K.textMid : K.washiDim,
-        },
-      })}
+      styles={(theme: Theme) => {
+        const dark = theme.palette.mode === "dark";
+        const accent = dark ? J.accent.dark : J.accent.light;
+        return {
+          "@keyframes jee-fade-up": {
+            from: { opacity: 0, transform: "translateY(10px)" },
+            to: { opacity: 1, transform: "none" },
+          },
+          html: { scrollBehavior: "smooth" },
+          "::selection": {
+            backgroundColor: dark ? "rgba(242,169,203,0.30)" : "rgba(172,62,112,0.22)",
+          },
+          "*:focus-visible": {
+            outline: `2px solid ${accent}`,
+            outlineOffset: 2,
+          },
+          "*::-webkit-scrollbar": { width: 10, height: 10 },
+          "*::-webkit-scrollbar-track": { background: "transparent" },
+          "*::-webkit-scrollbar-thumb": {
+            background: dark ? "#2B2822" : "#D5CDBA",
+            borderRadius: 0,
+            "&:hover": { background: dark ? "#3B372E" : "#C2B89F" },
+          },
+          ".jee-page-enter": {
+            animation: "jee-fade-up .4s cubic-bezier(.22,1,.36,1) both",
+          },
+          ".jee-display": { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: "-0.02em" },
+          ".jee-mono": { fontFamily: MONO },
+          ".jee-num": { fontVariantNumeric: "tabular-nums lining-nums" },
+          // accessible dimmed text for raw (non-MUI) tables — mode-aware
+          ".jee-dim": {
+            color: dark ? J.boneMidDark : J.inkMidLight,
+          },
+        };
+      }}
     />
   );
 }
@@ -287,6 +354,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = (localStorage.getItem(STORAGE_KEY) as ThemeMode | null) ?? "system";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot sync: read persisted theme after mount (no SSR access)
     setModeState(stored);
   }, []);
 

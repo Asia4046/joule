@@ -28,7 +28,7 @@ import {
   computePriorities,
 } from "@/lib/analytics";
 import { SUBJECTS, SUBJECT_COLORS } from "@/lib/constants";
-import { StatCard, StudyHeatmap, EmptyState, LinkButton } from "@/components/ui";
+import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend } from "@/components/ui";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 
 export const dynamic = "force-dynamic";
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" }, position: "relative", overflow: "hidden" }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-            <Box sx={{ width: 10, height: 10, borderRadius: 999, bgcolor: "#E6C384", boxShadow: "0 0 10px rgba(230,195,132,0.7)" }} aria-hidden />
+            <Box sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: "#D77BA6" }} aria-hidden />
             <Typography
               variant="caption"
               sx={{ letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, fontSize: "0.68rem", color: "text.secondary" }}
@@ -114,12 +114,14 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* streak — the one terracotta tile */}
+      {/* streak — the one candy tile */}
       <Card
         sx={{
           gridColumn: { xs: "1 / -1", md: "span 4" },
-          bgcolor: "#0E0E11",
-          border: "1px solid rgba(255,255,255,0.14)",
+          bgcolor: "#F2A9CB",
+          border: "1.5px solid #221F1A",
+          boxShadow: "5px 5px 0 rgba(0,0,0,0.28)",
+          color: "#221F1A",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -129,15 +131,15 @@ export default async function DashboardPage() {
           <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
             <Typography
               variant="caption"
-              sx={{ fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.64rem", color: "#A1A1AA" }}
+              sx={{ fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontSize: "0.64rem", color: "rgba(34,31,26,0.72)" }}
             >
               Current streak
             </Typography>
-            <WhatshotOutlinedIcon sx={{ color: "#E6C384" }} fontSize="small" />
+            <WhatshotOutlinedIcon sx={{ color: "#221F1A" }} fontSize="small" />
           </Stack>
-          <Typography variant="h2" className="jee-serif jee-num" sx={{ mt: 1, color: "#F4F4F5", lineHeight: 1.05, fontWeight: 650 }}>
+          <Typography variant="h2" className="jee-display jee-num" sx={{ mt: 1, color: "#221F1A", lineHeight: 1.05, fontWeight: 700 }}>
             {streak}
-            <Typography component="span" className="jee-serif" sx={{ fontSize: "1.2rem", fontWeight: 600, ml: 1 }}>
+            <Typography component="span" className="jee-display" sx={{ fontSize: "1.2rem", fontWeight: 700, ml: 1 }}>
               day{streak === 1 ? "" : "s"}
             </Typography>
           </Typography>
@@ -147,11 +149,11 @@ export default async function DashboardPage() {
             sx={{
               mt: 1.5,
               height: 6,
-              bgcolor: "rgba(31,30,29,0.25)",
-              "& .MuiLinearProgress-bar": { backgroundColor: "rgba(255,255,255,0.55)" },
+              bgcolor: "rgba(34,31,26,0.18)",
+              "& .MuiLinearProgress-bar": { backgroundColor: "#221F1A" },
             }}
           />
-          <Typography variant="caption" sx={{ display: "block", mt: 0.75, fontWeight: 600, color: "rgba(31,30,29,0.8)" }}>
+          <Typography variant="caption" sx={{ display: "block", mt: 0.75, fontWeight: 600, color: "rgba(34,31,26,0.76)" }}>
             {todayMinutes > 0 ? `${fmtHours(todayMinutes)} of ${fmtHours(target)} today` : `Target ${fmtHours(target)} today`}
           </Typography>
         </CardContent>
@@ -400,13 +402,7 @@ export default async function DashboardPage() {
         <CardContent>
           <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2, flexWrap: "wrap", gap: 1 }}>
             <Typography variant="h6">Consistency</Typography>
-            <Stack direction="row" spacing={0.75} alignItems="center">
-              <Typography variant="caption" color="text.secondary">Less</Typography>
-              {["#2A2A37", "#2D4F67", "#658594", "#6A9589", "#98BB6C"].map((c) => (
-                <Box key={c} sx={{ width: 11, height: 11, bgcolor: c }} />
-              ))}
-              <Typography variant="caption" color="text.secondary">More</Typography>
-            </Stack>
+            <HeatLegend />
           </Stack>
           <StudyHeatmap data={heat} />
         </CardContent>

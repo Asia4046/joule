@@ -1,20 +1,23 @@
+import { J, SUBJECT_COLORS as BEAN_SUBJECTS } from "@/lib/jellybeans";
+
 export const SUBJECTS = ["Physics", "Chemistry", "Mathematics"] as const;
 export type Subject = (typeof SUBJECTS)[number];
 
-// Data-encoding colors (charts, progress, statuses) — kept muted-warm to sit
-// on the paper/ink chrome. The UI chrome itself stays monochrome.
-export const SUBJECT_COLORS: Record<string, string> = {
-  Physics: "#C05C3C",
-  Chemistry: "#43806B",
-  Mathematics: "#3E5F8A",
-};
+// Data-encoding colors (charts, progress, statuses) — jellybean deeps on
+// light paper, fills on dark. The UI chrome itself stays ink on paper.
+export const SUBJECT_COLORS: Record<string, string> = Object.fromEntries(
+  Object.entries(BEAN_SUBJECTS).map(([k, v]) => [k, v.deep])
+);
+
+export const subjectBean = (subject: string): { fill: string; deep: string } =>
+  BEAN_SUBJECTS[subject] ?? J.bean.bubblegum;
 
 export const CHAPTER_STATUSES = [
-  { value: "not_started", label: "Not Started", color: "#8A877F" },
-  { value: "learning", label: "Learning", color: "#C77D2E" },
-  { value: "completed", label: "Completed", color: "#43806B" },
-  { value: "revision_due", label: "Revision Due", color: "#BF4B4B" },
-  { value: "mastered", label: "Mastered", color: "#2E6E4E" },
+  { value: "not_started", label: "Not Started", color: "#8A857B" },
+  { value: "learning", label: "Learning", color: J.bean.lemon.deep },
+  { value: "completed", label: "Completed", color: J.bean.mint.deep },
+  { value: "revision_due", label: "Revision Due", color: J.bean.cherry.deep },
+  { value: "mastered", label: "Mastered", color: "#0E5A38" },
 ] as const;
 
 export const STUDY_TYPES = [

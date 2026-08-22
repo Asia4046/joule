@@ -66,11 +66,13 @@ export default async function ConceptsPage() {
                       display: { xs: "none", sm: "flex" },
                       alignItems: "center",
                       justifyContent: "center",
-                      fontWeight: 800,
-                      fontSize: "0.9rem",
-                      color: "#F4F4F5",
-                      background: "#1D1D24",
-                      border: "1px solid rgba(255,255,255,0.2)",
+                      fontWeight: 700,
+                      fontSize: "0.85rem",
+                      color: "#221F1A",
+                      background: "#FFB488",
+                      border: "1px solid rgba(34,31,26,0.4)",
+                      borderRadius: "2px",
+                      fontFamily: "var(--font-mono), monospace",
                     }}
                   >
                     {String(i + 1).padStart(2, "0")}

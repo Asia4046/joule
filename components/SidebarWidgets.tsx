@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
+import { J } from "@/lib/jellybeans";
 
 const QUOTES = [
   { text: "Little by little, one travels far.", author: "J.R.R. Tolkien" },
@@ -26,6 +27,7 @@ const QUOTES = [
 function useNow() {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot sync with the clock (external system); null on server to avoid hydration mismatch
     setNow(new Date());
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
@@ -33,51 +35,65 @@ function useNow() {
   return now;
 }
 
-/** Live clock with a quiet "day elapsed" bar — sits on the ink rail. */
+/** Live clock dossier tile — Space Grotesk time over a segmented day bar. */
 export function ClockCard() {
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
   const now = useNow();
   const time = now ?? new Date(0);
   const hh = String(time.getHours()).padStart(2, "0");
   const mm = String(time.getMinutes()).padStart(2, "0");
   const dayPct = ((time.getHours() * 60 + time.getMinutes()) / 1440) * 100;
+  const segments = 12;
+  const filled = Math.round((dayPct / 100) * segments);
 
   return (
     <Box
       sx={{
         p: 1.75,
-        borderRadius: 2.5,
-        border: "1px solid rgba(255,255,255,0.08)",
-        bgcolor: "#0E0E11",
+        borderRadius: "2px",
+        border: `1px solid ${dark ? J.hairDark : J.hairLight}`,
+        bgcolor: dark ? J.cardDark : J.cardLight,
       }}
     >
-      <Stack direction="row" alignItems="baseline" spacing={0.75}>
+      <Stack direction="row" alignItems="baseline" justifyContent="space-between">
         <Typography
-          className="jee-mono jee-num"
-          sx={{ fontSize: "1.6rem", fontWeight: 600, color: "#F4F4F5", lineHeight: 1, letterSpacing: "0.02em" }}
+          className="jee-display jee-num"
+          sx={{ fontSize: "1.7rem", fontWeight: 700, color: "text.primary", lineHeight: 1, letterSpacing: "0.01em" }}
         >
           {now ? `${hh}:${mm}` : "--:--"}
         </Typography>
-        <Typography variant="caption" sx={{ color: "#A1A1AA", fontWeight: 600 }}>
-          {now ? time.toLocaleDateString("en-IN", { weekday: "short" }) : ""}
+        <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", fontWeight: 600, letterSpacing: "0.08em" }}>
+          {now ? time.toLocaleDateString("en-IN", { weekday: "short" }).toUpperCase() : ""}
         </Typography>
       </Stack>
-      <Typography variant="caption" sx={{ color: "#A1A1AA", display: "block", mt: 0.5, fontWeight: 500 }}>
+      <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.5, fontSize: "0.64rem", letterSpacing: "0.04em" }}>
         {now
-          ? time.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+          ? time.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
           : " "}
       </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={dayPct}
-        sx={{
-          mt: 1.25,
-          height: 4,
-          bgcolor: "rgba(255,255,255,0.09)",
-          "& .MuiLinearProgress-bar": { backgroundColor: "#E4E4E7" },
-        }}
-      />
-      <Typography variant="caption" sx={{ color: "#71717A", display: "block", mt: 0.5, fontSize: "0.66rem" }}>
-        {Math.round(dayPct)}% of today
+      <Stack direction="row" spacing="3px" sx={{ mt: 1.25 }} aria-hidden>
+        {Array.from({ length: segments }).map((_, i) => (
+          <Box
+            key={i}
+            sx={{
+              flex: 1,
+              height: 5,
+              borderRadius: 999,
+              bgcolor:
+                i < filled
+                  ? dark
+                    ? J.bean.bubblegum.fill
+                    : J.bean.bubblegum.deep
+                  : dark
+                    ? "rgba(222,213,198,0.12)"
+                    : "#ECE6D6",
+            }}
+          />
+        ))}
+      </Stack>
+      <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.5, fontSize: "0.62rem" }}>
+        {Math.round(dayPct)}% OF TODAY
       </Typography>
     </Box>
   );
@@ -85,37 +101,37 @@ export function ClockCard() {
 
 /** Deterministic daily study quote — no APIs, rotates with the date. */
 export function QuoteCard() {
-  const quote = useMemo(() => {
+  const theme = useTheme();
+  const dark = theme.palette.mode === "dark";
+  const dayOfYear = useMemo(() => {
     const now = new Date();
-    const dayOfYear = Math.floor(
-      (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000
-    );
-    return QUOTES[dayOfYear % QUOTES.length];
+    return Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
   }, []);
+  const quote = QUOTES[dayOfYear % QUOTES.length];
 
   return (
     <Box
       sx={{
         p: 1.75,
-        borderRadius: 2.5,
-        border: "1px solid rgba(255,255,255,0.08)",
-        bgcolor: "#0E0E11",
+        borderRadius: "2px",
+        border: `1px solid ${dark ? J.hairDark : J.hairLight}`,
+        bgcolor: dark ? J.cardDark : J.cardLight,
       }}
     >
       <Typography
-        className="jee-serif"
-        sx={{ fontSize: "1.6rem", lineHeight: 1, color: "#A1A1AA", fontWeight: 700 }}
+        className="jee-mono"
+        sx={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.16em", color: dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep, mb: 0.75 }}
       >
-        &ldquo;
+        DAILY BRIEF · {String(dayOfYear).padStart(3, "0")}/365
       </Typography>
       <Typography
-        className="jee-serif"
-        sx={{ fontSize: "0.8rem", fontStyle: "italic", color: "rgba(228,228,231,0.86)", lineHeight: 1.55 }}
+        variant="body2"
+        sx={{ fontStyle: "italic", color: "text.primary", lineHeight: 1.55, opacity: 0.88 }}
       >
-        {quote.text}
+        &ldquo;{quote.text}&rdquo;
       </Typography>
-      <Typography variant="caption" sx={{ color: "#71717A", display: "block", mt: 0.75, fontWeight: 600 }}>
-        — {quote.author}
+      <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.75, fontWeight: 600, letterSpacing: "0.06em" }}>
+        — {quote.author.toUpperCase()}
       </Typography>
     </Box>
   );
