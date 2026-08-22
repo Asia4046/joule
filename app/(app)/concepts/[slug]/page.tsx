@@ -44,7 +44,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
         title={content.title}
         subtitle={content.tagline}
         action={
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
             <LinkButton href="/concepts" startIcon={<ArrowBack />} size="small">
               All labs
             </LinkButton>
@@ -104,7 +104,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ slug: 
                   border: "1px solid",
                   borderColor: "divider",
                   p: 1.75,
-                  bgcolor: "rgba(217,119,87,0.08)",
+                  bgcolor: "action.hover",
                 }}
               >
                 <TeX tex={f.tex} display />

@@ -88,7 +88,7 @@ export default async function DashboardPage() {
   const greeting = hour < 5 ? "Up late" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Good night";
 
   return (
-    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" }, gap: 2 }}>
+    <Box className="jee-stagger" sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" }, gap: 2 }}>
       {/* hero */}
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" }, position: "relative", overflow: "hidden" }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
@@ -101,7 +101,7 @@ export default async function DashboardPage() {
               {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
             </Typography>
           </Stack>
-          <Typography variant="h3" component="h1" sx={{ mt: 0.5 }}>
+          <Typography variant="h3" component="h1" sx={{ mt: 0.5, fontSize: { xs: "1.7rem", sm: "3rem" } }}>
             {greeting}, {user.name.split(" ")[0]}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, maxWidth: 520 }}>

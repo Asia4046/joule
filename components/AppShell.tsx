@@ -146,6 +146,7 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
                               "&:hover": {
                                 bgcolor: dark ? withA(J.boneDark, 0.07) : withA(J.inkLight, 0.05),
                                 color: dark ? J.boneDark : J.inkLight,
+                                transform: "translateX(2px)",
                               },
                             }),
                         "& .MuiListItemIcon-root": {
@@ -289,7 +290,7 @@ export default function AppShell({ children, userName }: { children: React.React
         <SidebarContent pathname={pathname} userName={userName} />
       </Drawer>
 
-      <Box sx={{ flexGrow: 1, minWidth: 0, pb: { xs: 7, md: 0 } }}>
+      <Box sx={{ flexGrow: 1, minWidth: 0, pb: { xs: 10, md: 0 } }}>
         <AppBar
           position="sticky"
           elevation={0}
@@ -301,7 +302,13 @@ export default function AppShell({ children, userName }: { children: React.React
             color: "text.primary",
           }}
         >
-          <Toolbar sx={{ gap: 1 }}>
+          <Toolbar
+            sx={{
+              gap: 1,
+              flexWrap: { xs: "wrap", sm: "nowrap" },
+              py: { xs: 1, sm: 0 },
+            }}
+          >
             {!isDesktop && (
               <IconButton edge="start" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
                 <MenuOutlinedIcon />
@@ -426,6 +433,7 @@ export default function AppShell({ children, userName }: { children: React.React
                 color: active ? (dark ? J.boneDark : J.inkLight) : "text.secondary",
                 textDecoration: "none",
                 borderTop: `3px solid ${active ? beanColor : "transparent"}`,
+                transition: "border-color .18s ease, color .18s ease, background-color .18s ease",
                 "&:focus-visible": {
                   outline: `2px solid ${dark ? J.accent.dark : J.accent.light}`,
                   outlineOffset: "-2px",

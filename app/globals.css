@@ -26,3 +26,82 @@ body::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Dossier motion utilities (transform/opacity only) ─────────────── */
+
+/* Staggered entrance for grid children (dashboard bento, stat rows). */
+.jee-stagger > * {
+  animation: jee-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.jee-stagger > *:nth-child(1) { animation-delay: 30ms; }
+.jee-stagger > *:nth-child(2) { animation-delay: 75ms; }
+.jee-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.jee-stagger > *:nth-child(4) { animation-delay: 165ms; }
+.jee-stagger > *:nth-child(5) { animation-delay: 210ms; }
+.jee-stagger > *:nth-child(6) { animation-delay: 255ms; }
+.jee-stagger > *:nth-child(7) { animation-delay: 300ms; }
+.jee-stagger > *:nth-child(8) { animation-delay: 345ms; }
+.jee-stagger > *:nth-child(n + 9) { animation-delay: 390ms; }
+
+/* Hero entrance — pair with inline animation-delay. */
+.jee-rise {
+  animation: jee-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scrolling ticker — track holds exactly two copies; edges masked. */
+.jee-marquee {
+  overflow: hidden;
+  --jee-fade: 64px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--jee-fade),
+    black calc(100% - var(--jee-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--jee-fade),
+    black calc(100% - var(--jee-fade)),
+    transparent 100%
+  );
+}
+.jee-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: jee-marquee-scroll 44s linear infinite;
+  will-change: transform;
+}
+.jee-marquee:hover .jee-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes jee-marquee-scroll {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Instrument pulse — live clock colon. */
+.jee-pulse {
+  animation: jee-pulse 2s ease-in-out infinite;
+}
+@keyframes jee-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jee-marquee-track {
+    animation: none !important;
+  }
+  .jee-pulse {
+    animation: none !important;
+  }
+}

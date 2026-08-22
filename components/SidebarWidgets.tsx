@@ -61,7 +61,17 @@ export function ClockCard() {
           className="jee-display jee-num"
           sx={{ fontSize: "1.7rem", fontWeight: 700, color: "text.primary", lineHeight: 1, letterSpacing: "0.01em" }}
         >
-          {now ? `${hh}:${mm}` : "--:--"}
+          {now ? (
+            <>
+              {hh}
+              <Box component="span" className="jee-pulse" sx={{ mx: "1px" }}>
+                :
+              </Box>
+              {mm}
+            </>
+          ) : (
+            "--:--"
+          )}
         </Typography>
         <Typography className="jee-mono" variant="caption" sx={{ color: "text.secondary", fontWeight: 600, letterSpacing: "0.08em" }}>
           {now ? time.toLocaleDateString("en-IN", { weekday: "short" }).toUpperCase() : ""}

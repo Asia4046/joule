@@ -11,6 +11,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { getSessionUser } from "@/lib/auth";
 import { CONCEPT_CONTENT } from "@/lib/concept-content";
 import { SIM_REGISTRY } from "@/components/concepts/sims";
+import Reveal from "@/components/Reveal";
 import { J, withA, type BeanName } from "@/lib/jellybeans";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,22 @@ const FEATURES: { icon: typeof ScienceOutlinedIcon; tint: BeanName; title: strin
 ];
 
 const JAR: BeanName[] = ["bubblegum", "mint", "lemon", "sky", "lavender", "tangerine", "cherry", "lime"];
+
+/** Syllabus ticker — the chapters the dossier keeps on file. */
+const TICKER = [
+  "Rotational Motion",
+  "Chemical Bonding",
+  "Ray Optics",
+  "Thermodynamics",
+  "Electrostatics",
+  "Probability",
+  "Modern Physics",
+  "Organic Reactions",
+  "Calculus",
+  "Wave Optics",
+  "Current Electricity",
+  "Coordination Compounds",
+];
 
 /** Split dossier button — label cell + arrow cell, divided by a hairline. */
 function SplitButton({ href, children, primary = false }: { href: string; children: string; primary?: boolean }) {
@@ -144,12 +161,16 @@ function ProductMock() {
   const bubblegum = bean("bubblegum").fill;
   return (
     <Box
+      className="jee-rise"
       sx={{
         position: "relative",
         borderRadius: "2px",
         border: `1px solid ${HAIR_STRONG}`,
         background: CARD,
         boxShadow: "10px 10px 0 rgba(0,0,0,0.7)",
+        animationDelay: "340ms",
+        transition: "transform .25s ease, box-shadow .25s ease",
+        "&:hover": { transform: "translate(-3px,-3px)", boxShadow: "13px 13px 0 rgba(0,0,0,0.7)" },
         overflow: "hidden",
         mx: "auto",
         maxWidth: 920,
@@ -418,6 +439,7 @@ export default async function Landing() {
             alignItems="center"
             flexWrap="wrap"
             justifyContent="center"
+            className="jee-rise"
             sx={{
               px: 1.75,
               py: 0.75,
@@ -438,13 +460,14 @@ export default async function Landing() {
             ))}
           </Stack>
           <Typography
-            className="jee-display"
+            className="jee-display jee-rise"
             sx={{
               fontSize: { xs: "2.4rem", sm: "3.2rem", md: "4rem" },
               fontWeight: 700,
               letterSpacing: "-0.03em",
               lineHeight: 1.06,
               textWrap: "balance",
+              animationDelay: "70ms",
             }}
           >
             Motivation is optional.{" "}
@@ -452,26 +475,71 @@ export default async function Landing() {
               The system isn&apos;t.
             </Box>
           </Typography>
-          <Typography sx={{ fontSize: { xs: "1rem", md: "1.15rem" }, color: INK_MID, lineHeight: 1.7, maxWidth: 620 }}>
+          <Typography className="jee-rise" sx={{ fontSize: { xs: "1rem", md: "1.15rem" }, color: INK_MID, lineHeight: 1.7, maxWidth: 620, animationDelay: "140ms" }}>
             Joule is the command center for your preparation — concept labs with real simulations,
             mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself.
           </Typography>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ pt: 1.5 }}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} className="jee-rise" sx={{ pt: 1.5, animationDelay: "210ms" }}>
             <SplitButton href={user ? "/dashboard" : "/signup"} primary>
               {user ? "Go to dashboard" : "Start preparing"}
             </SplitButton>
             <SplitButton href="#labs">See the labs</SplitButton>
           </Stack>
-          <Typography className="jee-mono" sx={{ fontSize: "0.62rem", letterSpacing: "0.12em", color: INK_DIM }}>
+          <Typography className="jee-mono jee-rise" sx={{ fontSize: "0.62rem", letterSpacing: "0.12em", color: INK_DIM, animationDelay: "280ms" }}>
             {labCount} CHAPTER LABS · {simCount} LIVE SIMULATIONS
           </Typography>
         </Stack>
         <ProductMock />
       </Box>
 
+      {/* syllabus ticker */}
+      <Box
+        component="section"
+        aria-label="Chapters on file"
+        sx={{ position: "relative", borderTop: `1px solid ${HAIR}`, borderBottom: `1px solid ${HAIR}`, py: 2.25 }}
+      >
+        <Box className="jee-marquee">
+          <Box className="jee-marquee-track">
+            {[...TICKER, ...TICKER].map((t, i) => (
+              <Stack
+                key={`${t}-${i}`}
+                aria-hidden={i >= TICKER.length || undefined}
+                direction="row"
+                spacing={1.25}
+                alignItems="center"
+                sx={{ mr: "36px", flexShrink: 0 }}
+              >
+                <Box
+                  sx={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: 999,
+                    bgcolor: J.bean[JAR[i % JAR.length]].fill,
+                  }}
+                />
+                <Typography
+                  className="jee-mono"
+                  sx={{
+                    fontSize: "0.68rem",
+                    letterSpacing: "0.18em",
+                    color: INK_MID,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {t}
+                </Typography>
+              </Stack>
+            ))}
+          </Box>
+        </Box>
+      </Box>
+
       {/* stats strip */}
       <Box component="section" sx={{ position: "relative", borderBottom: `1px solid ${HAIR}`, borderTop: `1px solid ${HAIR}` }}>
         <Box sx={{ maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 4, md: 5.5 } }}>
+        <Reveal>
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: { xs: 3, md: 2 } }}>
             {[
               { v: `${labCount}`, l: "chapter concept labs" },
@@ -489,35 +557,39 @@ export default async function Landing() {
               </Stack>
             ))}
           </Box>
+        </Reveal>
         </Box>
       </Box>
 
       {/* features */}
-      <Box component="section" id="features" sx={{ position: "relative", maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 7, md: 11 } }}>
+      <Box component="section" id="features" sx={{ position: "relative", maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 7, md: 11 }, scrollMarginTop: "84px" }}>
         <SectionHeading
           index="01"
           kicker="Features"
           title="One workspace, the whole preparation."
           sub="Six tools that share one brain — what you miss in a mock shows up in your revision queue, and what the syllabus weights most shows up first."
         />
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 2.5 }}>
-          {FEATURES.map((f, i) => {
-            const c = bean(f.tint).fill;
-            return (
-              <Box
-                key={f.title}
-                sx={{
-                  p: 3,
-                  border: `1px solid ${HAIR}`,
-                  bgcolor: withA(INK, 0.03),
-                  transition: "all .2s ease",
-                  "&:hover": {
-                    transform: "translate(-2px,-2px)",
-                    borderColor: withA(c, 0.6),
-                    boxShadow: `5px 5px 0 ${withA(c, 0.22)}`,
-                  },
-                }}
-              >
+        <Reveal>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(3, 1fr)" }, gap: 2.5 }}>
+            {FEATURES.map((f, i) => {
+              const c = bean(f.tint).fill;
+              return (
+                <Box
+                  key={f.title}
+                  sx={{
+                    p: 3,
+                    border: `1px solid ${HAIR}`,
+                    bgcolor: withA(INK, 0.03),
+                    filter: "grayscale(0.55)",
+                    transition: "all .25s ease",
+                    "&:hover": {
+                      transform: "translate(-2px,-2px)",
+                      borderColor: withA(c, 0.6),
+                      boxShadow: `5px 5px 0 ${withA(c, 0.22)}`,
+                      filter: "grayscale(0)",
+                    },
+                  }}
+                >
                 <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                   <Box
                     sx={{
@@ -543,7 +615,8 @@ export default async function Landing() {
               </Box>
             );
           })}
-        </Box>
+          </Box>
+        </Reveal>
       </Box>
 
       {/* labs strip */}
@@ -556,6 +629,7 @@ export default async function Landing() {
           mx: "auto",
           px: { xs: 2, sm: 3 },
           py: { xs: 7, md: 11 },
+          scrollMarginTop: "84px",
         }}
       >
         <SectionHeading
@@ -565,49 +639,62 @@ export default async function Landing() {
           title="Physics you can push, drag and break."
           sub="Every lab is a real simulation, not a video — set up a Galilean telescope, park an object at a mirror's centre of curvature, or watch a cyclotron trace, then read the matrix math off the bench."
         />
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2.5 }}>
-          {[
-            { title: "Lens & mirror bench", copy: "Combine six kinds of lenses and mirrors; images located by ray-transfer matrices.", tint: "sky" as BeanName },
-            { title: "Bohr & hydrogen", copy: "Energy levels, transition wavelengths and the Lyman–Balmer–Paschen map.", tint: "cherry" as BeanName },
-            { title: "Orbital slices", copy: "Real spherical-harmonic cross-sections for any n, l, m — phase included.", tint: "mint" as BeanName },
-            { title: "Collisions & fields", copy: "Elastic to sticky, cyclotron radii, charged paths — all live, all tweakable.", tint: "lemon" as BeanName },
-          ].map((c, i) => {
-            const col = bean(c.tint).fill;
-            return (
-              <Box
-                key={c.title}
-                sx={{
-                  position: "relative",
-                  p: 2.75,
-                  border: `1px solid ${HAIR}`,
-                  bgcolor: CARD,
-                  overflow: "hidden",
-                }}
-              >
-                <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, bgcolor: col }} aria-hidden />
-                <Typography className="jee-mono" sx={{ fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.16em", color: col, mb: 1.25 }}>
-                  LAB {String(i + 1).padStart(2, "0")}
-                </Typography>
-                <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "0.92rem", mb: 1, color: INK }}>{c.title}</Typography>
-                <Typography sx={{ fontSize: "0.8rem", color: INK_MID, lineHeight: 1.65 }}>{c.copy}</Typography>
-              </Box>
-            );
-          })}
-        </Box>
+        <Reveal>
+          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2.5 }}>
+            {[
+              { title: "Lens & mirror bench", copy: "Combine six kinds of lenses and mirrors; images located by ray-transfer matrices.", tint: "sky" as BeanName },
+              { title: "Bohr & hydrogen", copy: "Energy levels, transition wavelengths and the Lyman–Balmer–Paschen map.", tint: "cherry" as BeanName },
+              { title: "Orbital slices", copy: "Real spherical-harmonic cross-sections for any n, l, m — phase included.", tint: "mint" as BeanName },
+              { title: "Collisions & fields", copy: "Elastic to sticky, cyclotron radii, charged paths — all live, all tweakable.", tint: "lemon" as BeanName },
+            ].map((c, i) => {
+              const col = bean(c.tint).fill;
+              return (
+                <Box
+                  key={c.title}
+                  sx={{
+                    position: "relative",
+                    p: 2.75,
+                    border: `1px solid ${HAIR}`,
+                    bgcolor: CARD,
+                    overflow: "hidden",
+                    filter: "grayscale(0.55)",
+                    transition: "all .25s ease",
+                    "&:hover": {
+                      transform: "translate(-2px,-2px)",
+                      borderColor: withA(col, 0.55),
+                      boxShadow: `5px 5px 0 ${withA(col, 0.2)}`,
+                      filter: "grayscale(0)",
+                    },
+                  }}
+                >
+                  <Box sx={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, bgcolor: col }} aria-hidden />
+                  <Typography className="jee-mono" sx={{ fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.16em", color: col, mb: 1.25 }}>
+                    LAB {String(i + 1).padStart(2, "0")}
+                  </Typography>
+                  <Typography className="jee-display" sx={{ fontWeight: 700, fontSize: "0.92rem", mb: 1, color: INK }}>{c.title}</Typography>
+                  <Typography sx={{ fontSize: "0.8rem", color: INK_MID, lineHeight: 1.65 }}>{c.copy}</Typography>
+                </Box>
+              );
+            })}
+          </Box>
+        </Reveal>
       </Box>
 
       {/* system / the jar */}
-      <Box component="section" id="system" sx={{ position: "relative", maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 7, md: 11 } }}>
-        <Box
-          sx={{
-            border: `1px solid ${HAIR_STRONG}`,
-            background: CARD,
-            boxShadow: "8px 8px 0 rgba(0,0,0,0.6)",
-            p: { xs: 3.5, md: 6 },
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
+      <Box component="section" id="system" sx={{ position: "relative", maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 7, md: 11 }, scrollMarginTop: "84px" }}>
+        <Reveal>
+          <Box
+            sx={{
+              border: `1px solid ${HAIR_STRONG}`,
+              background: CARD,
+              boxShadow: "8px 8px 0 rgba(0,0,0,0.6)",
+              p: { xs: 3.5, md: 6 },
+              position: "relative",
+              overflow: "hidden",
+              transition: "transform .25s ease, box-shadow .25s ease",
+              "&:hover": { transform: "translate(-3px,-3px)", boxShadow: "11px 11px 0 rgba(0,0,0,0.6)" },
+            }}
+          >
           <Stack spacing={3} sx={{ position: "relative", maxWidth: 640 }}>
             <Stack direction="row" spacing={1.25} alignItems="center">
               <Box sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: bean("tangerine").fill }} aria-hidden />
@@ -638,12 +725,14 @@ export default async function Landing() {
               ))}
             </Stack>
           </Stack>
-        </Box>
+          </Box>
+        </Reveal>
       </Box>
 
       {/* final CTA */}
       <Box component="section" sx={{ position: "relative", maxWidth: 1120, mx: "auto", px: { xs: 2, sm: 3 }, py: { xs: 7, md: 11 }, textAlign: "center" }}>
-        <Stack spacing={3} alignItems="center" sx={{ maxWidth: 640, mx: "auto" }}>
+        <Reveal>
+          <Stack spacing={3} alignItems="center" sx={{ maxWidth: 640, mx: "auto" }}>
           <Typography className="jee-display" sx={{ fontSize: { xs: "1.9rem", md: "2.6rem" }, fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.15, textWrap: "balance" }}>
             Two years. Eight beans.{" "}
             <Box component="span" sx={{ color: bean("bubblegum").fill }}>
@@ -656,7 +745,8 @@ export default async function Landing() {
           <SplitButton href={user ? "/dashboard" : "/signup"} primary>
             {user ? "Open your dashboard" : "Create your account"}
           </SplitButton>
-        </Stack>
+          </Stack>
+        </Reveal>
       </Box>
 
       {/* footer */}
