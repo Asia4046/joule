@@ -20,9 +20,11 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Per-subject progress, filters by subject / Chemistry branch (Physical / Organic / Inorganic) / status.
 - Every chapter carries JEE Main & Advanced weightage, average questions per paper, difficulty, and last-studied date.
 
-### Concept Labs (interactive Physics simulations)
-- **21 interactive simulations** rendered on `<canvas>` — one per Physics chapter:
+### Concept Labs (interactive Physics & Chemistry simulations)
+- **21 interactive Physics simulations** rendered on `<canvas>` — one per Physics chapter:
   Error propagation, Projectile, Friction, Energy ramp, Angular momentum, Orbital mechanics, Viscosity, Piston (thermodynamics), Damped oscillator, Electric field lines, Drift velocity, Charge in a magnetic field, Bar magnet, AC generator, EM wave, Lens/refraction, Young's double slit, Photoelectric effect, Bohr atom, Rectifier, Vernier calipers.
+- **7 Chemistry simulations** covering the highest-weightage chapters: Atomic orbital visualiser, Periodic trends explorer, VSEPR geometry workbench (drag-to-rotate 3D), Le Chatelier pressure tube (N₂O₄⇌2NO₂ with exact Kp(T)), Rate-law explorer (integrated zero/first/second order), Crystal-field splitting lab (high/low spin, CFSE, magnetic moment), and a Daniell cell driven by the Nernst equation.
+- **8 JEE Advanced archetype labs**: collisions, rolling race, Doppler wavefronts, RC transients, radioactive decay, standing waves, tunnel piston, lens systems.
 - Each lab pairs the simulation with authored JEE-level explanations, a **KaTeX-rendered formula sheet**, and exam "traps & tips".
 - Chapter pages link to their lab, and labs link to the chapter tracker.
 

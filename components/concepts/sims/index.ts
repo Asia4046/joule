@@ -30,6 +30,11 @@ import TrainTunnelSim from "./TrainTunnelSim";
 import LensSystemSim from "./LensSystemSim";
 import AtomicOrbitalSim from "./AtomicOrbitalSim";
 import PeriodicTrendsSim from "./PeriodicTrendsSim";
+import VSEPRSim from "./VSEPRSim";
+import LeChatelierSim from "./LeChatelierSim";
+import KineticsSim from "./KineticsSim";
+import CFTSplittingSim from "./CFTSplittingSim";
+import GalvanicCellSim from "./GalvanicCellSim";
 
 /** Chapter slug → interactive simulation component. All sims are client components. */
 export const SIM_REGISTRY: Record<string, ComponentType> = {
@@ -66,4 +71,9 @@ export const SIM_REGISTRY: Record<string, ComponentType> = {
   // Chemistry labs
   "atomic-structure": AtomicOrbitalSim,
   "classification-of-elements-and-periodicity": PeriodicTrendsSim,
+  "chemical-bonding": VSEPRSim,
+  "chemical-and-ionic-equilibrium": LeChatelierSim,
+  "chemical-kinetics": KineticsSim,
+  "coordination-compounds": CFTSplittingSim,
+  "electrochemistry": GalvanicCellSim,
 };

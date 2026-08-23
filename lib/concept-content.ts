@@ -1330,4 +1330,227 @@ export const CONCEPT_CONTENT: Record<string, ConceptContent> = {
       "Lanthanoid contraction makes 5d elements unusually small — why Zr ≈ Hf and why Hg is liquid.",
     ],
   },
+
+  "chemical-bonding": {
+    title: "Chemical Bonding",
+    subject: "Chemistry",
+    tagline: "VSEPR shapes, hybridisation and dipole moments — the highest-scoring chapter of inorganic chemistry.",
+    simTitle: "VSEPR geometry workbench",
+    simAbout: "Pick a species from BeF₂ to SF₆, drag to rotate, and watch lone pairs bend the shape.",
+    sections: [
+      {
+        heading: "The VSEPR method",
+        body: [
+          "Shape follows from steric number = bond pairs + lone pairs on the central atom. Count the domains, not the atoms: a double bond counts as one domain, so CO₂ (two double bonds) is as linear as BeF₂.",
+          "Lone pairs are fatter than bond pairs — they sit closer to the nucleus and push bonded atoms together. Repulsion order: lp–lp > lp–bp > bp–bp. That single ranking predicts every distortion: 109.5° (CH₄) → 107° (NH₃) → 104.5° (H₂O).",
+        ],
+      },
+      {
+        heading: "Hybridisation and dipole moments",
+        body: [
+          "Steric number maps directly to hybridisation: 2→sp, 3→sp², 4→sp³, 5→sp³d, 6→sp³d². Do not memorise shapes and hybridisation separately — derive both from the same count.",
+          "A molecule is polar only if its bond dipoles fail to cancel. Symmetric arrangements (linear AX₂, trigonal planar AX₃, tetrahedral AX₄, octahedral AX₆) give zero dipole even with polar bonds. NF₃ has a smaller dipole than NH₃ because its lone-pair moment opposes the bond moments.",
+        ],
+      },
+      {
+        heading: "Molecular orbital theory",
+        body: [
+          "MO theory beats VSEPR where electrons delocalise: bond order = (N_b − N_a)/2. O₂ has bond order 2 with two unpaired π* electrons — paramagnetic, something Lewis structures cannot show.",
+          "For N₂ and its ions, removing an electron from bonding MO lowers bond order (N₂⁺ = 2.5) but for O₂ removing an antibonding electron raises it (O₂⁺ = 2.5 > O₂ = 2). Stability order questions are pure MO bookkeeping.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "\\text{steric number} = \\text{bp} + \\text{lp}", label: "VSEPR count" },
+      { tex: "\\text{bond order} = \\frac{N_b - N_a}{2}", label: "MO bond order" },
+      { tex: "\\mu = q \\times d", label: "Dipole moment" },
+      { tex: "\\text{\\% ionic} \\approx 1.7\\,\\Delta\\text{EN} - 3.5", label: "Pauling electronegativity estimate" },
+    ],
+    tips: [
+      "In trigonal bipyramids, lone pairs always take equatorial slots — only two 90° neighbours instead of three. Hence SF₄ see-saw, ClF₃ T-shaped, XeF₄ square planar.",
+      "XeF₄ is square planar, not tetrahedral: two lone pairs go trans to each other. Drawing it flat loses marks.",
+      "Species with identical steric number share hybridisation — compare iso-electronic pairs like NH₃ and H₃O⁺ quickly.",
+      "Bond angle comparisons: H₂O < NH₃ < CH₄ and OF₂ < OH₂ (more electronegative substituents pull bond pairs out, shrinking angles).",
+      "Paramagnetism check in MO: odd electron count or partially filled degenerate MOs — O₂ is the classic exam trap.",
+    ],
+  },
+
+  "chemical-and-ionic-equilibrium": {
+    title: "Chemical & Ionic Equilibrium",
+    subject: "Chemistry",
+    tagline: "Le Chatelier's principle, Kp/Kc and pH — physical chemistry's most reliable score bank.",
+    simTitle: "Le Chatelier pressure tube",
+    simAbout: "N₂O₄ ⇌ 2NO₂ in a sealed syringe — squeeze or heat the tube and watch the equilibrium re-solve exactly.",
+    sections: [
+      {
+        heading: "K, Q and the direction of shift",
+        body: [
+          "Equilibrium constants depend only on temperature. The reaction quotient Q has the same expression with current concentrations: Q < K drives the forward reaction, Q > K the reverse. Every Le Chatelier question is secretly a Q-vs-K comparison.",
+          "For N₂O₄ ⇌ 2NO₂, Kp = Kc(RT) because Δn_gas = 1. Only gases enter Kp (pressures) and only dissolved species enter Kc — pure solids and liquids never appear.",
+        ],
+      },
+      {
+        heading: "Stress responses",
+        body: [
+          "Compression (higher P, smaller V) shifts toward fewer gas moles — reverse here. Heating shifts toward the endothermic side; since forward is endothermic (ΔH° = +57.2 kJ), Kp itself rises with T via the van't Hoff equation, not just Q.",
+          "Adding an inert gas at constant volume changes nothing (no partial pressure changes); at constant pressure it dilutes the mixture, acting like an expansion. A catalyst changes only the speed — never the position of equilibrium.",
+        ],
+      },
+      {
+        heading: "Ionic equilibrium",
+        body: [
+          "Weak acids never fully dissociate: Ka = x²/(C−x), and for dilute solutions α = √(Ka/C) — the Ostwald dilution law. pH = ½(pKa − log C) for a weak acid follows from it.",
+          "Buffers resist pH change: pH = pKa + log([salt]/[acid]) (Henderson–Hasselbalch). At the half-equivalence point pH = pKa exactly — that's how you read Ka from a titration curve. For salts, Ksp × common-ion reasoning decides precipitation.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "K_p = K_c (RT)^{\\Delta n}", label: "Kp–Kc relation" },
+      { tex: "\\ln\\frac{K_2}{K_1} = -\\frac{\\Delta H}{R}\\left(\\frac{1}{T_2} - \\frac{1}{T_1}\\right)", label: "van't Hoff equation" },
+      { tex: "K_p = \\frac{4\\alpha^2 P}{1-\\alpha^2}", label: "Degree of dissociation, N₂O₄ ⇌ 2NO₂" },
+      { tex: "\\text{pH} = \\text{p}K_a + \\log\\frac{[\\text{salt}]}{[\\text{acid}]}", label: "Henderson–Hasselbalch" },
+      { tex: "\\alpha = \\sqrt{\\frac{K_a}{C}}", label: "Ostwald dilution law" },
+    ],
+    tips: [
+      "Never write solids or pure liquids in K. CaCO₃ ⇌ CaO + CO₂ has Kp = P(CO₂) alone.",
+      "Inert gas at constant V → no shift; at constant P → shifts toward more gas moles. The distinction is a favourite trap.",
+      "Exothermic reaction + temperature rise → K falls (Le Chatelier on K itself, not just Q).",
+      "Degree of dissociation rises with dilution (weak electrolytes), with temperature for endothermic dissociation, and falls with added common ion.",
+      "When Q is given instead of K, compare them first — many 'shift' questions need no calculation beyond the sign of K − Q.",
+    ],
+  },
+
+  "chemical-kinetics": {
+    title: "Chemical Kinetics",
+    subject: "Chemistry",
+    tagline: "Rate laws, half-lives and Arrhenius — where the integrated equations do all the work.",
+    simTitle: "Rate-law explorer",
+    simAbout: "Integrated rate laws for zero, first and second order — watch the ensemble, the curve and the straight-line test together.",
+    sections: [
+      {
+        heading: "Order is experimental",
+        body: [
+          "Order is the exponent the rate law assigns to a concentration — it must be measured, not read from the stoichiometric equation (except for elementary steps, where order = molecularity). Rate = k[A]^n with n = 0, 1 or 2 covers almost every JEE question.",
+          "Units of k betray the order: mol L⁻¹ s⁻¹ (zero), s⁻¹ (first), L mol⁻¹ s⁻¹ (second). If a unit conversion question appears, this is the entire trick.",
+        ],
+      },
+      {
+        heading: "Integrated laws and half-lives",
+        body: [
+          "Integrate the rate law once and the exam becomes arithmetic: zero order [A] = [A]₀ − kt (straight [A]–t plot, [A] hits zero at t = [A]₀/k); first order ln[A] = ln[A]₀ − kt (constant t½ = ln2/k, independent of concentration); second order 1/[A] = 1/[A]₀ + kt (t½ doubles each halving).",
+          "First-order kinetics rules radioactivity, ester hydrolysis in excess water and many decompositions. The constancy of t½ is its fingerprint: if 50% remains after equal intervals regardless of the starting amount, it's first order.",
+        ],
+      },
+      {
+        heading: "Temperature dependence",
+        body: [
+          "Arrhenius: k = Ae^(−Ea/RT). Plot ln k against 1/T and the slope is −Ea/R — graphical questions hand you two points and expect this line. A catalyst raises A or lowers Ea; it never changes ΔG or the equilibrium constant.",
+          "The '10-degree rule' (rate roughly doubles per 10 K) is just Arrhenius evaluated twice. For a reaction to finish in half the time at the same conversion, k must double.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "[A] = [A]_0 - kt", label: "Zero order" },
+      { tex: "\\ln[A] = \\ln[A]_0 - kt", label: "First order" },
+      { tex: "\\frac{1}{[A]} = \\frac{1}{[A]_0} + kt", label: "Second order" },
+      { tex: "t_{1/2}: \\; \\frac{[A]_0}{2k}, \\; \\frac{\\ln 2}{k}, \\; \\frac{1}{k[A]_0}", label: "Half-lives by order" },
+      { tex: "\\ln k = \\ln A - \\frac{E_a}{RT}", label: "Arrhenius (log form)" },
+    ],
+    tips: [
+      "Identify order from the plot: [A] vs t straight → zero; ln[A] vs t straight → first; 1/[A] vs t straight → second. The sim's inset shows exactly this.",
+      "First order: fraction remaining after n half-lives = (1/2)ⁿ — 75% completion takes 2 t½ regardless of concentration.",
+      "Zero order stops at t = [A]₀/k: the rate is zero after depletion, so extrapolate carefully.",
+      "Molecularity (elementary-step count, never zero or fractional) ≠ order (overall, can be zero/fractional).",
+      "For method of initial rates, isolate variables: doubling [A] quadruples rate ⇒ order 2 in A.",
+    ],
+  },
+
+  "coordination-compounds": {
+    title: "Coordination Compounds",
+    subject: "Chemistry",
+    tagline: "Crystal field theory, isomerism and nomenclature — Werner's world, worth 7.5% of JEE Main.",
+    simTitle: "Crystal-field splitting lab",
+    simAbout: "Ligand strength sets Δ; Δ vs the pairing energy P decides high or low spin, the CFSE and the magnetic moment.",
+    sections: [
+      {
+        heading: "Why d orbitals split",
+        body: [
+          "In an octahedral field the ligands sit on the x, y and z axes. The e_g orbitals (dz², dx²−y²) point straight at them and are repelled upward; the t₂g set (dxy, dyz, dzx) hides between the axes and drops. The gap Δo keeps the barycentre fixed: e_g rises 0.6Δo, t₂g falls 0.4Δo.",
+          "Tetrahedral fields put four ligands off-axis, so the ordering flips (e below t₂) and the gap shrinks to Δt = (4/9)Δo — too small to force pairing, which is why tetrahedral complexes are always high spin.",
+        ],
+      },
+      {
+        heading: "High spin, low spin and CFSE",
+        body: [
+          "Only d⁴–d⁷ octahedral complexes face a choice: promote to e_g (high spin) or pair in t₂g (low spin). Strong-field ligands (CN⁻, NH₃) give Δo > P and low spin; weak-field ligands (halides, H₂O) give high spin. Co³⁺ is low spin with almost every ligand — [CoF₆]³⁻ is the famous exception.",
+          "Crystal field stabilisation energy books the balance: CFSE = (n(t₂g)(−0.4) + n(e_g)(+0.6))Δo. d⁶ low spin gives −2.4Δo — the most stabilised configuration, one reason Co³⁺ complexes are so numerous.",
+        ],
+      },
+      {
+        heading: "Counting, colours and names",
+        body: [
+          "Spin-only magnetic moment μ = √(n(n+2)) BM from the unpaired-electron count n. High-spin d⁵ (Mn²⁺) has n = 5 → 5.92 BM; low-spin d⁶ has n = 0 → diamagnetic. A quick μ measurement reveals the spin state.",
+          "Isomerism rewards careful drawing: geometrical cis/trans (square planar MA₂B₂), optical enantiomers ([M(AA)₃]³⁺ type), hydrate isomers ([Cr(H₂O)₆]Cl₃ vs [Cr(H₂O)₅Cl]Cl₂·H₂O). Name ligands alphabetically with the metal last (cation first), oxidation state in Roman numerals.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "\\text{CFSE}_{oct} = (n_{t_{2g}}(-0.4) + n_{e_g}(0.6))\\,\\Delta_o", label: "Octahedral CFSE" },
+      { tex: "\\Delta_t = \\tfrac{4}{9}\\Delta_o", label: "Tetrahedral gap" },
+      { tex: "\\mu = \\sqrt{n(n+2)}\\ \\text{BM}", label: "Spin-only moment" },
+      { tex: "E_{\\text{photon}} = h\\nu = \\Delta_o", label: "Colour from the gap" },
+    ],
+    tips: [
+      "Spectrochemical series ladder to memorise: I⁻ < Br⁻ < Cl⁻ < F⁻ < H₂O < NH₃ < en < CN⁻. Strong-field ⇒ low spin ⇒ smaller μ.",
+      "e_g before t₂g in filling order for octahedral; reversed labels but same idea for tetrahedral — the sim makes the flip visible.",
+      "Only d⁴–d⁷ octahedral complexes face a real high/low-spin choice — outside that range both fillings give the same configuration.",
+      "Colour is the complement of the absorbed colour: absorb red ⇒ look green. Larger Δo (stronger field) ⇒ absorption shifts blueward.",
+      "EAN or oxidation-state slips sink nomenclature: count charges on ligands (NH₃ = 0, Cl⁻ = −1, en = 0) before writing the Roman numeral.",
+    ],
+  },
+
+  "electrochemistry": {
+    title: "Electrochemistry",
+    subject: "Chemistry",
+    tagline: "Galvanic cells, the Nernst equation and ΔG = −nFE — where thermodynamics becomes voltage.",
+    simTitle: "Daniell cell — Nernst equation",
+    simAbout: "Slide the ion concentrations and temperature; the meter, electron flow and ion drift all follow the Nernst equation exactly.",
+    sections: [
+      {
+        heading: "Anatomy of a galvanic cell",
+        body: [
+          "Oxidation at the anode (Zn → Zn²⁺ + 2e⁻), reduction at the cathode (Cu²⁺ + 2e⁻ → Cu). Electrons flow anode → cathode through the wire; the salt bridge lets ions complete the circuit so neither half-cell accumulates charge.",
+          "In a galvanic cell the anode is negative and the cathode positive — reversed in electrolysis. Cell notation writes anode on the left: Zn | Zn²⁺ ‖ Cu²⁺ | Cu, with the salt bridge as the double bar.",
+        ],
+      },
+      {
+        heading: "The Nernst equation",
+        body: [
+          "E = E° − (RT/nF) ln Q. At 298 K with base-10 logs this becomes E = E° − (0.0591/n) log Q — the form JEE expects. For the Daniell cell (n = 2), raising [Zn²⁺] or lowering [Cu²⁺] pushes Q up and drags E below 1.10 V.",
+          "Concentration cells use the same electrode on both sides (E° = 0); the spontaneous direction equalises concentrations, and the biggest voltage such a cell can produce is set by the concentration ratio alone.",
+        ],
+      },
+      {
+        heading: "Electricity meets thermodynamics",
+        body: [
+          "ΔG = −nFE. A positive E means a spontaneous cell reaction: the Daniell cell's 1.10 V corresponds to ΔG = −212 kJ/mol. At equilibrium Q = K, E = 0 and no net current flows — a dead battery is an equilibrium mixture.",
+          "Standard potentials combine as E°cell = E°cathode − E°anode (never multiply by stoichiometric coefficients) and relate to K: log K = nE°/0.0591. Large E° ⇒ large K ⇒ reaction essentially complete.",
+        ],
+      },
+    ],
+    formulas: [
+      { tex: "E = E^\\circ - \\frac{RT}{nF}\\ln Q", label: "Nernst equation" },
+      { tex: "E = E^\\circ - \\frac{0.0591}{n}\\log Q \\;(298\\,\\text{K})", label: "Nernst, base-10 form" },
+      { tex: "\\Delta G = -nFE", label: "Free energy from voltage" },
+      { tex: "E^\\circ_{\\text{cell}} = E^\\circ_{\\text{cathode}} - E^\\circ_{\\text{anode}}", label: "Combining standard potentials" },
+      { tex: "\\log K = \\frac{nE^\\circ}{0.0591}", label: "Equilibrium constant of the cell reaction" },
+    ],
+    tips: [
+      "E° values are intensive — doubling a half-equation never doubles E°. Only ΔG scales with stoichiometry.",
+      "Anode/cathode sign flip between galvanic (−/+) and electrolytic (+/−) cells is the most common conceptual trap.",
+      "Diluting the product ion (or concentrating the reactant ion) raises E — check Q, not intuition.",
+      "At equilibrium E_cell = 0 but E° stays the same; the Nernst slope dies at Q = K.",
+      "In concentration cells both E° are identical, so E = (0.0591/n) log(c_cathode/c_anode) directly.",
+    ],
+  },
 };

@@ -23,6 +23,11 @@ export default async function ConceptsPage() {
   const withLabs = chapters.filter((c) => CONCEPT_CONTENT[c.slug]);
   const dbSlugs = new Set(chapters.map((c) => c.slug));
   const advLabs = Object.keys(CONCEPT_CONTENT).filter((slug) => !dbSlugs.has(slug));
+  const ofSubject = (s: string) => chapters.filter((c) => c.subject === s);
+  const physLabs = ofSubject("Physics").filter((c) => CONCEPT_CONTENT[c.slug]).length;
+  const physTotal = ofSubject("Physics").length;
+  const chemLabs = ofSubject("Chemistry").filter((c) => CONCEPT_CONTENT[c.slug]).length;
+  const chemTotal = ofSubject("Chemistry").length;
 
   return (
     <Box>
@@ -38,16 +43,16 @@ export default async function ConceptsPage() {
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 2.5 }} useFlexGap flexWrap="wrap">
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Interactive labs" value={withLabs.length + advLabs.length} sub="21 chapter labs + JEE Advanced labs" icon={<ScienceOutlinedIcon fontSize="small" />} />
+          <StatCard label="Interactive labs" value={withLabs.length + advLabs.length} sub={`${withLabs.length} chapter labs + ${advLabs.length} Advanced labs`} icon={<ScienceOutlinedIcon fontSize="small" />} />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Coverage" value="100%" sub="full Physics syllabus" />
+          <StatCard label="Physics coverage" value={`${physLabs}/${physTotal}`} sub="entire Physics syllabus" />
+        </Box>
+        <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
+          <StatCard label="Chemistry labs" value={`${chemLabs}/${chemTotal}`} sub="highest-weightage chapters" />
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
           <StatCard label="Each lab includes" value="Sim + notes" sub="formulas, exam traps" />
-        </Box>
-        <Box sx={{ width: { xs: "100%", sm: "calc(50% - 8px)", md: "calc(25% - 12px)" } }}>
-          <StatCard label="Best used" value="Pre-study" sub="build intuition, then solve" />
         </Box>
       </Stack>
 
