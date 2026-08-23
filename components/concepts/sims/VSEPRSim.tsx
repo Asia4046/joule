@@ -138,15 +138,15 @@ function VSEPRSim() {
     // a proper orthonormal rotation, so bond lengths stay true in perspective
     const cyaw = Math.cos(yawRef.current);
     const syaw = Math.sin(yawRef.current);
-    const cp = Math.cos(pitchRef.current);
-    const sp = Math.sin(pitchRef.current);
+    const cosP = Math.cos(pitchRef.current);
+    const sinP = Math.sin(pitchRef.current);
     const F = 3.4; // perspective distance (unit-sphere coordinates)
 
     const project = (v: Vec3) => {
       const x1 = v[0] * cyaw + v[2] * syaw;
       const z1 = -v[0] * syaw + v[2] * cyaw;
-      const y2 = v[1] * cp - z1 * sp;
-      const z2 = v[1] * sp + z1 * cp;
+      const y2 = v[1] * cosP - z1 * sinP;
+      const z2 = v[1] * sinP + z1 * cosP;
       return { x: x1, y: y2, z: z2, s: F / (F - z2) };
     };
 
