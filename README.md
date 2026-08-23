@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/banner.png" width="880" alt="Joule — JEE Preparation Platform">
-</p>
+![Joule — JEE Preparation Platform](docs/banner.png)
 
 # Joule — JEE Preparation Platform
 
@@ -8,10 +6,9 @@ A self-hosted personal command center for JEE (Main + Advanced) preparation. Tra
 
 Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-party APIs, no telemetry — everything runs on your own infrastructure and your own data.
 
-<p align="center">
-  <img src="docs/dashboard-dark.png" width="860" alt="The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking">
-  <br><em>The dashboard — night shift. Every number on it is computed from your own logs.</em>
-</p>
+![The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking](docs/dashboard-dark.png)
+
+*The dashboard — night shift. Every number on it is computed from your own logs.*
 
 ## Features
 
@@ -29,10 +26,9 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Per-subject progress, filters by subject / Chemistry branch (Physical / Organic / Inorganic) / status.
 - Every chapter carries JEE Main & Advanced weightage, average questions per paper, difficulty, and last-studied date.
 
-<p align="center">
-  <img src="docs/syllabus-light.png" width="760" alt="The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards">
-  <br><em>The same dossier in day shift — vanilla paper, licorice ink. Theme is a per-user toggle.</em>
-</p>
+![The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards](docs/syllabus-light.png)
+
+*The same dossier in day shift — vanilla paper, licorice ink. Theme is a per-user toggle.*
 
 ### Concept Labs (interactive Physics & Chemistry simulations)
 - **21 interactive Physics simulations** rendered on `<canvas>` — one per Physics chapter:
@@ -42,10 +38,9 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Each lab pairs the simulation with authored JEE-level explanations, a **KaTeX-rendered formula sheet**, and exam "traps & tips".
 - Chapter pages link to their lab, and labs link to the chapter tracker.
 
-<p align="center">
-  <img src="docs/lab-galvanic.png" width="760" alt="The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG">
-  <br><em>Concept Lab: the Daniell cell. Sliders drive the Nernst equation directly — the meter, electron flow and ion drift all follow E = E° − (RT/2F)·ln Q.</em>
-</p>
+![The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG](docs/lab-galvanic.png)
+
+*Concept Lab: the Daniell cell. Sliders drive the Nernst equation directly — the meter, electron flow and ion drift all follow E = E° − (RT/2F)·ln Q.*
 
 ### Study sessions & focus timer
 - Built-in **focus timer** with presets (Pomodoro 25 / Deep 50 / Long 90 / Break 5), pause/resume, and a progress ring.
@@ -70,10 +65,9 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Analytics**: score%, percentile, accuracy and per-subject trends across all tests, plus attempt and negative-mark breakdowns.
 - **Compare**: side-by-side comparison of up to 4 tests to see exactly what improved.
 
-<p align="center">
-  <img src="docs/mock-analytics.png" width="760" alt="Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns">
-  <br><em>Mock forensics — every test plotted, per-subject trends and attempt breakdowns.</em>
-</p>
+![Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns](docs/mock-analytics.png)
+
+*Mock forensics — every test plotted, per-subject trends and attempt breakdowns.*
 
 ### Analytics & insights
 - **Performance page**: study time, questions solved, consistency score, current/longest streak, daily minutes chart, subject time distribution, mock score trend, and a 182-day heatmap with 7d / 30d / 90d / all-time ranges.
@@ -90,10 +84,9 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Settings**: profile (target exam, year, percentile/rank, prep level, daily study/question targets), revision intervals, notification toggles, theme (light / dark / system), password change, JSON data export, and account deletion.
 - **Accounts**: email + password signup/login with bcrypt-hashed passwords, JWT sessions in httpOnly cookies (30 days), protected route group.
 
-<p align="center">
-  <img src="docs/login.png" width="640" alt="The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint">
-  <br><em>Access — the dossier cover. A seeded demo account (demo@jee.app) ships with the database.</em>
-</p>
+![The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint](docs/login.png)
+
+*Access — the dossier cover. A seeded demo account (demo@jee.app) ships with the database.*
 
 ## Tech stack
 
