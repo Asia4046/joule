@@ -9,7 +9,7 @@ A self-hosted personal command center for JEE (Main + Advanced) preparation. Tra
 Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-party APIs, no telemetry — everything runs on your own infrastructure and your own data.
 
 <p align="center">
-  <img src="docs/dashboard-dark.png" width="880" alt="The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking">
+  <img src="docs/dashboard-dark.png" width="860" alt="The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking">
   <br><em>The dashboard — night shift. Every number on it is computed from your own logs.</em>
 </p>
 
@@ -30,7 +30,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Every chapter carries JEE Main & Advanced weightage, average questions per paper, difficulty, and last-studied date.
 
 <p align="center">
-  <img src="docs/syllabus-light.png" width="880" alt="The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards">
+  <img src="docs/syllabus-light.png" width="760" alt="The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards">
   <br><em>The same dossier in day shift — vanilla paper, licorice ink. Theme is a per-user toggle.</em>
 </p>
 
@@ -43,7 +43,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Chapter pages link to their lab, and labs link to the chapter tracker.
 
 <p align="center">
-  <img src="docs/lab-galvanic.png" width="880" alt="The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG">
+  <img src="docs/lab-galvanic.png" width="760" alt="The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG">
   <br><em>Concept Lab: the Daniell cell. Sliders drive the Nernst equation directly — the meter, electron flow and ion drift all follow E = E° − (RT/2F)·ln Q.</em>
 </p>
 
@@ -71,7 +71,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Compare**: side-by-side comparison of up to 4 tests to see exactly what improved.
 
 <p align="center">
-  <img src="docs/mock-analytics.png" width="880" alt="Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns">
+  <img src="docs/mock-analytics.png" width="760" alt="Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns">
   <br><em>Mock forensics — every test plotted, per-subject trends and attempt breakdowns.</em>
 </p>
 
@@ -91,7 +91,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Accounts**: email + password signup/login with bcrypt-hashed passwords, JWT sessions in httpOnly cookies (30 days), protected route group.
 
 <p align="center">
-  <img src="docs/login.png" width="560" alt="The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint">
+  <img src="docs/login.png" width="640" alt="The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint">
   <br><em>Access — the dossier cover. A seeded demo account (demo@jee.app) ships with the database.</em>
 </p>
 
