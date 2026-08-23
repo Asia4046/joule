@@ -1,8 +1,17 @@
+<p align="center">
+  <img src="docs/banner.png" width="880" alt="Joule — JEE Preparation Platform">
+</p>
+
 # Joule — JEE Preparation Platform
 
 A self-hosted personal command center for JEE (Main + Advanced) preparation. Track the full syllabus, log study time and practice, run spaced-repetition revisions, analyse mock tests, and get actionable insights — all in one responsive web app.
 
 Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-party APIs, no telemetry — everything runs on your own infrastructure and your own data.
+
+<p align="center">
+  <img src="docs/dashboard-dark.png" width="880" alt="The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking">
+  <br><em>The dashboard — night shift. Every number on it is computed from your own logs.</em>
+</p>
 
 ## Features
 
@@ -20,6 +29,11 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Per-subject progress, filters by subject / Chemistry branch (Physical / Organic / Inorganic) / status.
 - Every chapter carries JEE Main & Advanced weightage, average questions per paper, difficulty, and last-studied date.
 
+<p align="center">
+  <img src="docs/syllabus-light.png" width="880" alt="The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards">
+  <br><em>The same dossier in day shift — vanilla paper, licorice ink. Theme is a per-user toggle.</em>
+</p>
+
 ### Concept Labs (interactive Physics & Chemistry simulations)
 - **21 interactive Physics simulations** rendered on `<canvas>` — one per Physics chapter:
   Error propagation, Projectile, Friction, Energy ramp, Angular momentum, Orbital mechanics, Viscosity, Piston (thermodynamics), Damped oscillator, Electric field lines, Drift velocity, Charge in a magnetic field, Bar magnet, AC generator, EM wave, Lens/refraction, Young's double slit, Photoelectric effect, Bohr atom, Rectifier, Vernier calipers.
@@ -27,6 +41,11 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **8 JEE Advanced archetype labs**: collisions, rolling race, Doppler wavefronts, RC transients, radioactive decay, standing waves, tunnel piston, lens systems.
 - Each lab pairs the simulation with authored JEE-level explanations, a **KaTeX-rendered formula sheet**, and exam "traps & tips".
 - Chapter pages link to their lab, and labs link to the chapter tracker.
+
+<p align="center">
+  <img src="docs/lab-galvanic.png" width="880" alt="The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG">
+  <br><em>Concept Lab: the Daniell cell. Sliders drive the Nernst equation directly — the meter, electron flow and ion drift all follow E = E° − (RT/2F)·ln Q.</em>
+</p>
 
 ### Study sessions & focus timer
 - Built-in **focus timer** with presets (Pomodoro 25 / Deep 50 / Long 90 / Break 5), pause/resume, and a progress ring.
@@ -51,6 +70,11 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Analytics**: score%, percentile, accuracy and per-subject trends across all tests, plus attempt and negative-mark breakdowns.
 - **Compare**: side-by-side comparison of up to 4 tests to see exactly what improved.
 
+<p align="center">
+  <img src="docs/mock-analytics.png" width="880" alt="Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns">
+  <br><em>Mock forensics — every test plotted, per-subject trends and attempt breakdowns.</em>
+</p>
+
 ### Analytics & insights
 - **Performance page**: study time, questions solved, consistency score, current/longest streak, daily minutes chart, subject time distribution, mock score trend, and a 182-day heatmap with 7d / 30d / 90d / all-time ranges.
 - **JEE Weightage**: chapter-wise weightage and average questions for JEE Main and Advanced (2026 paper analysis; chapters dropped in the 2024 NTA syllabus revision show 0%).
@@ -65,6 +89,11 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Notifications**: an in-app bell with rule-generated notifications (revision due, daily target behind schedule, streak at risk, weekly study-time comparison, new best percentile, stale chapters) — deduplicated and respecting your notification preferences.
 - **Settings**: profile (target exam, year, percentile/rank, prep level, daily study/question targets), revision intervals, notification toggles, theme (light / dark / system), password change, JSON data export, and account deletion.
 - **Accounts**: email + password signup/login with bcrypt-hashed passwords, JWT sessions in httpOnly cookies (30 days), protected route group.
+
+<p align="center">
+  <img src="docs/login.png" width="560" alt="The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint">
+  <br><em>Access — the dossier cover. A seeded demo account (demo@jee.app) ships with the database.</em>
+</p>
 
 ## Tech stack
 
@@ -273,9 +302,13 @@ npm start
 
 ## Development notes
 
-- **Next.js 16** — this codebase uses the modern conventions for this version (e.g. a top-level `proxy.ts` for request interception, `next dev`-managed agent rules). Consult the bundled docs in `node_modules/next/dist/docs/` before changing framework behaviour.
+- **Next.js 16** — this codebase uses the modern conventions for this version (e.g., a top-level `proxy.ts` for request interception, `next dev`-managed agent rules). Consult the bundled docs in `node_modules/next/dist/docs/` before changing framework behaviour.
 - Pages are `force-dynamic` since they reflect real-time user data against PostgreSQL.
 - Concept sims are client components; authored concept text/formulas are server-side content rendered with KaTeX.
+
+## Brand
+
+The visual identity — "Jellybean Dossier" — is vanilla paper and licorice ink with squared corners and hard offset shadows; candy color exists only as the eight "beans" (bubblegum is the brand accent). The palette and all beans live in `lib/jellybeans.ts`, the mark is `app/icon.svg` (rasterised copies: `app/apple-touch-icon.png`, `docs/mark-512.png`), and display type is Space Grotesk with JetBrains Mono for the mono kickers. Screenshots in this README are of the seeded demo data.
 
 ## License
 
