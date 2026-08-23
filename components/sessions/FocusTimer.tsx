@@ -31,11 +31,19 @@ const FOCUS_PRESETS = [
   { label: "Long 90", minutes: 90 },
 ];
 
-export default function FocusTimer({ chapters, autoOpen }: { chapters: ChapterOpt[]; autoOpen?: boolean }) {
-  const [presetMinutes, setPresetMinutes] = useState(25);
+export default function FocusTimer({
+  chapters,
+  autoOpen,
+  defaultMinutes = 25,
+}: {
+  chapters: ChapterOpt[];
+  autoOpen?: boolean;
+  defaultMinutes?: number;
+}) {
+  const [presetMinutes, setPresetMinutes] = useState(defaultMinutes);
   const [mode, setMode] = useState<Mode>("focus");
   const [state, setState] = useState<TimerState>("idle");
-  const [remaining, setRemaining] = useState(25 * 60);
+  const [remaining, setRemaining] = useState(defaultMinutes * 60);
   const [subject, setSubject] = useState<string>("Physics");
   const [chapterId, setChapterId] = useState<string>("");
   const [type, setType] = useState<string>("concept");

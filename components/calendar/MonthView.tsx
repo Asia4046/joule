@@ -50,10 +50,12 @@ export default function MonthView({
   year,
   month,
   events,
+  weekStartsOn = 0,
 }: {
   year: number;
   month: number; // 0-indexed
   events: CalendarEvent[];
+  weekStartsOn?: 0 | 1; // 0 = Sunday, 1 = Monday
 }) {
   const router = useRouter();
   const theme = useTheme();
@@ -73,14 +75,14 @@ export default function MonthView({
   const cells = useMemo(() => {
     const first = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const lead = first.getDay();
+    const lead = (first.getDay() - weekStartsOn + 7) % 7;
     const out: ({ day: number; key: string } | null)[] = Array.from({ length: lead }, () => null);
     for (let d = 1; d <= daysInMonth; d++) {
       out.push({ day: d, key: `${iso(year, month)}-${String(d).padStart(2, "0")}` });
     }
     while (out.length % 7 !== 0) out.push(null);
     return out;
-  }, [year, month]);
+  }, [year, month, weekStartsOn]);
 
   const go = (delta: number) => {
     const d = new Date(year, month + delta, 1);
@@ -128,7 +130,7 @@ export default function MonthView({
           aria-label={`${monthTitle(year, month)} calendar`}
           sx={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}
         >
-          {WEEKDAYS.map((w) => (
+          {[...WEEKDAYS.slice(weekStartsOn), ...WEEKDAYS.slice(0, weekStartsOn)].map((w) => (
             <Typography key={w} variant="caption" color="text.secondary" sx={{ textAlign: "center", fontWeight: 600, py: 0.5 }} component="div" role="columnheader">
               {w}
             </Typography>

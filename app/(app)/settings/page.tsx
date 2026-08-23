@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
 import SettingsView from "@/components/settings/SettingsView";
 import { DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
+import { mergeCustomization } from "@/lib/customization";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export default async function SettingsPage() {
           notifyStreak: prefs?.notifyStreak ?? true,
           notifyMockTests: prefs?.notifyMockTests ?? true,
         }}
+        customization={mergeCustomization(prefs?.customization)}
       />
     </Box>
   );

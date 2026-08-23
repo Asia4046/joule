@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
 import { studyMinutesInRange, subjectMinutes, daysAgo } from "@/lib/analytics";
+import { mergeCustomization } from "@/lib/customization";
 import SessionsList from "@/components/sessions/SessionsList";
 import FocusTimer from "@/components/sessions/FocusTimer";
 
@@ -12,7 +13,7 @@ export default async function SessionsPage(props: { searchParams: Promise<{ time
   const user = await requireUser();
   const sp = await props.searchParams;
 
-  const [sessions, chapters] = await Promise.all([
+  const [sessions, chapters, prefs] = await Promise.all([
     prisma.studySession.findMany({
       where: { userId: user.id },
       include: { chapter: true },
@@ -20,6 +21,7 @@ export default async function SessionsPage(props: { searchParams: Promise<{ time
       take: 100,
     }),
     prisma.chapter.findMany({ select: { id: true, name: true, subject: true }, orderBy: { subject: "asc" } }),
+    prisma.userPreference.findUnique({ where: { userId: user.id }, select: { customization: true } }),
   ]);
 
   const week = studyMinutesInRange(sessions, 7);
@@ -35,6 +37,7 @@ export default async function SessionsPage(props: { searchParams: Promise<{ time
       <FocusTimer
         chapters={chapters.map((c) => ({ id: c.id, name: c.name, subject: c.subject }))}
         autoOpen={sp.timer === "1"}
+        defaultMinutes={mergeCustomization(prefs?.customization).focusMinutes}
       />
       <Box sx={{ mt: 3 }}>
         <SessionsList

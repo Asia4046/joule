@@ -1,5 +1,8 @@
 import { J, SUBJECT_COLORS as BEAN_SUBJECTS, beanOn } from "@/lib/jellybeans";
 
+/** Shared demo account created by the seed — its password/deletion are locked (see app/actions/data.ts). */
+export const DEMO_EMAIL = "demo@jee.app";
+
 export const SUBJECTS = ["Physics", "Chemistry", "Mathematics"] as const;
 export type Subject = (typeof SUBJECTS)[number];
 

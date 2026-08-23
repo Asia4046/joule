@@ -5,9 +5,28 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 const COOKIE_NAME = "jee_session";
-const secret = new TextEncoder().encode(
-  process.env.AUTH_SECRET ?? "dev-secret-change-me-in-production"
-);
+const DEV_SECRET_FALLBACK = "dev-secret-change-me-in-production";
+/** Cost-12 hash of a throwaway password — compared against when the email is unknown so login timing can't reveal account existence. */
+const DUMMY_PASSWORD_HASH = "$2b$12$elq/SmpvLFEzoswRtLtSRO990yIiBwNVtpKlc0g65uGk4yndL8ebG";
+
+let cachedSecret: Uint8Array | null = null;
+function getSecret(): Uint8Array {
+  cachedSecret ??= new TextEncoder().encode(requireSecret());
+  return cachedSecret;
+}
+function requireSecret(): string {
+  if (process.env.AUTH_SECRET) return process.env.AUTH_SECRET;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("AUTH_SECRET is not set. Generate one with `openssl rand -base64 32`.");
+  }
+  return DEV_SECRET_FALLBACK;
+}
+
+/** Post-login redirect target — same-origin relative paths only, so `next=//evil.com` or `next=https://…` cannot redirect off-site. Whitespace is rejected too: browsers strip it from URLs, which would turn `/\tevil.com` into a protocol-relative URL. */
+export function safeNextPath(raw: FormDataEntryValue | null | undefined): string {
+  const next = String(raw ?? "");
+  return /^\/[^\s/\\]\S*$/.test(next) ? next : "/dashboard";
+}
 
 export type SessionUser = {
   id: string;
@@ -24,7 +43,7 @@ export async function createSession(user: SessionUser) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("30d")
-    .sign(secret);
+    .sign(getSecret());
   const store = await cookies();
   store.set(COOKIE_NAME, token, {
     httpOnly: true,
@@ -45,7 +64,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const token = store.get(COOKIE_NAME)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, getSecret());
     return { id: payload.sub as string, email: payload.email as string, name: payload.name as string };
   } catch {
     return null;
@@ -76,8 +95,7 @@ export async function signup(email: string, password: string, name: string) {
 
 export async function login(email: string, password: string) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return { error: "Invalid email or password." as const };
-  const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return { error: "Invalid email or password." as const };
+  const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
+  if (!user || !ok) return { error: "Invalid email or password." as const };
   return { user: { id: user.id, email: user.email, name: user.name } };
 }

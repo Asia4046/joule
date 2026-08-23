@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
+import { useAccent } from "@/components/Providers";
 import { J } from "@/lib/jellybeans";
 
 const QUOTES = [
@@ -36,9 +37,10 @@ function useNow() {
 }
 
 /** Live clock dossier tile — Space Grotesk time over a segmented day bar. */
-export function ClockCard() {
+export function ClockCard({ hour12 = false }: { hour12?: boolean }) {
   const theme = useTheme();
   const dark = theme.palette.mode === "dark";
+  const accent = useAccent();
   const now = useNow();
   const time = now ?? new Date(0);
   const hh = String(time.getHours()).padStart(2, "0");
@@ -62,13 +64,19 @@ export function ClockCard() {
           sx={{ fontSize: "1.7rem", fontWeight: 700, color: "text.primary", lineHeight: 1, letterSpacing: "0.01em" }}
         >
           {now ? (
-            <>
-              {hh}
-              <Box component="span" className="jee-pulse" sx={{ mx: "1px" }}>
-                :
-              </Box>
-              {mm}
-            </>
+            hour12 ? (
+              time
+                .toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true })
+                .toUpperCase()
+            ) : (
+              <>
+                {hh}
+                <Box component="span" className="jee-pulse" sx={{ mx: "1px" }}>
+                  :
+                </Box>
+                {mm}
+              </>
+            )
           ) : (
             "--:--"
           )}
@@ -93,8 +101,8 @@ export function ClockCard() {
               bgcolor:
                 i < filled
                   ? dark
-                    ? J.bean.bubblegum.fill
-                    : J.bean.bubblegum.deep
+                    ? accent.fill
+                    : accent.deep
                   : dark
                     ? "rgba(222,213,198,0.12)"
                     : "#ECE6D6",

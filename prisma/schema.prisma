@@ -53,6 +53,7 @@ model UserPreference {
   notifyGoals         Boolean @default(true)
   notifyStreak        Boolean @default(true)
   notifyMockTests     Boolean @default(true)
+  customization       Json?    // avatar, accent bean, dashboard widgets, timer/week/clock defaults — see lib/customization.ts
 }
 
 // ---------- Syllabus (global, seeded) ----------

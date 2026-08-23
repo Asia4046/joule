@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { login, signup, createSession } from "@/lib/auth";
+import { login, signup, createSession, safeNextPath } from "@/lib/auth";
 
 const credentialsSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -24,7 +24,7 @@ export async function loginAction(_prev: AuthState, formData: FormData): Promise
   const result = await login(parsed.data.email, parsed.data.password);
   if ("error" in result) return { error: result.error };
   await createSession(result.user);
-  redirect(String(formData.get("next") || "/dashboard"));
+  redirect(safeNextPath(formData.get("next")));
 }
 
 export async function signupAction(_prev: AuthState, formData: FormData): Promise<AuthState> {

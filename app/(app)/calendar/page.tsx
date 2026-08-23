@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PageHeader } from "@/components/ui";
 import MonthView, { type CalendarEvent } from "@/components/calendar/MonthView";
+import { mergeCustomization } from "@/lib/customization";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,7 @@ export default async function CalendarPage(props: { searchParams: Promise<{ mont
   const monthStart = new Date(year, month, 1);
   const monthEnd = new Date(year, month + 1, 1); // exclusive
 
-  const [sessions, tests, revisions, goals, entries] = await Promise.all([
+  const [sessions, tests, revisions, goals, entries, prefs] = await Promise.all([
     prisma.studySession.findMany({
       where: { userId: user.id, startedAt: { gte: monthStart, lt: monthEnd } },
       orderBy: { startedAt: "asc" },
@@ -52,6 +53,7 @@ export default async function CalendarPage(props: { searchParams: Promise<{ mont
       where: { userId: user.id, date: { gte: monthStart, lt: monthEnd } },
       orderBy: { date: "asc" },
     }),
+    prisma.userPreference.findUnique({ where: { userId: user.id }, select: { customization: true } }),
   ]);
 
   const events: CalendarEvent[] = [
@@ -85,7 +87,7 @@ export default async function CalendarPage(props: { searchParams: Promise<{ mont
   return (
     <Box>
       <PageHeader title="Calendar" subtitle="Study sessions, mock tests, revisions, journal entries and goal deadlines in one view." />
-      <MonthView year={year} month={month} events={events} />
+      <MonthView year={year} month={month} events={events} weekStartsOn={mergeCustomization(prefs?.customization).weekStartsOn} />
     </Box>
   );
 }

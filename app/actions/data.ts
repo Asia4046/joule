@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
-import { DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
+import { DEFAULT_REVISION_INTERVALS, DEMO_EMAIL } from "@/lib/constants";
+import { customizationSchema, DASHBOARD_WIDGETS } from "@/lib/customization";
 
 export type ActionState = { error?: string; ok?: boolean } | undefined;
 
@@ -87,8 +88,11 @@ export async function createGoalAction(_prev: ActionState, formData: FormData): 
 
 export async function updateGoalProgressAction(formData: FormData) {
   const user = await requireUser();
-  const id = String(formData.get("id"));
-  const current = Number(formData.get("current"));
+  const parsed = z
+    .object({ id: z.string().min(1), current: z.coerce.number().min(0).max(1_000_000) })
+    .safeParse({ id: formData.get("id"), current: formData.get("current") });
+  if (!parsed.success) return;
+  const { id, current } = parsed.data;
   const completed = formData.has("completed");
   const goal = await prisma.goal.findFirst({ where: { id, userId: user.id } });
   if (!goal) return;
@@ -189,14 +193,28 @@ export async function createMockTestAction(_prev: ActionState, formData: FormDat
     data: { current: { increment: 1 } },
   });
   revalidatePath("/mock-tests");
+  revalidatePath("/goals");
   revalidatePath("/dashboard");
   return { ok: true };
 }
 
 export async function deleteMockTestAction(formData: FormData) {
   const user = await requireUser();
-  await prisma.mockTest.deleteMany({ where: { id: String(formData.get("id")), userId: user.id } });
+  const deleted = await prisma.mockTest.deleteMany({
+    where: { id: String(formData.get("id")), userId: user.id },
+  });
+  if (deleted.count === 0) return;
+  // undo createMockTestAction's increment of weekly mock goals, clamped at 0
+  await prisma.goal.updateMany({
+    where: { userId: user.id, metric: "mocks", kind: "weekly", completed: false },
+    data: { current: { decrement: 1 } },
+  });
+  await prisma.goal.updateMany({
+    where: { userId: user.id, metric: "mocks", kind: "weekly", current: { lt: 0 } },
+    data: { current: 0 },
+  });
   revalidatePath("/mock-tests");
+  revalidatePath("/goals");
   revalidatePath("/dashboard");
 }
 
@@ -239,11 +257,21 @@ export async function createMistakeAction(_prev: ActionState, formData: FormData
   return { ok: true };
 }
 
+const mistakeStatusSchema = z.object({
+  id: z.string().min(1),
+  status: z.enum(["open", "revisited", "resolved"]),
+});
+
 export async function updateMistakeStatusAction(formData: FormData) {
   const user = await requireUser();
+  const parsed = mistakeStatusSchema.safeParse({
+    id: formData.get("id"),
+    status: formData.get("status"),
+  });
+  if (!parsed.success) return;
   await prisma.mistake.updateMany({
-    where: { id: String(formData.get("id")), userId: user.id },
-    data: { status: String(formData.get("status")) },
+    where: { id: parsed.data.id, userId: user.id },
+    data: { status: parsed.data.status },
   });
   revalidatePath("/mistakes");
 }
@@ -287,10 +315,19 @@ export async function completeRevisionAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+const scheduleRevisionSchema = z.object({
+  topicId: z.string().min(1),
+  days: z.coerce.number().int().min(0).max(365).default(1),
+});
+
 export async function scheduleRevisionAction(formData: FormData) {
   const user = await requireUser();
-  const topicId = String(formData.get("topicId"));
-  const days = Number(formData.get("days") || 1);
+  const parsed = scheduleRevisionSchema.safeParse({
+    topicId: formData.get("topicId"),
+    days: formData.get("days") ?? 1,
+  });
+  if (!parsed.success) return;
+  const { topicId, days } = parsed.data;
   const topic = await prisma.topic.findUnique({ where: { id: topicId }, include: { chapter: true } });
   if (!topic) return;
   await prisma.revision.create({
@@ -340,6 +377,7 @@ export async function toggleResourceFlagAction(formData: FormData) {
   const id = String(formData.get("id"));
   const field = String(formData.get("field")); // favorite | completed
   const value = String(formData.get("value")) === "true";
+  if (field !== "favorite" && field !== "completed") return;
   await prisma.resource.updateMany({
     where: { id, userId: user.id },
     data: field === "favorite" ? { favorite: value } : { completed: value },
@@ -419,8 +457,34 @@ export async function updatePreferencesAction(_prev: ActionState, formData: Form
   return { ok: true };
 }
 
+export async function updateCustomizationAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const user = await requireUser();
+  const parsed = customizationSchema.safeParse({
+    accent: formData.get("accent"),
+    avatarEmoji: formData.get("avatarEmoji") ?? "",
+    avatarBean: formData.get("avatarBean"),
+    avatarUrl: formData.get("avatarUrl") ?? "",
+    focusMinutes: formData.get("focusMinutes"),
+    weekStartsOn: Number(formData.get("weekStartsOn")),
+    hour12: formData.get("hour12") === "on",
+    dashboard: Object.fromEntries(
+      DASHBOARD_WIDGETS.map((w) => [w.key, formData.get(`dash_${w.key}`) === "on"])
+    ),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  await prisma.userPreference.upsert({
+    where: { userId: user.id },
+    create: { userId: user.id, customization: parsed.data },
+    update: { customization: parsed.data },
+  });
+  // the shell (avatar) and root theme (accent) render outside this page
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export async function changePasswordAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const user = await requireUser();
+  if (user.email === DEMO_EMAIL) return { error: "The demo account's password can't be changed." };
   const current = String(formData.get("currentPassword") ?? "");
   const next = String(formData.get("newPassword") ?? "");
   if (next.length < 8) return { error: "New password must be at least 8 characters." };
@@ -439,6 +503,7 @@ export async function changePasswordAction(_prev: ActionState, formData: FormDat
 
 export async function deleteAccountAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const user = await requireUser();
+  if (user.email === DEMO_EMAIL) return { error: "The demo account can't be deleted." };
   const confirm = String(formData.get("confirm") ?? "");
   if (confirm !== "DELETE") return { error: 'Type DELETE to confirm account deletion.' };
   await prisma.user.delete({ where: { id: user.id } });

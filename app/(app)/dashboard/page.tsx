@@ -29,6 +29,7 @@ import {
   daysAgo,
 } from "@/lib/analytics";
 import { SUBJECTS, subjectBarSx } from "@/lib/constants";
+import { mergeCustomization } from "@/lib/customization";
 import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend } from "@/components/ui";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 
@@ -43,7 +44,7 @@ const fmtHours = (minutes: number) => {
 export default async function DashboardPage() {
   const user = await requireUser();
 
-  const [profile, sessions, logs, tests, states, chapterCounts, goals, revisionsDue] = await Promise.all([
+  const [profile, sessions, logs, tests, states, chapterCounts, goals, revisionsDue, prefs] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user.id } }),
     prisma.studySession.findMany({
       where: { userId: user.id, startedAt: { gte: daysAgo(200) } },
@@ -59,7 +60,10 @@ export default async function DashboardPage() {
       include: { topic: { include: { chapter: true } } },
       take: 6,
     }),
+    prisma.userPreference.findUnique({ where: { userId: user.id }, select: { customization: true } }),
   ]);
+
+  const dash = mergeCustomization(prefs?.customization).dashboard;
 
   const today = new Date();
   const todayMinutes = minutesOn(sessions, today);
@@ -91,6 +95,7 @@ export default async function DashboardPage() {
   return (
     <Box className="jee-stagger" sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" }, gap: 2 }}>
       {/* hero */}
+      {dash.hero && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" }, position: "relative", overflow: "hidden" }}>
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
@@ -113,9 +118,10 @@ export default async function DashboardPage() {
             Start focus session
           </LinkButton>
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* streak — the one candy tile */}
+      {dash.streak && (
       <Card
         sx={{
           gridColumn: { xs: "1 / -1", md: "span 4" },
@@ -158,9 +164,10 @@ export default async function DashboardPage() {
             {todayMinutes > 0 ? `${fmtHours(todayMinutes)} of ${fmtHours(target)} today` : `Target ${fmtHours(target)} today`}
           </Typography>
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* stat tiles */}
+      {dash.stats && (<>
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
         <StatCard
           label="Today's study"
@@ -183,8 +190,10 @@ export default async function DashboardPage() {
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
         <StatCard label="Best percentile" value={bestPct != null ? bestPct.toFixed(2) : "—"} sub={tests.length ? `${tests.length} tests recorded` : "No tests yet"} icon={<LeaderboardOutlinedIcon fontSize="small" />} />
       </Box>
+      </>)}
 
       {/* preparation progress */}
+      {dash.progress && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 5" } }}>
         <CardContent>
           <Typography variant="h6">Preparation progress</Typography>
@@ -209,9 +218,10 @@ export default async function DashboardPage() {
             {Object.values(chaptersBySubject).reduce((a, b) => a + b, 0)} total.
           </Typography>
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* today's plan */}
+      {dash.todaysPlan && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 4" } }}>
         <CardContent>
           <Typography variant="h6">Today&apos;s plan</Typography>
@@ -251,9 +261,10 @@ export default async function DashboardPage() {
             </Stack>
           )}
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* revision due */}
+      {dash.revisionDue && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
         <CardContent>
           <Typography variant="h6">Revision due</Typography>
@@ -281,9 +292,10 @@ export default async function DashboardPage() {
             </Stack>
           )}
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* study activity chart */}
+      {dash.activity && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" } }}>
         <CardContent>
           <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
@@ -292,9 +304,10 @@ export default async function DashboardPage() {
           </Stack>
           <DashboardCharts sessions={sessions.map((s) => ({ startedAt: s.startedAt.toISOString(), durationMinutes: s.durationMinutes, subject: s.subject }))} />
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* weak areas */}
+      {dash.weakAreas && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 4" } }}>
         <CardContent>
           <Typography variant="h6">Weak areas</Typography>
@@ -321,9 +334,10 @@ export default async function DashboardPage() {
             </Stack>
           )}
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* what to study next */}
+      {dash.nextUp && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 5" } }}>
         <CardContent>
           <Typography variant="h6">What to study next</Typography>
@@ -352,9 +366,10 @@ export default async function DashboardPage() {
             </Stack>
           )}
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* recent tests */}
+      {dash.recentTests && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 7" } }}>
         <CardContent>
           <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
@@ -396,9 +411,10 @@ export default async function DashboardPage() {
             </Box>
           )}
         </CardContent>
-      </Card>
+      </Card>)}
 
       {/* heatmap */}
+      {dash.heatmap && (
       <Card sx={{ gridColumn: "1 / -1" }}>
         <CardContent>
           <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2, flexWrap: "wrap", gap: 1 }}>
@@ -407,7 +423,7 @@ export default async function DashboardPage() {
           </Stack>
           <StudyHeatmap data={heat} />
         </CardContent>
-      </Card>
+      </Card>)}
     </Box>
   );
 }

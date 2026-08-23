@@ -26,10 +26,11 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import SearchIcon from "@mui/icons-material/SearchOutlined";
 import SearchCommand from "@/components/SearchCommand";
 import NotificationBell from "@/components/NotificationBell";
+import UserAvatar from "@/components/UserAvatar";
 import { ClockCard, QuoteCard } from "@/components/SidebarWidgets";
-import { useThemeMode } from "@/components/Providers";
+import { useThemeMode, useAccent } from "@/components/Providers";
 import { NAV, MOBILE_NAV } from "@/lib/nav";
-import { J, withA } from "@/lib/jellybeans";
+import { J, withA, type BeanName } from "@/lib/jellybeans";
 
 const SIDEBAR_WIDTH = 264;
 
@@ -59,10 +60,19 @@ function Brand() {
   );
 }
 
-function SidebarContent({ pathname, userName }: { pathname: string; userName: string }) {
+function SidebarContent({
+  pathname,
+  userName,
+  avatar,
+  hour12,
+}: {
+  pathname: string;
+  userName: string;
+  avatar?: { emoji: string; bean: BeanName; url?: string };
+  hour12?: boolean;
+}) {
   const theme = useTheme();
   const dark = theme.palette.mode === "dark";
-  const initials = userName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   const ink = dark ? J.boneDark : J.inkLight;
 
   return (
@@ -79,7 +89,7 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
         <Brand />
       </Box>
       <Box sx={{ px: 2, pb: 2 }}>
-        <ClockCard />
+        <ClockCard hour12={hour12} />
       </Box>
       <Box sx={{ px: 1.5, flex: 1, overflowY: "auto", pb: 1 }}>
         {NAV.map((group, gi) => {
@@ -172,23 +182,12 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
             bgcolor: dark ? J.cardDark : J.cardLight,
           }}
         >
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: "2px",
-              bgcolor: dark ? J.boneDark : J.inkLight,
-              color: dark ? J.paperDark : "#FAF7EF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "0.72rem",
-              fontWeight: 800,
-              flexShrink: 0,
-            }}
-          >
-            {initials}
-          </Box>
+          <UserAvatar
+            name={userName}
+            emoji={avatar?.emoji ?? ""}
+            bean={avatar?.bean ?? "bubblegum"}
+            url={avatar?.url}
+          />
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: "0.8rem", color: ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {userName}
@@ -203,11 +202,22 @@ function SidebarContent({ pathname, userName }: { pathname: string; userName: st
   );
 }
 
-export default function AppShell({ children, userName }: { children: React.ReactNode; userName: string }) {
+export default function AppShell({
+  children,
+  userName,
+  avatar,
+  hour12,
+}: {
+  children: React.ReactNode;
+  userName: string;
+  avatar?: { emoji: string; bean: BeanName; url?: string };
+  hour12?: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const theme = useTheme();
   const { resolved, setMode } = useThemeMode();
+  const accent = useAccent();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -263,7 +273,7 @@ export default function AppShell({ children, userName }: { children: React.React
           height: "100dvh",
         }}
       >
-        <SidebarContent pathname={pathname} userName={userName} />
+        <SidebarContent pathname={pathname} userName={userName} avatar={avatar} hour12={hour12} />
       </Box>
 
       {/* Mobile drawer */}
@@ -273,7 +283,7 @@ export default function AppShell({ children, userName }: { children: React.React
         onClose={() => setMobileOpen(false)}
         sx={{ display: { xs: "block", md: "none" }, "& .MuiDrawer-paper": { width: SIDEBAR_WIDTH, border: "none", bgcolor: dark ? J.railDark : J.paperLight } }}
       >
-        <SidebarContent pathname={pathname} userName={userName} />
+        <SidebarContent pathname={pathname} userName={userName} avatar={avatar} hour12={hour12} />
       </Drawer>
 
       <Box sx={{ flexGrow: 1, minWidth: 0, pb: { xs: 10, md: 0 } }}>
@@ -323,7 +333,7 @@ export default function AppShell({ children, userName }: { children: React.React
                   bgcolor: dark ? "#171411" : "#FFFFFF",
                 },
                 "&:focus-visible": {
-                  outline: `2px solid ${dark ? J.accent.dark : J.accent.light}`,
+                  outline: `2px solid ${dark ? accent.fill : accent.deep}`,
                   outlineOffset: 2,
                 },
               }}
@@ -421,7 +431,7 @@ export default function AppShell({ children, userName }: { children: React.React
                 borderTop: `3px solid ${active ? beanColor : "transparent"}`,
                 transition: "border-color .18s ease, color .18s ease, background-color .18s ease",
                 "&:focus-visible": {
-                  outline: `2px solid ${dark ? J.accent.dark : J.accent.light}`,
+                  outline: `2px solid ${dark ? accent.fill : accent.deep}`,
                   outlineOffset: "-2px",
                 },
               }}

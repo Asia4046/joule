@@ -9,7 +9,7 @@ import {
 } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import GlobalStyles from "@mui/material/GlobalStyles";
-import { J } from "@/lib/jellybeans";
+import { J, withA, type Bean, type BeanName } from "@/lib/jellybeans";
 
 export type ThemeMode = "light" | "dark" | "system";
 type Resolved = "light" | "dark";
@@ -23,6 +23,10 @@ const ThemeModeContext = createContext<{
 }>({ mode: "system", resolved: "dark", setMode: () => {} });
 
 export const useThemeMode = () => useContext(ThemeModeContext);
+
+const AccentContext = createContext<Bean>(J.bean.bubblegum);
+/** The user's accent bean (links, focus rings, selection, sliders). */
+export const useAccent = () => useContext(AccentContext);
 
 const SANS = "var(--font-inter), system-ui, -apple-system, sans-serif";
 const DISPLAY = "var(--font-display), var(--font-inter), system-ui, sans-serif";
@@ -48,7 +52,7 @@ const typography = {
  * elements press like taffy: hover lifts into a hard offset shadow, release
  * squashes back flat.
  */
-const skin = (theme: Theme) => {
+const skin = (theme: Theme, accent: Bean) => {
   const dark = theme.palette.mode === "dark";
   const ink = dark ? J.boneDark : J.inkLight; // strong border / block color
   const hair = dark ? J.hairDark : J.hairLight;
@@ -148,9 +152,9 @@ const skin = (theme: Theme) => {
       defaultProps: { underline: "hover" },
       styleOverrides: {
         root: {
-          color: dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep,
+          color: dark ? accent.fill : accent.deep,
           fontWeight: 500,
-          "&:hover": { color: dark ? "#F7C2DA" : "#8E315C" },
+          "&:hover": { color: dark ? withA(accent.fill, 0.72) : withA(accent.deep, 0.8) },
         },
       },
     },
@@ -250,7 +254,7 @@ const skin = (theme: Theme) => {
     },
     MuiSlider: {
       styleOverrides: {
-        root: { color: dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep },
+        root: { color: dark ? accent.fill : accent.deep },
       },
     },
     MuiListItemButton: {
@@ -270,55 +274,46 @@ const skin = (theme: Theme) => {
   } as const;
 };
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: { main: J.boneDark, light: "#F0E9DC", dark: "#C9C0B0", contrastText: J.paperDark },
-    secondary: { main: J.bean.bubblegum.fill },
-    success: { main: J.bean.mint.fill },
-    warning: { main: J.bean.lemon.fill },
-    error: { main: J.bean.cherry.fill },
-    info: { main: J.bean.sky.fill },
-    background: { default: J.paperDark, paper: J.cardDark },
-    text: { primary: J.boneDark, secondary: J.boneMidDark },
-    divider: J.hairDark,
-  },
-  shape: { borderRadius: 2 },
-  typography,
-  components: skin(createTheme({ palette: { mode: "dark" } })),
-});
+const buildTheme = (mode: "light" | "dark", accent: Bean) =>
+  createTheme({
+    palette: {
+      mode,
+      primary:
+        mode === "dark"
+          ? { main: J.boneDark, light: "#F0E9DC", dark: "#C9C0B0", contrastText: J.paperDark }
+          : { main: J.inkLight, light: "#3D3931", dark: "#141210", contrastText: "#FAF7EF" },
+      secondary: { main: mode === "dark" ? accent.fill : accent.deep },
+      success: { main: mode === "dark" ? J.bean.mint.fill : J.bean.mint.deep },
+      warning: { main: mode === "dark" ? J.bean.lemon.fill : J.bean.lemon.deep },
+      error: { main: mode === "dark" ? J.bean.cherry.fill : J.bean.cherry.deep },
+      info: { main: mode === "dark" ? J.bean.sky.fill : J.bean.sky.deep },
+      background:
+        mode === "dark"
+          ? { default: J.paperDark, paper: J.cardDark }
+          : { default: J.paperLight, paper: J.cardLight },
+      text:
+        mode === "dark"
+          ? { primary: J.boneDark, secondary: J.boneMidDark }
+          : { primary: J.inkLight, secondary: J.inkMidLight },
+      divider: mode === "dark" ? J.hairDark : J.hairLight,
+    },
+    shape: { borderRadius: 2 },
+    typography,
+    components: skin(createTheme({ palette: { mode } }), accent),
+  });
 
-const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: { main: J.inkLight, light: "#3D3931", dark: "#141210", contrastText: "#FAF7EF" },
-    secondary: { main: J.bean.bubblegum.deep },
-    success: { main: J.bean.mint.deep },
-    warning: { main: J.bean.lemon.deep },
-    error: { main: J.bean.cherry.deep },
-    info: { main: J.bean.sky.deep },
-    background: { default: J.paperLight, paper: J.cardLight },
-    text: { primary: J.inkLight, secondary: J.inkMidLight },
-    divider: J.hairLight,
-  },
-  shape: { borderRadius: 2 },
-  typography,
-  components: skin(createTheme({ palette: { mode: "light" } })),
-});
-
-function GlobalThemeStyles() {
+function GlobalThemeStyles({ accent }: { accent: Bean }) {
   return (
     <GlobalStyles
       styles={(theme: Theme) => {
         const dark = theme.palette.mode === "dark";
-        const accent = dark ? J.accent.dark : J.accent.light;
         return {
           html: { scrollBehavior: "smooth" },
           "::selection": {
-            backgroundColor: dark ? "rgba(242,169,203,0.30)" : "rgba(172,62,112,0.22)",
+            backgroundColor: dark ? withA(accent.fill, 0.3) : withA(accent.deep, 0.22),
           },
           "*:focus-visible": {
-            outline: `2px solid ${accent}`,
+            outline: `2px solid ${dark ? accent.fill : accent.deep}`,
             outlineOffset: 2,
           },
           "*::-webkit-scrollbar": { width: 10, height: 10 },
@@ -344,7 +339,13 @@ function GlobalThemeStyles() {
   );
 }
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  accent: accentName = "bubblegum",
+}: {
+  children: React.ReactNode;
+  accent?: BeanName;
+}) {
   const [mode, setModeState] = useState<ThemeMode>("system");
   const [resolved, setResolved] = useState<Resolved>("dark");
 
@@ -373,19 +374,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
     setModeState(m);
   }, []);
 
-  const theme = useMemo(() => (resolved === "dark" ? darkTheme : lightTheme), [resolved]);
+  const accent = J.bean[accentName];
+  const theme = useMemo(
+    () => buildTheme(resolved === "dark" ? "dark" : "light", accent),
+    [resolved, accent]
+  );
 
   const ctx = useMemo(() => ({ mode, resolved, setMode }), [mode, resolved, setMode]);
 
   return (
-    <ThemeModeContext.Provider value={ctx}>
-      <AppRouterCacheProvider options={{ key: "mui" }}>
-        <MuiThemeProvider theme={theme}>
-          <CssBaseline enableColorScheme />
-          <GlobalThemeStyles />
-          {children}
-        </MuiThemeProvider>
-      </AppRouterCacheProvider>
-    </ThemeModeContext.Provider>
+    <AccentContext.Provider value={accent}>
+      <ThemeModeContext.Provider value={ctx}>
+        <AppRouterCacheProvider options={{ key: "mui" }}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline enableColorScheme />
+            <GlobalThemeStyles accent={accent} />
+            {children}
+          </MuiThemeProvider>
+        </AppRouterCacheProvider>
+      </ThemeModeContext.Provider>
+    </AccentContext.Provider>
   );
 }

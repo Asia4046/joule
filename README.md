@@ -55,6 +55,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Insights**: deterministic, rule-based observations generated from your own data — accuracy trends per subject, weakest subject, stale chapters, study-time vs question-volume balance, mock trend direction, and consistency. Nothing is fabricated or AI-generated.
 
 ### Personal & system
+- **Personalization** (Settings → Personalize): profile picture by image URL (with emoji/initials fallback if the link breaks), emoji avatar with a bean color, app-wide accent color (links, focus rings, selection, sliders), default focus-timer length, week-start day for the calendar, 12/24-hour clock, and per-widget dashboard visibility — all stored per user and validated server-side. Defaults reproduce the stock UI exactly.
 - **Journal**: daily reflection with mood, studied / understood / struggled / mistakes / tomorrow prompts.
 - **Calendar**: month view aggregating study sessions, mock tests, revision due dates, goal deadlines, and journal entries.
 - **Resources**: a library of books, videos, PDFs, websites, notes, problem sets and courses with tags, favorites, and completion flags.
@@ -132,7 +133,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/jeecommand?sslmode=requi
 AUTH_SECRET="$(openssl rand -base64 32)"
 ```
 
-> The app falls back to `dev-secret-change-me-in-production` if `AUTH_SECRET` is unset. Always set a strong value in production.
+> In production the app refuses to sign/verify sessions if `AUTH_SECRET` is unset; the `dev-secret-change-me-in-production` fallback applies only outside production. Always set a strong value in production.
 
 ### 3. Set up the database
 
@@ -230,7 +231,19 @@ The session cookie is flagged `Secure` when `NODE_ENV=production`, so serve the 
 
 ### Backups
 
-Your data lives entirely in PostgreSQL. Back it up with `pg_dump`:
+Your data lives entirely in PostgreSQL. Two options:
+
+**Built-in scripts** (pure Node, no local PostgreSQL install needed — works against any `DATABASE_URL` including hosted ones like Neon):
+
+```bash
+npm run db:backup                 # writes backups/joule-backup-<timestamp>.json (all tables)
+npm run db:restore                # restores the newest backup (interactive confirmation)
+npm run db:restore -- path/to/backup.json --yes   # restore a specific file without prompting
+```
+
+Backups are plain JSON containing every table; restore wipes and recreates all rows with their original ids (accounts, password hashes and cross-links survive verbatim) in a single transaction. Restoring refuses to run if the backup was taken on a newer schema than the local migrations. `backups/` is git-ignored — copy it off-machine for real durability.
+
+**pg_dump** for a full physical dump:
 
 ```bash
 pg_dump "postgresql://user:password@localhost:5432/jeecommand" > backup.sql
@@ -254,7 +267,7 @@ npm start
 - All server actions and API routes re-authenticate the user and scope every query to `userId`.
 - Mutations validate input with **zod** before touching the database.
 - `.env` is git-ignored — never commit database credentials or `AUTH_SECRET`.
-- The included `demo@jee.app` account is created by the seed; delete it before production if you don't want a known password on the system (you can remove the `seedDemoUser()` call in `prisma/seed.ts`).
+- The included `demo@jee.app` account is created by the seed; delete it before production if you don't want a known password on the system (you can remove the `seedDemoUser()` call in `prisma/seed.ts`). While it exists, its password can't be changed and the account can't be deleted from inside the app.
 
 ## Development notes
 

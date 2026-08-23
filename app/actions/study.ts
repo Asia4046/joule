@@ -130,16 +130,45 @@ export async function createQuestionLogAction(_prev: ActionState, formData: Form
 
 export async function deleteQuestionLogAction(formData: FormData) {
   const user = await requireUser();
-  await prisma.questionLog.deleteMany({ where: { id: String(formData.get("id")), userId: user.id } });
+  const log = await prisma.questionLog.findFirst({
+    where: { id: String(formData.get("id")), userId: user.id },
+  });
+  if (!log) return;
+  await prisma.$transaction(async (tx) => {
+    await tx.questionLog.delete({ where: { id: log.id } });
+    if (!log.chapterId) return;
+    const state = await tx.chapterState.findUnique({
+      where: { userId_chapterId: { userId: user.id, chapterId: log.chapterId } },
+    });
+    if (!state) return;
+    await tx.chapterState.update({
+      where: { id: state.id },
+      data: {
+        questionsSolved: Math.max(0, state.questionsSolved - log.total),
+        questionsCorrect: Math.max(0, state.questionsCorrect - log.correct),
+      },
+    });
+  });
   revalidatePath("/questions");
+  revalidatePath("/tracker");
+  revalidatePath("/syllabus");
 }
 
 // ---------- chapter state (tracker / syllabus) ----------
 
+const chapterStatusSchema = z.object({
+  chapterId: z.string().min(1),
+  status: z.enum(["not_started", "learning", "completed", "revision_due", "mastered"]),
+});
+
 export async function updateChapterStatusAction(formData: FormData) {
   const user = await requireUser();
-  const chapterId = String(formData.get("chapterId"));
-  const status = String(formData.get("status"));
+  const parsed = chapterStatusSchema.safeParse({
+    chapterId: formData.get("chapterId"),
+    status: formData.get("status"),
+  });
+  if (!parsed.success) return;
+  const { chapterId, status } = parsed.data;
   await prisma.chapterState.upsert({
     where: { userId_chapterId: { userId: user.id, chapterId } },
     create: { userId: user.id, chapterId, status, lastStudiedAt: status === "not_started" ? undefined : new Date() },
@@ -173,10 +202,19 @@ export async function updateTopicDoneAction(formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+const confidenceSchema = z.object({
+  chapterId: z.string().min(1),
+  confidence: z.coerce.number().int().min(1).max(5),
+});
+
 export async function updateConfidenceAction(formData: FormData) {
   const user = await requireUser();
-  const chapterId = String(formData.get("chapterId"));
-  const confidence = Number(formData.get("confidence"));
+  const parsed = confidenceSchema.safeParse({
+    chapterId: formData.get("chapterId"),
+    confidence: formData.get("confidence"),
+  });
+  if (!parsed.success) return;
+  const { chapterId, confidence } = parsed.data;
   await prisma.chapterState.upsert({
     where: { userId_chapterId: { userId: user.id, chapterId } },
     create: { userId: user.id, chapterId, confidence, status: "learning", lastStudiedAt: new Date() },

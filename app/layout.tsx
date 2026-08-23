@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Providers } from "@/components/Providers";
+import { getSessionUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { mergeCustomization } from "@/lib/customization";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -31,7 +34,14 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // accent lives on the root theme, which renders above the protected layout
+  const user = await getSessionUser();
+  const prefs = user
+    ? await prisma.userPreference.findUnique({ where: { userId: user.id }, select: { customization: true } })
+    : null;
+  const { accent } = mergeCustomization(prefs?.customization);
+
   return (
     <html
       lang="en"
@@ -39,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${display.variable} ${mono.variable}`}
     >
       <body>
-        <Providers>{children}</Providers>
+        <Providers accent={accent}>{children}</Providers>
       </body>
     </html>
   );
