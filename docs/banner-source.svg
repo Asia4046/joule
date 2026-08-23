@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 416" width="1664" height="416">
+  <!-- Joule brand banner — source of docs/joule-banner.png (render with rsvg-convert -w 1664) -->
+  <rect width="1664" height="416" fill="#0A0908"/>
+
+  <!-- print registration marks -->
+  <g stroke="rgba(222,213,198,0.35)" stroke-width="2.6" fill="none">
+    <path d="M 50 94 V 50 H 94"/>
+    <path d="M 1570 50 H 1614 V 94"/>
+    <path d="M 50 322 V 366 H 94"/>
+    <path d="M 1614 322 V 366 H 1570"/>
+  </g>
+
+  <!-- brand mark with hard offset shadow -->
+  <g transform="translate(424,135)">
+    <rect x="9" y="9" width="146" height="146" fill="rgba(0,0,0,0.8)"/>
+    <rect x="0" y="0" width="146" height="146" rx="14" fill="#F2A9CB" stroke="#221F1A" stroke-width="9"/>
+    <path d="M 57 34 H 89 V 86 a 23 23 0 0 1 -46 0 V 70" fill="none" stroke="#221F1A" stroke-width="20" stroke-linecap="square"/>
+  </g>
+
+  <g transform="translate(630,128)">
+    <!-- kicker -->
+    <text x="0" y="0" font-family="JetBrainsMono Nerd Font Mono, JetBrains Mono, monospace" font-weight="700" font-size="20" letter-spacing="4.4" fill="#F2A9CB">PREP DOSSIER · JEE MAIN + ADVANCED</text>
+    <!-- wordmark -->
+    <text x="0" y="108" font-family="Space Grotesk, Space Grotesk Bold, sans-serif" font-weight="700" font-size="109" letter-spacing="-3.3" fill="#DED5C6">Joule<tspan fill="#F2A9CB">.</tspan></text>
+    <!-- tagline -->
+    <text x="0" y="156" font-family="Noto Sans, Inter, sans-serif" font-size="26" fill="rgba(222,213,198,0.64)">Syllabus forensics · <tspan fill="#DED5C6" font-weight="600">Concept labs</tspan> · Mock analytics · Revision engine</text>
+    <!-- the jar -->
+    <g transform="translate(0,182)">
+      <rect width="22" height="14" rx="7" fill="#F2A9CB"/>
+      <rect x="32" width="22" height="14" rx="7" fill="#8FD8B0"/>
+      <rect x="64" width="22" height="14" rx="7" fill="#F6D468"/>
+      <rect x="96" width="22" height="14" rx="7" fill="#93C7F2"/>
+      <rect x="128" width="22" height="14" rx="7" fill="#BCA5EE"/>
+      <rect x="160" width="22" height="14" rx="7" fill="#FFB488"/>
+      <rect x="192" width="22" height="14" rx="7" fill="#F08D8D"/>
+      <rect x="224" width="22" height="14" rx="7" fill="#D8E96E"/>
+    </g>
+  </g>
+</svg>

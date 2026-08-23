@@ -1,4 +1,4 @@
-![Joule — JEE Preparation Platform](docs/joule-banner.jpg)
+![Joule — JEE Preparation Platform](docs/joule-banner.png)
 
 # Joule — JEE Preparation Platform
 
@@ -6,7 +6,7 @@ A self-hosted personal command center for JEE (Main + Advanced) preparation. Tra
 
 Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-party APIs, no telemetry — everything runs on your own infrastructure and your own data.
 
-![The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking](docs/joule-dashboard.jpg)
+![The Joule dashboard in dark mode: streak and study-time stat cards, subject progress, a 30-day activity chart and weak-area ranking](docs/joule-dashboard.png)
 
 *The dashboard — night shift. Every number on it is computed from your own logs.*
 
@@ -26,7 +26,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Per-subject progress, filters by subject / Chemistry branch (Physical / Organic / Inorganic) / status.
 - Every chapter carries JEE Main & Advanced weightage, average questions per paper, difficulty, and last-studied date.
 
-![The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards](docs/joule-syllabus.jpg)
+![The syllabus page in light (vanilla paper) mode with subject progress and chapter status cards](docs/joule-syllabus.png)
 
 *The same dossier in day shift — vanilla paper, licorice ink. Theme is a per-user toggle.*
 
@@ -38,7 +38,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - Each lab pairs the simulation with authored JEE-level explanations, a **KaTeX-rendered formula sheet**, and exam "traps & tips".
 - Chapter pages link to their lab, and labs link to the chapter tracker.
 
-![The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG](docs/joule-concept-lab.jpg)
+![The Daniell cell Nernst-equation lab: a canvas simulation of two beakers with Zn and Cu electrodes, a live voltmeter, concentration and temperature sliders, and readouts for E cell, Q and ΔG](docs/joule-concept-lab.png)
 
 *Concept Lab: the Daniell cell. Sliders drive the Nernst equation directly — the meter, electron flow and ion drift all follow E = E° − (RT/2F)·ln Q.*
 
@@ -65,7 +65,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Analytics**: score%, percentile, accuracy and per-subject trends across all tests, plus attempt and negative-mark breakdowns.
 - **Compare**: side-by-side comparison of up to 4 tests to see exactly what improved.
 
-![Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns](docs/joule-mock-analytics.jpg)
+![Mock-test analytics: score, percentile and accuracy trend charts with per-subject breakdowns](docs/joule-mock-analytics.png)
 
 *Mock forensics — every test plotted, per-subject trends and attempt breakdowns.*
 
@@ -84,7 +84,7 @@ Built with Next.js (App Router) and PostgreSQL. No external analytics, no third-
 - **Settings**: profile (target exam, year, percentile/rank, prep level, daily study/question targets), revision intervals, notification toggles, theme (light / dark / system), password change, JSON data export, and account deletion.
 - **Accounts**: email + password signup/login with bcrypt-hashed passwords, JWT sessions in httpOnly cookies (30 days), protected route group.
 
-![The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint](docs/joule-login.jpg)
+![The Joule login screen: pink J brand mark on dark paper with print registration marks, a squared sign-in card and a demo-account hint](docs/joule-login.png)
 
 *Access — the dossier cover. A seeded demo account (demo@jee.app) ships with the database.*
 
