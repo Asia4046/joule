@@ -11,7 +11,7 @@ const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" }
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000"),
   title: {
     default: "Joule — JEE Preparation Platform",
     template: "%s · Joule",
