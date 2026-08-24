@@ -24,21 +24,12 @@ export const metadata: Metadata = {
     description:
       "Concept labs with real simulations, mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself. Work, measured.",
     type: "website",
-    images: [
-      {
-        url: process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/opengraph-image.png` : "/opengraph-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Joule — JEE Preparation Platform",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Joule — JEE Preparation Platform",
     description:
       "The personal JEE prep dossier: syllabus tracking, mock-test analytics, revision scheduling and insights. Work, measured.",
-    images: [process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/opengraph-image.png` : "/opengraph-image.png"],
   },
 };
 
