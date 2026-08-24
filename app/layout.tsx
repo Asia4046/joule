@@ -23,16 +23,26 @@ export const metadata: Metadata = {
     "The personal JEE prep dossier: syllabus tracking, mock-test analytics, revision scheduling and insights. Work, measured.",
   applicationName: "Joule",
   openGraph: {
+    url: "/",
     title: "Joule — JEE Preparation Platform",
     description:
       "Concept labs with real simulations, mock-test forensics, a mistake ledger that never forgets, and a revision engine that schedules itself. Work, measured.",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Joule — JEE Preparation Platform",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Joule — JEE Preparation Platform",
     description:
       "The personal JEE prep dossier: syllabus tracking, mock-test analytics, revision scheduling and insights. Work, measured.",
+    images: ["/og-image.jpg"],
   },
 };
 
