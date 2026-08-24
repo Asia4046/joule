@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/opengraph-image.png",
+        url: process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/opengraph-image.png` : "/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "Joule — JEE Preparation Platform",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Joule — JEE Preparation Platform",
     description:
       "The personal JEE prep dossier: syllabus tracking, mock-test analytics, revision scheduling and insights. Work, measured.",
-    images: ["/opengraph-image.png"],
+    images: [process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/opengraph-image.png` : "/opengraph-image.png"],
   },
 };
 
