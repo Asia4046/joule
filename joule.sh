@@ -82,11 +82,11 @@ err()  { printf '  %s %s\n' "$(pill 'FAIL' "$CHERRY")" "$*"; }
 info() { printf '  %s %s\n' "$(pill 'INFO' "$SKY")" "$*"; }
 skip() { printf '  %s %s\n' "$(pill 'SKIP' "$NEUTRAL")" "$*"; }
 
-jar_row() { # signature element #1 — eight bean dots under the wordmark
-  local out="" i=0 b
+jar_row() { # signature element #1 — eight bean dots; $1 = terminator (default full reset)
+  local end="${1:-$RESET}" out="" i=0 b
   for b in "${JAR[@]}"; do
     [[ $i -gt 0 ]] && out+=" "
-    out+="$(fg "$b")●$RESET"; i=$((i + 1))
+    out+="$(fg "$b")●$end"; i=$((i + 1))
   done
   printf '%s' "$out"
 }
