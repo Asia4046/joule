@@ -350,11 +350,12 @@ stage_seed() { # 05 // PERSONAL — lavender
 
 print_login_card() {
   local h; h="$(fg "$HAIR")"; local v; v="$(fg "$SKY")"; local d; d="$DIM"
-  printf '\n  %s┌%s┐%s\n' "$h" "$(printf '%*s' 44 '' | tr ' ' '─')" "$RESET"
-  printf '  %s│%s %sDEMO ACCOUNT%s                            %s│%s\n' "$h" "$RESET" "$d" "$RESET" "$h" "$RESET"
-  printf '  %s│%s  email    %sdemo@jee.app%s                  %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
-  printf '  %s│%s  password %sdemo1234%s                       %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
-  printf '  %s└%s┘%s\n' "$h" "$(printf '%*s' 44 '' | tr ' ' '─')" "$RESET"
+  local bar; printf -v bar '%*s' 44 ''; bar="${bar// /─}"
+  printf '\n  %s┌%s┐%s\n' "$h" "$bar" "$RESET"
+  printf '  %s│%s %sDEMO ACCOUNT%s                               %s│%s\n' "$h" "$RESET" "$d" "$RESET" "$h" "$RESET"
+  printf '  %s│%s  email    %sdemo@jee.app%s                     %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
+  printf '  %s│%s  password %sdemo1234%s                         %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
+  printf '  %s└%s┘%s\n' "$h" "$bar" "$RESET"
 }
 
 stage_launch() { # 06 // SYSTEM — mint
