@@ -31,51 +31,49 @@ COLOR=1
 [[ "${NO_COLOR:-}" ]] && COLOR=0
 case "${TERM:-}" in dumb|"") COLOR=0;; esac
 
-_hex2rgb() { # "#RRGGBB" → "r g b"
-  local h="${1#\#}"
-  echo "$((16#${h:0:2})) $((16#${h:2:2})) $((16#${h:4:2}))"
-}
-_rgb2cube() { # r g b → nearest 256-color cube index
-  local -i r=$1 g=$2 b=$3
-  local -i cr=$(( (r * 5 + 128) / 255 )) cg=$(( (g * 5 + 128) / 255 )) cb=$(( (b * 5 + 128) / 255 ))
-  echo $(( 16 + 36 * cr + 6 * cg + cb ))
-}
 _TRUECOLOR=0
 if [[ "$COLOR" == 1 ]]; then
   case "${COLORTERM:-}" in *truecolor*|*24bit*) _TRUECOLOR=1;; esac
   case "${TERM:-}" in *direct*|*truecolor*) _TRUECOLOR=1;; esac
 fi
-fg() { # hex → fg escape (empty when colorless)
+
+_hex2rgb() { local h="${1#\#}"; echo "$((16#${h:0:2})) $((16#${h:2:2})) $((16#${h:4:2}))"; }
+_cube() { echo $(( 16 + 36 * ((($1 * 5 + 128) / 255)) + 6 * ((($2 * 5 + 128) / 255)) + ((($3 * 5 + 128) / 255)) )); }
+fg() {
   [[ "$COLOR" == 1 ]] || { echo ""; return; }
   if [[ "$_TRUECOLOR" == 1 ]]; then local rgb; rgb=$(_hex2rgb "$1"); printf '\033[38;2;%sm' "${rgb// /;}"
-  else printf '\033[38;5;%dm' "$(_rgb2cube $(_hex2rgb "$1"))"; fi
+  else printf '\033[38;5;%dm' "$(_cube $(_hex2rgb "$1"))"; fi
 }
 bg() {
   [[ "$COLOR" == 1 ]] || { echo ""; return; }
   if [[ "$_TRUECOLOR" == 1 ]]; then local rgb; rgb=$(_hex2rgb "$1"); printf '\033[48;2;%sm' "${rgb// /;}"
-  else printf '\033[48;5;%dm' "$(_rgb2cube $(_hex2rgb "$1"))"; fi
+  else printf '\033[48;5;%dm' "$(_cube $(_hex2rgb "$1"))"; fi
 }
-R=$'\033[0m'; B=$'\033[1m'; DIM=$'\033[2m'
-RESET="$R"
+RESET=$'\033[0m'; BOLD=$'\033[1m'; DIM=$'\033[2m'
+if [[ "$COLOR" == 0 ]]; then RESET=""; BOLD=""; DIM=""; fi
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  PRINT SHOP — dossier headers, bean pills, the jar row, the colophon
 # ═════════════════════════════════════════════════════════════════════════════
-COLUMNS="${COLUMNS:-80}"
+COLUMNS=80
 [[ -t 1 ]] && COLUMNS="$(tput cols 2>/dev/null || echo 80)"
 
 dot() { printf '%s●%s' "$(fg "$1")" "$RESET"; }
 
 pill() { # pill LABEL HEX — beans are the only rounded objects in the system
-  printf '%s%s %s %s%s' "$(bg "$2")" "$(fg "$INK")" "$1" "$RESET" ""
+  printf '%s%s %s %s' "$(bg "$2")" "$(fg "$INK")" "$1" "$RESET"
 }
 
-hr() { printf '%s%s%s\n' "$DIM" "$(printf '%*s' "$((COLUMNS > 4 ? COLUMNS - 2 : 78))" '' | tr ' ' '─')" "$RESET"; }
+rule() { # hairline under dossier headers
+  local n=$(( COLUMNS > 6 ? COLUMNS - 4 : 74 )) line
+  printf -v line '%*s' "$n" ''
+  printf ' %s%s%s\n' "$DIM" "${line// /─}" "$RESET"
+}
 
-hdr() { # hdr 01 "PREFLIGHT" $SKY — dossier section header: bean dot, NN // NAME
+hdr() { # hdr 01 "PREFLIGHT" $SKY — mono eyebrow with the section's bean dot
   printf '\n %s %s%s//%s %s%s%s\n' \
-    "$(dot "$3")" "$B$DIM" "$1" "$RESET" "$B" "$2" "$RESET"
-  printf ' %s%s%s\n' "$DIM" "$(printf '%*s' "$((COLUMNS > 6 ? COLUMNS - 4 : 74))" '' | tr ' ' '─')" "$RESET"
+    "$(dot "$3")" "$BOLD$DIM" "$1" "$RESET" "$BOLD" "$2" "$RESET"
+  rule
 }
 
 ok()   { printf '  %s %s\n' "$(pill ' OK ' "$MINT")" "$*"; }
@@ -85,7 +83,7 @@ info() { printf '  %s %s\n' "$(pill 'INFO' "$SKY")" "$*"; }
 skip() { printf '  %s %s\n' "$(pill 'SKIP' "$NEUTRAL")" "$*"; }
 
 jar_row() { # signature element #1 — eight bean dots under the wordmark
-  local out="" i=0
+  local out="" i=0 b
   for b in "${JAR[@]}"; do
     [[ $i -gt 0 ]] && out+=" "
     out+="$(fg "$b")●$RESET"; i=$((i + 1))
@@ -93,43 +91,52 @@ jar_row() { # signature element #1 — eight bean dots under the wordmark
   printf '%s' "$out"
 }
 
-center() { # center TEXT TOTALWIDTH
-  local w=$(( $2 - ${#1} )); (( w <= 0 )) && { printf '%s' "$1"; return; }
-  printf '%*s%s' $(( w / 2 )) '' "$1"
+center_line() { # center_line PLAIN COLORED TOTAL — pad by the PLAIN width
+  local plain="$1" colored="$2" total="$3"
+  local w=$(( total - ${#plain} )) l=0 r=0
+  if (( w > 0 )); then l=$(( w / 2 )); r=$(( w - l )); fi
+  printf '%*s%s%*s' "$l" '' "$colored" "$r" ''
 }
 
 banner() {
   local W=66
-  local pb="" pe="" wb="" we="" jb="" je=""
-  if [[ "$COLOR" == 1 ]]; then pb="$(bg "$PAPER")"; pe="$RESET"; wb="$(fg "$BONE")"; we="$RESET"; jb="$(fg "$BUBBLEGUM")"; je="$RESET"; fi
-  local line
-  line="$(printf '%*s' "$W" '')"; printf '%s%s%s\n' "$pb" "$line" "$pe"
+  local pad=$(( W - 2 ))
+  local pb="" pe="" bone="" jcol=""
+  if [[ "$COLOR" == 1 ]]; then
+    pb="$(bg "$PAPER")"; pe="$RESET"
+    bone="$(fg "$BONE")"; jcol="$(fg "$BUBBLEGUM")"
+  fi
+  local blank; blank="$(printf '%*s' "$pad" '')"
+  printf '%s%s%s\n' "$pb" "$(printf '%*s' "$W" '')" "$pe"
 
-  # wordmark — J is the bubblegum brand tile, the rest is bone ink
+  # wordmark — the J is the bubblegum brand tile, the rest is bone ink
   local j=( '██╗' '██║' '██║' '██║' '██║' '╚═╝' )
   local o=( ' ██████╗ ' '██╔═══██╗' '██║   ██║' '██║   ██║' '╚██████╔╝' ' ╚═════╝ ' )
-  local u=( '██╗   ██╗' '██║   ██║' '██║   ██║' '██║   ██║' '╚██╗ ██╔╝' ' ╚████╔╝ ' )
+  local u=( '██╗   ██╗' '██║   ██╗' '██║   ██╗' '██║   ██╗' '╚██╗ ██╔╝' ' ╚████╔╝ ' )
   local l=( '██╗     ' '██║     ' '██║     ' '██║     ' '███████╗' '╚══════╝' )
   local e=( '███████╗' '██╔════╝' '█████╗  ' '██╔══╝  ' '███████╗' '╚══════╝' )
-  local i
+  local i plain colored
   for i in 0 1 2 3 4 5; do
-    line="$pb $(center " " $((W - 2)))$pe" # placeholder keeps width sane
-    local row="${jb}${j[$i]}${je} ${wb}${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}${we}"
-    printf '%s %s %s\n' "$pb" "$(center "$row" $((W - 2)))" "$pe"
+    plain="${j[$i]} ${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}"
+    colored="${jcol}${j[$i]}$RESET ${bone}${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}$RESET"
+    printf '%s %s %s\n' "$pb" "$(center_line "$plain" "$colored" "$pad")" "$pe"
   done
 
-  printf '%s %s %s\n' "$pb" "$(center "$(jar_row)" $((W - 2)))" "$pe"
-  printf '%s %s %s\n' "$pb" "$(center "${DIM}${pb}${pb:+}$RESET" 0)" "$pe" >/dev/null 2>&1 || true
-  printf '%s %s %s\n' "$pb" "$(center "$(printf '%sJEE PREPARATION PLATFORM · SELF-HOSTED COMMAND CENTER%s' "$DIM" "$RESET")" $((W - 2)))" "$pe"
-  printf '%s %s %s\n' "$pb" "$(center "$(printf '%sPAPER #0A0908 · INK #DED5C6 · BEANS ×8 · RADIUS 2 · GRAIN 5%%%s' "$DIM" "$RESET")" $((W - 2)))" "$pe"
-  line="$(printf '%*s' "$W" '')"; printf '%s%s%s\n' "$pb" "$line" "$pe"
+  printf '%s %s %s\n' "$pb" "$(center_line '● ● ● ● ● ● ● ●' "$(jar_row)" "$pad")" "$pe"
+  printf '%s %s %s\n' "$pb" "$(center_line "$(printf '%*s' "$pad" '')" "$blank" "$pad")" "$pe"
+  local tag='JEE PREPARATION PLATFORM · SELF-HOSTED COMMAND CENTER'
+  printf '%s %s %s\n' "$pb" "$(center_line "$tag" "$DIM$tag$RESET" "$pad")" "$pe"
+  local colo='PAPER #0A0908 · INK #DED5C6 · BEANS ×8 · RADIUS 2 · GRAIN 5%'
+  printf '%s %s %s\n' "$pb" "$(center_line "$colo" "$DIM$colo$RESET" "$pad")" "$pe"
+  printf '%s%s%s\n' "$pb" "$(printf '%*s' "$W" '')" "$pe"
 }
 
 colophon() {
-  printf '\n%s %s %s\n' "$(jar_row)" "$DIM" "· PAPER #0A0908 · INK #DED5C6 · BEANS ×8 · RADIUS 2 · GRAIN 5%$RESET"
+  printf '\n%s %s%s · PAPER #0A0908 · INK #DED5C6 · BEANS ×8 · RADIUS 2 · GRAIN 5%%%s\n' \
+    "$(jar_row)" "$DIM" "" "$RESET"
 }
 
-die() { err "$*"; colophon; exit 1; }
+die() { err "$*"; colophon; printf '\n'; exit 1; }
 
 # ═════════════════════════════════════════════════════════════════════════════
 #  SPINNER — a bean cycling through the jar while long work runs
@@ -137,18 +144,22 @@ die() { err "$*"; colophon; exit 1; }
 run_task() { # run_task LABEL cmd [args…]
   local label="$1"; shift
   local out; out="$(mktemp)"
-  local spin_pid rc
+  local spin_pid="" rc
   if [[ -t 2 ]] && [[ "$COLOR" == 1 ]]; then
-    ( local_i=0
+    (
+      i=0
       while :; do
-        printf '\r  %s %s …\033[K' "$(dot "${JAR[$((local_i % 8))]}")" "$label" >&2
-        sleep 0.12; local_i=$((local_i + 1))
-      done ) &
+        printf '\r  %s %s …\033[K' "$(fg "${JAR[$((i % 8))]}")●$RESET" "$label" >&2
+        sleep 0.12; i=$((i + 1))
+      done
+    ) &
     spin_pid=$!
   fi
   "$@" >"$out" 2>&1
   rc=$?
-  [[ -n "${spin_pid:-}" ]] && { kill "$spin_pid" 2>/dev/null; wait "$spin_pid" 2>/dev/null; printf '\r\033[K' >&2; }
+  if [[ -n "$spin_pid" ]]; then
+    kill "$spin_pid" 2>/dev/null; wait "$spin_pid" 2>/dev/null; printf '\r\033[K' >&2
+  fi
   if [[ $rc -eq 0 ]]; then
     ok "$label"
   else
@@ -169,31 +180,27 @@ MODE="dev"
 FORCE_INSTALL=0 DO_SEED="auto" OPEN=0 OFFLINE=0 ASSUME_YES=0
 CMD="dev"
 
-stage_preflight() { # 01 // OVERVIEW bean: bubblegum
+stage_preflight() { # 01 // OVERVIEW — bubblegum
   hdr "01" "PREFLIGHT" "$BUBBLEGUM"
   command -v node >/dev/null 2>&1 || die "node is not on PATH — install Node ≥ 20.9 first"
-  local v; v="$(node -p 'process.versions.node')"
-  local major minor
+  local v major minor
+  v="$(node -p 'process.versions.node')"
   major="${v%%.*}"; minor="$(cut -d. -f2 <<<"$v")"
   if (( major < NODE_MIN_MAJOR )) || { [[ "$major" == "$NODE_MIN_MAJOR" ]] && (( 10#$minor < NODE_MIN_MINOR )); }; then
-    die "node $v found, ≥ 20.9 required (Next.js 16 constraint)"
+    die "node $v found — Next.js 16 needs ≥ 20.9"
   fi
   ok "node v$v"
   if command -v yarn >/dev/null 2>&1; then PM="yarn"
   elif command -v npm >/dev/null 2>&1; then PM="npm"
   else die "neither yarn nor npm found on PATH"; fi
-  ok "package manager: $PM $("$PM" --version 2>/dev/null || echo '')"
+  ok "package manager: $PM $("$PM" --version 2>/dev/null | tail -n1)"
   if command -v openssl >/dev/null 2>&1; then ok "openssl present (AUTH_SECRET minting)"
-  else warn "openssl missing — generated secrets will fall back to /dev/urandom"; fi
+  else warn "openssl missing — secrets fall back to /dev/urandom"; fi
 }
 
-stage_dependencies() { # 02 // PREPARATION bean: sky
+stage_dependencies() { # 02 // PREPARATION — sky
   hdr "02" "DEPENDENCIES" "$SKY"
-  local need=0
   if [[ "$FORCE_INSTALL" == 1 ]] || [[ ! -x node_modules/.bin/next ]] || [[ ! -x node_modules/.bin/prisma ]] || [[ ! -x node_modules/.bin/tsx ]]; then
-    need=1
-  fi
-  if [[ "$need" == 1 ]]; then
     run_task "install dependencies ($PM install)" "$PM" install || die "dependency install failed"
   else
     ok "dependencies present ($(ls node_modules 2>/dev/null | wc -l | tr -d ' ') packages)"
@@ -206,24 +213,23 @@ stage_dependencies() { # 02 // PREPARATION bean: sky
 }
 
 load_env() {
-  if [[ -f .env ]]; then
-    local line k v
-    while IFS= read -r line || [[ -n "$line" ]]; do
-      [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
-      k="${line%%=*}"; v="${line#*=}"
-      [[ "$k" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
-      v="${v%\"}"; v="${v#\"}"; v="${v%\'}"; v="${v#\'}"
-      export "$k=$v"
-    done < .env
-  fi
+  [[ -f .env ]] || return 0
+  local line k v
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+    k="${line%%=*}"; v="${line#*=}"
+    [[ "$k" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+    v="${v%\"}"; v="${v#\"}"; v="${v%\'}"; v="${v#\'}"
+    export "$k=$v"
+  done < .env
 }
 
-stage_environment() { # 03 // PRACTICE bean: tangerine
+stage_environment() { # 03 // PRACTICE — tangerine
   hdr "03" "ENVIRONMENT" "$TANGERINE"
   if [[ ! -f .env ]]; then
-    local dburl="postgresql://joule:joule@localhost:5432/joule?schema=public"
+    local dburl="postgresql://joule:joule@localhost:5432/joule?schema=public" reply=""
     if [[ "$ASSUME_YES" != 1 ]] && [[ -t 0 ]]; then
-      printf '  %s No %s.env%s found.\n' "$(pill ' ?? ' "$LEMON")" "$B" "$RESET"
+      printf '  %s no %s.env%s found — minting one\n' "$(pill ' ?? ' "$LEMON")" "$BOLD" "$RESET"
       printf '  %s PostgreSQL URL [%s]: %s' "$(dot "$TANGERINE")" "$dburl" "$RESET"
       IFS= read -r reply || reply=""
       [[ -n "$reply" ]] && dburl="$reply"
@@ -257,13 +263,13 @@ EOF
   ok "DATABASE_URL → $(mask_url "$DATABASE_URL")"
 }
 
-mask_url() {
-  sed -E 's#^postgresql(\+[a-z]+)?://[^@]+@([^/?]+)(/[^?]*).*#\2\3#' <<<"$1"
+mask_url() { # keep credentials out of the transcript
+  sed -E 's#^postgresql(\+[a-z]+)?://[^@]+@([^/?]+)(/[^?]*)?.*#\2\3#' <<<"$1"
 }
 
-db_probe() { # → "OK chapters N users M" | "EMPTY" | "CONN msg" ; rc 0/0/2
-  local js; js="$(mktemp -t joule-db-XXXXXX.js)"
-  cat > "$js" <<'EOF'
+db_probe() { # prints "OK chapters=N users=M" | "EMPTY …" | "CONN …"; rc 2 = unreachable
+  # node -e resolves @prisma/client from cwd (the project root) — no temp file
+  node -e '
 const { PrismaClient } = require("@prisma/client");
 const p = new PrismaClient();
 (async () => {
@@ -272,35 +278,26 @@ const p = new PrismaClient();
     const users = await p.user.count();
     console.log(`OK chapters=${chapters} users=${users}`);
   } catch (e) {
-    const m = String(e && e.message || e);
+    const m = String((e && e.message) || e);
     if (/P2021|does not exist/i.test(m)) console.log("EMPTY schema-not-migrated");
-    else if (/P1001|P1002|Can't reach|timed out|ECONNREFUSED|ENOTFOUND|EAI_AGAIN/i.test(m)) { console.error(m); process.exit(2); }
-    else { console.error(m); process.exit(2); }
+    else console.log("CONN " + m.split("\n")[0].slice(0, 140));
   } finally { await p.$disconnect().catch(() => {}); }
 })();
-EOF
-  local out
-  if out="$(node "$js" 2>&1)"; then
-    echo "$out" | tail -n 1
-  else
-    echo "CONN $(echo "$out" | tail -n 1 | cut -c1-140)"
-    return 2
-  fi
-  rm -f "$js"
+'
 }
 
-maybe_docker_db() { # offer a disposable postgres:16-alpine when URL is local & dead
+maybe_docker_db() { # offer a disposable postgres:16-alpine when the URL is local & dead
   local host; host="$(sed -E 's#^postgresql(\+[a-z]+)?://[^@]+@([^/:?]+).*#\2#' <<<"$DATABASE_URL")"
   [[ "$host" =~ ^(localhost|127\.0\.0\.1|\[::1\])$ ]] || return 1
   command -v docker >/dev/null 2>&1 || return 1
   local reply="n"
   if [[ "$ASSUME_YES" == 1 ]]; then reply="y"
   elif [[ -t 0 ]]; then
-    printf '  %s Start one with Docker? [y/N]: %s' "$(dot "$LEMON")" "$RESET"
+    printf '  %s start one with Docker? [y/N]: %s' "$(dot "$LEMON")" "$RESET"
     IFS= read -r reply || reply="n"
   fi
   [[ "$reply" =~ ^[Yy] ]] || return 1
-  run_task "spawn postgres:16-alpine as container 'joule-db'" \
+  run_task "spawn postgres:16-alpine as 'joule-db'" \
     docker run -d --name joule-db -e POSTGRES_USER=joule -e POSTGRES_PASSWORD=joule \
       -e POSTGRES_DB=joule -p 5432:5432 -v joule-pgdata:/var/lib/postgresql/data postgres:16-alpine \
     || die "docker failed to start postgres"
@@ -312,21 +309,17 @@ maybe_docker_db() { # offer a disposable postgres:16-alpine when URL is local & 
   done
   grep -q 'accepting connections' <<<"$out" || die "postgres container never became ready"
   ok "joule-db accepting connections on :5432"
-  return 0
 }
 
-stage_database() { # 04 // ANALYTICS bean: lemon
+stage_database() { # 04 // ANALYTICS — lemon
   hdr "04" "DATABASE" "$LEMON"
-  local probe
-  if probe="$(db_probe)"; then :; else probe="CONN $(echo "$probe" | tail -n1)"; fi
+  local probe; probe="$(db_probe)" || true
   case "$probe" in
-    OK*|EMPTY*)
-      ok "postgres reachable — ${probe#OK }"
-      ;;
-    CONN*)
+    OK*|EMPTY*) ok "postgres reachable — ${probe#OK }" ;;
+    *)
       warn "postgres unreachable at $(mask_url "$DATABASE_URL")"
       if maybe_docker_db; then
-        probe="$(db_probe || echo CONN)"
+        probe="$(db_probe)" || true
         case "$probe" in OK*|EMPTY*) ok "postgres reachable now";; *) die "still unreachable after docker boot";; esac
       else
         die "start postgres (or point .env at a live database) and re-run"
@@ -337,27 +330,34 @@ stage_database() { # 04 // ANALYTICS bean: lemon
     || die "migrate deploy failed — check DATABASE_URL / network"
 }
 
-stage_seed() { # 05 // PERSONAL bean: lavender
+stage_seed() { # 05 // PERSONAL — lavender
   hdr "05" "SEED" "$LAVENDER"
-  local probe; probe="$(db_probe || echo CONN)"
-  case ",${DO_SEED}," in *,no,*) skip "seeding disabled (--no-seed)"; return 0;; esac
-  case ",${DO_SEED}," in *,yes,*) :;; *) case "$probe" in OK*) skip "already seeded (${probe#OK })"; return 0;; esac;; esac
-  run_task "seed syllabus + weightage + demo account ($PM run db:seed)" "$PM" run db:seed \
+  case "$DO_SEED" in
+    no)  skip "seeding disabled (--no-seed)"; return 0;;
+    yes) :;;
+    *)
+      local probe; probe="$(db_probe)" || true
+      case "$probe" in
+        OK*) skip "already seeded (${probe#OK })"; return 0;;
+        *)   warn "cannot probe data ($probe) — seeding anyway";;
+      esac
+      ;;
+  esac
+  run_task "seed syllabus + weightage + demo account" "$PM" run db:seed \
     || die "seed failed"
   info "demo login → demo@jee.app / demo1234"
 }
 
 print_login_card() {
-  local box_w=46
-  printf '\n'
-  printf '  %s┌%s%s%s┐%s\n' "$(fg "$HAIR")" "$(printf '%*s' $box_w '' | tr ' ' '─')" "" "" "$RESET"
-  printf '  %s│%s %sDEMO ACCOUNT%s               %s│%s\n' "$(fg "$HAIR")" "$RESET" "$DIM" "$RESET" "$(fg "$HAIR")" "$RESET"
-  printf '  %s│%s  email    %sdemo@jee.app%s        %s│%s\n' "$(fg "$HAIR")" "$RESET" "$(fg "$SKY")" "$RESET" "$(fg "$HAIR")" "$RESET"
-  printf '  %s│%s  password %sdemo1234%s             %s│%s\n' "$(fg "$HAIR")" "$RESET" "$(fg "$SKY")" "$RESET" "$(fg "$HAIR")" "$RESET"
-  printf '  %s└%s%s┘%s\n' "$(fg "$HAIR")" "$(printf '%*s' $box_w '' | tr ' ' '─')" "" "$RESET"
+  local h; h="$(fg "$HAIR")"; local v; v="$(fg "$SKY")"; local d; d="$DIM"
+  printf '\n  %s┌%s┐%s\n' "$h" "$(printf '%*s' 44 '' | tr ' ' '─')" "$RESET"
+  printf '  %s│%s %sDEMO ACCOUNT%s                            %s│%s\n' "$h" "$RESET" "$d" "$RESET" "$h" "$RESET"
+  printf '  %s│%s  email    %sdemo@jee.app%s                  %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
+  printf '  %s│%s  password %sdemo1234%s                       %s│%s\n' "$h" "$RESET" "$v" "$RESET" "$h" "$RESET"
+  printf '  %s└%s┘%s\n' "$h" "$(printf '%*s' 44 '' | tr ' ' '─')" "$RESET"
 }
 
-stage_launch() { # 06 // SYSTEM bean: mint
+stage_launch() { # 06 // SYSTEM — mint
   hdr "06" "LAUNCH" "$MINT"
   local url="http://localhost:$PORT"
   if [[ "$MODE" == "prod" ]]; then
@@ -366,13 +366,18 @@ stage_launch() { # 06 // SYSTEM bean: mint
   printf '  %s %s\n' "$(pill ' ↑ ' "$MINT")" "serving on $url — Ctrl-C to log off"
   if [[ "$OPEN" == 1 ]]; then
     ( for _ in $(seq 1 120); do
-        command -v curl >/dev/null 2>&1 && curl -sf -o /dev/null "$url" 2>/dev/null || { sleep 0.5; continue; }
+        if command -v curl >/dev/null 2>&1; then
+          curl -sf -o /dev/null "$url" 2>/dev/null || { sleep 0.5; continue; }
+        else
+          sleep 3
+        fi
         command -v xdg-open >/dev/null 2>&1 && xdg-open "$url" >/dev/null 2>&1
+        command -v open >/dev/null 2>&1 && open "$url" >/dev/null 2>&1
         exit 0
       done ) &
   fi
   print_login_card
-  trap 'printf "\n"; warn "focus session ended — the desk lamp clicks off"; colophon; exit 0' INT TERM
+  trap 'printf "\n"; warn "focus session ended — the desk lamp clicks off"; colophon; printf "\n"; exit 0' INT TERM
   if [[ "$MODE" == "prod" ]]; then
     node_modules/.bin/next start -p "$PORT"
   else
@@ -393,13 +398,13 @@ cmd_status() {
   stage_dependencies
   stage_environment
   hdr "04" "DATABASE" "$LEMON"
-  local probe; probe="$(db_probe || echo CONN)"
+  local probe; probe="$(db_probe)" || true
   case "$probe" in
-    OK*)        ok "reachable & seeded — ${probe#OK }";;
-    EMPTY*)     warn "reachable, schema not migrated yet (run: $0 migrate)";;
-    *)          err "unreachable — ${probe#CONN }";;
+    OK*)  ok "reachable & seeded — ${probe#OK }";;
+    EMPTY*) warn "reachable, schema not migrated yet (run: $0 migrate)";;
+    *)    err "unreachable — ${probe#CONN }";;
   esac
-  if [[ "$probe" == OK* ]] || [[ "$probe" == EMPTY* ]]; then
+  if [[ "$probe" == OK* || "$probe" == EMPTY* ]]; then
     local ms; ms="$(node_modules/.bin/prisma migrate status 2>&1 || true)"
     grep -qi 'up to date' <<<"$ms" && ok "migrations: up to date" || warn "migrations: pending (run: $0 migrate)"
   fi
@@ -410,17 +415,18 @@ cmd_status() {
 
 cmd_help() {
   banner
-  printf '\n %s %sUSAGE%s — the dossier index\n' "$(dot "$BUBBLEGUM")" "$B$DIM//" "$RESET"
+  printf '\n %s %s00//%s %sUSAGE%s — the dossier index\n' \
+    "$(dot "$BUBBLEGUM")" "$BOLD$DIM" "$RESET" "$BOLD" "$RESET"
   cat <<EOF
 
-  ./joule.sh [command] [flags]        (default: dev)
+  ./joule.sh [command] [flags]          default: dev
 
   $(dot "$SKY") dev        install → env → migrate → seed → next dev
   $(dot "$TANGERINE") build      production build (next build)
   $(dot "$LEMON") start      serve the production build
   $(dot "$LAVENDER") seed       re-seed syllabus + demo data (idempotent)
   $(dot "$MINT") migrate    apply prisma migrations (deploy)
-  $(dot "$BUBBLEGUM") studio    open prisma studio
+  $(dot "$BUBBLEGUM") studio    open prisma studio on :5555
   $(dot "$CHERRY") backup     JSON backup of every table → backups/
   $(dot "$CHERRY") restore    restore newest backup (interactive)
   $(dot "$NEUTRAL") status     preflight report without launching
@@ -439,11 +445,14 @@ EOF
   colophon
 }
 
-require_ready() { # env + deps for the aux commands
+require_ready() { # env + deps for the aux commands, quietly
   stage_preflight >/dev/null
-  [[ -x node_modules/.bin/next ]] || { hdr "02" "DEPENDENCIES" "$SKY"; run_task "install dependencies" "$PM" install || die "install failed"; }
+  if [[ ! -x node_modules/.bin/next ]] || [[ ! -x node_modules/.bin/prisma ]]; then
+    hdr "02" "DEPENDENCIES" "$SKY"
+    run_task "install dependencies" "$PM" install || die "install failed"
+  fi
   load_env
-  [[ -n "${DATABASE_URL:-}" ]] || die "DATABASE_URL missing — run ./joule.sh first"
+  [[ -n "${DATABASE_URL:-}" ]] || die "DATABASE_URL missing — run ./$0 first"
 }
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -452,7 +461,7 @@ require_ready() { # env + deps for the aux commands
 while [[ $# -gt 0 ]]; do
   case "$1" in
     dev|build|start|seed|migrate|studio|backup|restore|status|help) CMD="$1";;
-    -p|--port) PORT="$2"; shift;;
+    -p|--port) PORT="${2:?--port needs a value}"; shift;;
     --prod) MODE="prod";;
     --open) OPEN=1;;
     --seed) DO_SEED="yes";;
@@ -462,32 +471,38 @@ while [[ $# -gt 0 ]]; do
     --no-color) COLOR=0;;
     -y|--yes) ASSUME_YES=1;;
     -h|--help) CMD="help";;
-    *) err "unknown argument: $1"; CMD="help";;
+    *) printf 'unknown argument: %s\n\n' "$1" >&2; CMD="help";;
   esac
   shift
 done
 
 case "$CMD" in
-  help)   cmd_help;;
-  status) cmd_status;;
+  help)   cmd_help ;;
+  status) cmd_status ;;
   dev)
     banner
     stage_preflight
     stage_dependencies
     stage_environment
     if [[ "$OFFLINE" == 1 ]]; then
-      hdr "04" "DATABASE" "$LEMON"; warn "offline mode — skipping migrate/seed"
+      hdr "04" "DATABASE" "$LEMON"
+      warn "offline mode — skipping migrate/seed"
     else
       stage_database
       stage_seed
     fi
     stage_launch
     ;;
-  build)   require_ready; hdr "02" "BUILD" "$SKY"; run_task "production build" node_modules/.bin/next build || die "build failed"; colophon;;
-  start)   require_ready; hdr "06" "LAUNCH" "$MINT"; stage_launch;;
-  seed)    require_ready; DO_SEED="yes"; stage_seed; colophon;;
-  migrate) require_ready; hdr "04" "DATABASE" "$LEMON"; run_task "apply migrations" node_modules/.bin/prisma migrate deploy || die "migrate failed"; colophon;;
-  studio)  require_ready; hdr "04" "DATABASE" "$LEMON"; info "prisma studio → http://localhost:5555"; exec node_modules/.bin/prisma studio;;
-  backup)  require_ready; hdr "05" "BACKUP" "$LAVENDER"; "$PM" run db:backup; colophon;;
-  restore) require_ready; hdr "05" "RESTORE" "$LAVENDER"; "$PM" run db:restore "$@"; colophon;;
+  build)
+    require_ready
+    hdr "02" "BUILD" "$SKY"
+    run_task "production build (next build)" node_modules/.bin/next build || die "build failed"
+    colophon
+    ;;
+  start) require_ready; MODE="prod"; stage_launch ;;
+  seed)  require_ready; DO_SEED="yes"; stage_seed; colophon ;;
+  migrate) require_ready; hdr "04" "DATABASE" "$LEMON"; run_task "apply migrations" node_modules/.bin/prisma migrate deploy || die "migrate failed"; colophon ;;
+  studio) require_ready; hdr "04" "DATABASE" "$LEMON"; info "prisma studio → http://localhost:5555"; exec node_modules/.bin/prisma studio ;;
+  backup)  require_ready; hdr "05" "BACKUP" "$LAVENDER"; "$PM" run db:backup;  colophon ;;
+  restore) require_ready; hdr "05" "RESTORE" "$LAVENDER"; "$PM" run db:restore; colophon ;;
 esac
