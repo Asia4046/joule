@@ -101,12 +101,13 @@ center_line() { # center_line PLAIN COLORED TOTAL — pad by the PLAIN width
 banner() {
   local W=66
   local pad=$(( W - 2 ))
-  local pb="" pe="" bone="" jcol=""
+  # within the strip, segments end with selective resets (39m fg / 22m undim)
+  # so the licorice paper background survives to the end of each line
+  local pb="" pe="" bone="" jcol="" EF=$'\033[39m' ED=$'\033[22m'
   if [[ "$COLOR" == 1 ]]; then
     pb="$(bg "$PAPER")"; pe="$RESET"
     bone="$(fg "$BONE")"; jcol="$(fg "$BUBBLEGUM")"
-  fi
-  local blank; blank="$(printf '%*s' "$pad" '')"
+  else EF=""; ED=""; fi
   printf '%s%s%s\n' "$pb" "$(printf '%*s' "$W" '')" "$pe"
 
   # wordmark — the J is the bubblegum brand tile, the rest is bone ink
@@ -118,16 +119,16 @@ banner() {
   local i plain colored
   for i in 0 1 2 3 4 5; do
     plain="${j[$i]} ${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}"
-    colored="${jcol}${j[$i]}$RESET ${bone}${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}$RESET"
+    colored="${jcol}${j[$i]}$EF ${bone}${o[$i]} ${u[$i]} ${l[$i]} ${e[$i]}$EF"
     printf '%s %s %s\n' "$pb" "$(center_line "$plain" "$colored" "$pad")" "$pe"
   done
 
-  printf '%s %s %s\n' "$pb" "$(center_line '● ● ● ● ● ● ● ●' "$(jar_row)" "$pad")" "$pe"
-  printf '%s %s %s\n' "$pb" "$(center_line "$(printf '%*s' "$pad" '')" "$blank" "$pad")" "$pe"
+  printf '%s %s %s\n' "$pb" "$(center_line '● ● ● ● ● ● ● ●' "$(jar_row "$EF")" "$pad")" "$pe"
+  printf '%s %s %s\n' "$pb" "$(printf '%*s' "$pad" '')" "$pe"
   local tag='JEE PREPARATION PLATFORM · SELF-HOSTED COMMAND CENTER'
-  printf '%s %s %s\n' "$pb" "$(center_line "$tag" "$DIM$tag$RESET" "$pad")" "$pe"
+  printf '%s %s %s\n' "$pb" "$(center_line "$tag" "$DIM$tag$ED$EF" "$pad")" "$pe"
   local colo='PAPER #0A0908 · INK #DED5C6 · BEANS ×8 · RADIUS 2 · GRAIN 5%'
-  printf '%s %s %s\n' "$pb" "$(center_line "$colo" "$DIM$colo$RESET" "$pad")" "$pe"
+  printf '%s %s %s\n' "$pb" "$(center_line "$colo" "$DIM$colo$ED$EF" "$pad")" "$pe"
   printf '%s%s%s\n' "$pb" "$(printf '%*s' "$W" '')" "$pe"
 }
 
