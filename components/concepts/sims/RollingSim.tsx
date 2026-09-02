@@ -7,7 +7,7 @@ import { useCanvas, SIM, clearPanel, label, arrow } from "@/components/concepts/
 
 const g = 9.8;
 const L = 8; // incline length (m)
-const R = 0.09; // physical radius used for ω (visual radius differs; physics of a is unchanged)
+const R = 0.09; // physical radius used for ω (the drawn wheel is bigger; spin angles are rescaled to it)
 
 const BODIES = [
   { name: "Ring", k: 1.0, color: SIM.red, shape: "ring" as const },
@@ -29,33 +29,48 @@ export default function RollingSim() {
   const acc = BODIES.map((b, i) => (rolling[i] ? g * Math.sin(th) / (1 + b.k) : g * (Math.sin(th) - mu * Math.cos(th))));
   const alpha = BODIES.map((b, i) => (rolling[i] ? acc[i] / R : (mu * g * Math.cos(th)) / (b.k * R)));
   const allSlipping = rolling.every((r) => !r);
+  const anySlipping = rolling.some((r) => !r);
 
-  const state = useRef({ t: 0, finished: false, holdTimer: 0, om: [0, 0, 0, 0] });
+  const state = useRef({ t: 0, finished: false, holdTimer: 0 });
   const params = useRef({ angle, mu });
   if (params.current.angle !== angle || params.current.mu !== mu) {
     params.current = { angle, mu };
-    state.current = { t: 0, finished: false, holdTimer: 0, om: [0, 0, 0, 0] };
+    state.current = { t: 0, finished: false, holdTimer: 0 };
   }
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
     const pad = 26;
-    const x0 = pad + 20, y0 = pad + 14;
+    const x0 = pad + 20, y0 = pad + 20;
     const x1 = w - pad - 148, y1 = h - pad - 30; // keep right column for energy bars
     const inclineLen = Math.hypot(x1 - x0, y1 - y0);
     const ux = (x1 - x0) / inclineLen;
     const uy = (y1 - y0) / inclineLen;
+    const pxPerM = inclineLen / L;
+    const rv = 13; // drawn radius (px) — spin angles are scaled to it so no-slip LOOKS like no-slip
 
     if (!s.finished) {
       s.t += dt;
-      for (let i = 0; i < 4; i++) s.om[i] += alpha[i] * dt;
+      // solid sphere is always the winner: rollers beat slippers, and among rollers/it has the lowest k
       if (0.5 * acc[3] * s.t * s.t >= L) s.finished = true;
     } else {
       s.holdTimer += dt;
       if (s.holdTimer > 2.6) {
-        state.current = { t: 0, finished: false, holdTimer: 0, om: [0, 0, 0, 0] };
+        state.current = { t: 0, finished: false, holdTimer: 0 };
       }
     }
+
+    // Closed-form kinematics — frame-rate independent, and each body's clock stops at its own finish
+    // so KE bars freeze at the line instead of growing while clamped. Physical ω stays radius-based;
+    // the drawn spin angle is rescaled by R·pxPerM/rv so the rendered rolling satisfies no-slip.
+    const kin = BODIES.map((_, i) => {
+      const tb = Math.min(s.t, Math.sqrt((2 * L) / Math.max(acc[i], 1e-9)));
+      const dist = 0.5 * acc[i] * tb * tb;
+      const v = acc[i] * tb;
+      const om = rolling[i] ? v / R : alpha[i] * tb;
+      const phi = rolling[i] ? (dist * pxPerM) / rv : 0.5 * alpha[i] * tb * tb * ((R * pxPerM) / rv);
+      return { tb, dist, v, om, phi };
+    });
 
     clearPanel(ctx, w, h);
     // incline wedge
@@ -80,17 +95,20 @@ export default function RollingSim() {
 
     // ── bodies ──
     const geoms = BODIES.map((b, i) => {
-      const dist = Math.min(0.5 * acc[i] * s.t * s.t, L);
-      const fr = dist / L;
+      const fr = kin[i].dist / L;
       const px = x0 + ux * (fr * inclineLen);
       const py = y0 + uy * (fr * inclineLen);
-      const r = 13;
-      const cx = px - uy * (r + 1.5);
-      const cy = py + ux * (r + 1.5);
-      const phi = rolling[i] ? dist / R : s.om[i];
-      const v = acc[i] * s.t;
-      const vContact = v - (rolling[i] ? v : s.om[i] * R);
-      return { px, py, cx, cy, r, phi: phi % (Math.PI * 2), v, vContact, dist, i };
+      const off = rv + 1.5;
+      const cx = px + uy * off; // exterior normal — the bodies ride ON the incline
+      const cy = py - ux * off;
+      return {
+        px, py, cx, cy, r: rv,
+        phi: kin[i].phi % (Math.PI * 2),
+        v: kin[i].v,
+        om: kin[i].om,
+        vContact: kin[i].v - (rolling[i] ? kin[i].v : kin[i].om * R),
+        i,
+      };
     });
 
     geoms.forEach((gm) => {
@@ -132,18 +150,19 @@ export default function RollingSim() {
       const fx = gm.cx + ux * 16, fy = gm.cy + uy * 16;
       arrow(ctx, fx, fy, fx - ux * (rolling[gm.i] ? 14 : 20), fy - uy * (rolling[gm.i] ? 14 : 20), rolling[gm.i] ? "rgba(52,211,153,0.8)" : SIM.red, 1.6);
 
-      label(ctx, b.name, gm.cx, gm.cy + gm.r + 12, b.color, 9, "center");
-      label(ctx, `a=${acc[gm.i].toFixed(2)}`, gm.cx, gm.cy - gm.r - 8, SIM.dim, 8, "center");
-      if (!rolling[gm.i]) label(ctx, "SLIPS", gm.cx, gm.cy + gm.r + 23, SIM.red, 8, "center");
+      // labels fan per body so coincident bodies (dead heats, race start) stay readable
+      label(ctx, b.name, gm.cx, gm.cy + gm.r + 12 + gm.i * 9, b.color, 9, "center");
+      label(ctx, `a=${acc[gm.i].toFixed(2)}`, gm.cx, gm.cy - gm.r - 8 - (3 - gm.i) * 7, SIM.dim, 8, "center");
+      if (!rolling[gm.i]) label(ctx, "SLIPS", gm.cx, gm.cy + gm.r + 23 + gm.i * 9, SIM.red, 8, "center");
     });
 
     // ── velocity field on the focus body: contact 0 · centre v · top 2v ──
     const f = geoms[FOCUS];
-    const vScale = 9;
+    const vScale = Math.min(9, 24 / Math.max(f.v, 0.3)); // cap so the frozen finish frame stays inside the panel
     const topX = f.cx + (f.cx - f.px), topY = f.cy + (f.cy - f.py);
     arrow(ctx, f.px, f.py + 3, f.px + ux * f.vContact * vScale, f.py + uy * f.vContact * vScale + 3, rolling[FOCUS] ? SIM.dim : SIM.red, 1.6);
     arrow(ctx, f.cx - ux * 20, f.cy - uy * 20, f.cx - ux * 20 + ux * f.v * vScale, f.cy - uy * 20 + uy * f.v * vScale, SIM.green, 1.8);
-    arrow(ctx, topX - ux * 20, topY - uy * 20, topX - ux * 20 + ux * (f.v + (rolling[FOCUS] ? f.v : s.om[FOCUS] * R)) * vScale, topY - uy * 20 + uy * (f.v + (rolling[FOCUS] ? f.v : s.om[FOCUS] * R)) * vScale, SIM.sky, 1.8);
+    arrow(ctx, topX - ux * 20, topY - uy * 20, topX - ux * 20 + ux * (f.v + (rolling[FOCUS] ? f.v : f.om * R)) * vScale, topY - uy * 20 + uy * (f.v + (rolling[FOCUS] ? f.v : f.om * R)) * vScale, SIM.sky, 1.8);
     label(ctx, rolling[FOCUS] ? "0" : `v−ωR=${f.vContact.toFixed(1)}`, f.px + 6, f.py + 10, rolling[FOCUS] ? SIM.dim : SIM.red, 8);
     label(ctx, `v=${f.v.toFixed(1)}`, f.cx - ux * 34, f.cy - uy * 34, SIM.green, 8);
     label(ctx, rolling[FOCUS] ? "2v" : `v+ωR`, topX - ux * 34, topY - uy * 34, SIM.sky, 8);
@@ -151,8 +170,8 @@ export default function RollingSim() {
     // ── right column: KE partition + status ──
     const bx = w - pad - 138;
     label(ctx, "KE split (trans | rot)", bx, 18, SIM.dim, 9);
-    const keT = geoms.map((_, i) => 0.5 * (acc[i] * s.t) ** 2); // m = 1 kg
-    const keR = geoms.map((_, i) => 0.5 * BODIES[i].k * (s.om[i] ** 2) * R * R);
+    const keT = geoms.map((gm) => 0.5 * gm.v ** 2); // m = 1 kg
+    const keR = geoms.map((gm) => 0.5 * BODIES[gm.i].k * gm.om ** 2 * R * R);
     const keMax = Math.max(...keT.map((k, i) => k + keR[i]), 1e-6);
     BODIES.forEach((b, i) => {
       const y = 34 + i * 30;
@@ -171,12 +190,13 @@ export default function RollingSim() {
       label(ctx, rolling[i] ? "rolls" : `needs μ≥${muMin[i].toFixed(2)}`, bx + bw, y + 17, rolling[i] ? SIM.green : SIM.red, 8, "right");
     });
 
-    // leaderboard
-    const order = BODIES.map((b, i) => ({ n: b.name, x: 0.5 * acc[i] * s.t * s.t })).sort((a, b) => b.x - a.x).map((o) => o.n);
-    label(ctx, s.finished ? "FINISH ORDER" : "LEADER", w - pad - 4, pad + 2, SIM.dim, 9, "right");
+    // leaderboard — below the KE bars so the two right-column blocks never collide
+    const order = BODIES.map((b, i) => ({ n: b.name, x: kin[i].dist })).sort((a, b) => b.x - a.x).map((o) => o.n);
+    const lbY = 158;
+    label(ctx, s.finished ? "FINISH ORDER" : "LEADER", w - pad - 4, lbY, SIM.dim, 9, "right");
     order.forEach((n, i) => {
       const color = BODIES.find((b) => b.name === n)!.color;
-      label(ctx, `${i + 1}. ${n}`, w - pad - 4, pad + 16 + i * 13, color, 9, "right");
+      label(ctx, `${i + 1}. ${n}`, w - pad - 4, lbY + 14 + i * 13, color, 9, "right");
     });
 
     // lesson line reacts to the regime
@@ -184,7 +204,9 @@ export default function RollingSim() {
       ctx,
       allSlipping
         ? "μ too small: everyone slides at g(sinθ − μcosθ) — a dead heat; only spin rates differ"
-        : "order depends on shape only — mass and radius cancel (friction is static: zero work)",
+        : anySlipping
+          ? "partial grip: rollers lead (lowest k ahead); every slipper ties behind at g(sinθ − μcosθ)"
+          : "order depends on shape only — mass and radius cancel (friction is static: zero work)",
       w / 2 - 60, h - 12, SIM.dim, 9, "center"
     );
   });
@@ -199,7 +221,7 @@ export default function RollingSim() {
         <SimControls>
           <LabeledSlider label="Incline θ (°)" value={angle} min={10} max={40} step={1} decimals={0} onChange={setAngle} color="#E6C384" />
           <LabeledSlider label="Friction μ" value={mu} min={0} max={0.8} step={0.05} decimals={2} onChange={setMu} color="#E46876" />
-          <ResetButton onClick={() => { state.current = { t: 0, finished: false, holdTimer: 0, om: [0, 0, 0, 0] }; }} />
+          <ResetButton onClick={() => { state.current = { t: 0, finished: false, holdTimer: 0 }; }} />
         </SimControls>
       }
       readouts={
