@@ -42,10 +42,15 @@ export default function TrainTunnelSim() {
     const s = state.current;
     s.t += dt;
 
-    // ── layout ──
-    const y0 = 36; // interior top
-    const y1 = h - 66; // interior bottom
-    const midY = (y0 + y1) / 2;
+    // ── layout — the drawn bore scales with A₂: absolute size scales the flow
+    // volume, never the speeds (those depend only on β) ──
+    const iTop = 36;
+    const iBot = h - 66;
+    const midY = (iTop + iBot) / 2;
+    const boreFrac = 0.55 + 0.45 * ((a2 - 30) / 50); // A₂ 30..80 m² → 55..100% of the interior
+    const boreH = (iBot - iTop) * boreFrac;
+    const y0 = midY - boreH / 2; // bore top
+    const y1 = midY + boreH / 2; // bore bottom
     const trainH = beta * (y1 - y0);
     const trainTop = midY - trainH / 2;
     const trainBot = midY + trainH / 2;
@@ -112,6 +117,94 @@ export default function TrainTunnelSim() {
     for (let x = -offS; x < w; x += 46) ctx.fillRect(x, y1 - 6, 15, 3);
     ctx.restore();
 
+    // ── air particles: advect through the prescribed field ──
+    // Drawn BEFORE the train so streaks never render on top of the solid body.
+    const lead = 120;
+    const trail = 150;
+    const k = 1 - Math.exp(-7 * dt);
+    const denom = Math.max(1, uPx - vPx * 0.85);
+    ctx.save();
+    ctx.lineCap = "round";
+    for (const p of s.ps) {
+      // target velocity by region
+      let tx = free;
+      let ty = 0;
+      const corridorTop = p.y < trainTop - 2;
+      const corridorBot = p.y > trainBot + 2;
+      const inCorridor = corridorTop || corridorBot;
+      const cY = corridorTop ? cTop : cBot;
+      // per-particle "lane" inside its gap — keeps the jet filling the annulus
+      // instead of collapsing onto the centreline or hugging the walls
+      const gapW = corridorTop ? trainTop - y0 : y1 - trainBot;
+      let lane = cY + (p.seed - 0.5) * 0.7 * Math.max(4, gapW);
+      lane = Math.max(y0 + 4, Math.min(trainTop - 4, lane));
+      if (corridorBot) lane = Math.max(trainBot + 4, Math.min(y1 - 4, lane));
+      if (p.x >= nose + lead) {
+        tx = free;
+      } else if (p.x > nose) {
+        // approach: gap-height air accelerates into the annulus; body-height air
+        // stagnates against the nose face while deflecting around it
+        const f = (nose + lead - p.x) / lead;
+        if (inCorridor) {
+          tx = free + (gap - free) * f;
+          ty = (lane - p.y) * 0.5;
+        } else {
+          tx = free * (1 - f);
+          ty = (p.y < midY ? cTop - p.y : cBot - p.y) * 1.4;
+        }
+      } else if (p.x > tail) {
+        // alongside: full jet speed through the annulus; evict anything inside the body
+        if (inCorridor) {
+          tx = gap;
+          ty = (lane - p.y) * 1.6;
+        } else {
+          tx = gap * 0.55;
+          ty = (p.y < midY ? -1 : 1) * 150;
+        }
+      } else {
+        // behind: relax the jet back to the free stream + wake wiggle
+        const g = Math.min(1, (tail - p.x) / trail);
+        tx = gap + (free - gap) * g;
+        ty = Math.sin(s.t * 2.3 + p.seed * 7) * 12;
+      }
+      p.vx += (tx - p.vx) * k;
+      p.vy += (ty - p.vy) * k;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+
+      if (p.y < y0 + 3) {
+        p.y = y0 + 3;
+        p.vy = Math.abs(p.vy) * 0.5;
+      } else if (p.y > y1 - 3) {
+        p.y = y1 - 3;
+        p.vy = -Math.abs(p.vy) * 0.5;
+      }
+      if (p.x < -12) {
+        p.x = w + 8 + Math.random() * 24;
+        p.y = y0 + 6 + Math.random() * (y1 - y0 - 12);
+        p.vx = free;
+        p.vy = 0;
+      }
+
+      // colour by how much faster than the free stream
+      const r = Math.max(0, Math.min(1, (Math.abs(p.vx) - vPx * 0.85) / denom));
+      const len = Math.max(3, Math.min(26, Math.abs(p.vx) * 0.045));
+      const nx = p.vx === 0 ? 1 : p.vx / Math.abs(p.vx);
+      ctx.strokeStyle = `hsl(${205 - 180 * r}, 85%, ${60 + 8 * r}%)`;
+      ctx.lineWidth = 1.3 + r * 0.9;
+      if (r > 0.75) {
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 5;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - nx * len, p.y - p.vy * 0.04);
+      ctx.stroke();
+    }
+    ctx.restore();
+
     // ── the train (fixed at centre of frame) ──
     ctx.save();
     const grad = ctx.createLinearGradient(0, trainTop, 0, trainBot);
@@ -167,98 +260,24 @@ export default function TrainTunnelSim() {
     });
     ctx.restore();
 
-    // ── air particles: advect through the prescribed field ──
-    const lead = 120;
-    const trail = 150;
-    const k = 1 - Math.exp(-7 * dt);
-    const denom = Math.max(1, uPx - vPx * 0.85);
-    ctx.save();
-    ctx.lineCap = "round";
-    for (const p of s.ps) {
-      // target velocity by region
-      let tx = free;
-      let ty = 0;
-      const corridorTop = p.y < trainTop - 2;
-      const corridorBot = p.y > trainBot + 2;
-      const inCorridor = corridorTop || corridorBot;
-      const cY = corridorTop ? cTop : cBot;
-      if (p.x >= nose + lead) {
-        tx = free;
-      } else if (p.x > nose) {
-        // approach: accelerate into the gaps, body-height air deflects around
-        const f = (nose + lead - p.x) / lead;
-        if (inCorridor) {
-          tx = free + (gap - free) * f;
-          ty = (cY - p.y) * 0.4;
-        } else {
-          tx = free + (gap - free) * f * 0.35;
-          ty = (p.y < midY ? cTop - p.y : cBot - p.y) * 1.4;
-        }
-      } else if (p.x > tail) {
-        // alongside: full jet speed through the annulus; evict anything inside the body
-        if (inCorridor) {
-          tx = gap;
-          ty = (cY - p.y) * 0.45;
-        } else {
-          tx = gap * 0.55;
-          ty = (p.y < midY ? -1 : 1) * 150;
-        }
-      } else {
-        // behind: relax the jet back to the free stream + wake wiggle
-        const g = Math.min(1, (tail - p.x) / trail);
-        tx = gap + (free - gap) * g;
-        ty = Math.sin(s.t * 2.3 + p.seed * 7) * 12;
-      }
-      p.vx += (tx - p.vx) * k;
-      p.vy += (ty - p.vy) * k;
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-
-      if (p.y < y0 + 3) {
-        p.y = y0 + 3;
-        p.vy = Math.abs(p.vy) * 0.5;
-      } else if (p.y > y1 - 3) {
-        p.y = y1 - 3;
-        p.vy = -Math.abs(p.vy) * 0.5;
-      }
-      if (p.x < -12) {
-        p.x = w + 8 + Math.random() * 24;
-        p.y = y0 + 6 + Math.random() * (y1 - y0 - 12);
-        p.vx = free;
-        p.vy = 0;
-      }
-
-      // colour by how much faster than the free stream
-      const r = Math.max(0, Math.min(1, (Math.abs(p.vx) - vPx * 0.85) / denom));
-      const len = Math.max(3, Math.min(26, Math.abs(p.vx) * 0.045));
-      const nx = p.vx === 0 ? 1 : p.vx / Math.abs(p.vx);
-      ctx.strokeStyle = `hsl(${205 - 180 * r}, 85%, ${60 + 8 * r}%)`;
-      ctx.lineWidth = 1.3 + r * 0.9;
-      if (r > 0.75) {
-        ctx.shadowColor = ctx.strokeStyle;
-        ctx.shadowBlur = 5;
-      } else {
-        ctx.shadowBlur = 0;
-      }
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - nx * len, p.y - p.vy * 0.04);
-      ctx.stroke();
-    }
-    ctx.restore();
-
-    // ── probe arrows: v far ahead, u′ inside the gap ──
-    arrow(ctx, nose + lead * 0.6 + vPx * 0.3, y0 + 14, nose + lead * 0.6 - vPx * 0.3, y0 + 14, SIM.sky, 1.8);
-    label(ctx, `v = ${vTrain} m/s`, nose + lead * 0.6, y0 + 26, SIM.sky, 9, "center");
-    const gapArrowLen = Math.min(120, Math.max(34, uPx * 0.14));
+    // ── probe arrows: v in the undisturbed stream well ahead, u′ inside the gap ──
+    const vAx = Math.min(w - 56, nose + lead + 60);
+    const vLen = Math.max(18, vPx * 0.6);
+    arrow(ctx, vAx + vLen / 2, y0 + 14, vAx - vLen / 2, y0 + 14, SIM.sky, 1.8);
+    label(ctx, `v = ${vTrain} m/s`, vAx, y0 + 26, SIM.sky, 9, "center");
+    // same px-per-(m/s) scale as the v arrow, clamped so β→1 can't run off the panel
+    const gapLen = Math.min(120, uPx * 0.6);
     const gapAX = (tail + nose) / 2;
-    arrow(ctx, gapAX + gapArrowLen / 2, cTop, gapAX - gapArrowLen / 2, cTop, SIM.amber, 2.2);
-    label(ctx, `u′ = ${(1 / (1 - beta)).toFixed(1)}·v`, gapAX, cTop - 9, SIM.amber, 9, "center");
+    arrow(ctx, gapAX + gapLen / 2, cTop, gapAX - gapLen / 2, cTop, SIM.amber, 2.2);
+    const uLabel = `u′ = ${(1 / (1 - beta)).toFixed(1)}·v`;
+    if (cTop - 9 >= y0 + 5) label(ctx, uLabel, gapAX, cTop - 9, SIM.amber, 9, "center");
+    else label(ctx, uLabel, gapAX, 11, SIM.amber, 9, "center");
 
     // ── captions ──
     label(ctx, "TRAIN'S FRAME — tunnel & far-field air stream left at v", 14, 11, SIM.dim, 9);
     label(ctx, `β = A₁/A₂ = ${beta.toFixed(2)}`, w - 14, 11, SIM.bright, 9, "right");
-    label(ctx, "annular gap · (1−β)·A₂", nose - 10, (y0 + trainTop) / 2 - 1, SIM.dim, 8, "right");
+    label(ctx, "annular gap · (1−β)·A₂", tail + 12, y0 + 9, SIM.dim, 8);
+    label(ctx, `A₂ = ${a2} m²`, w - 14, y1 + 8, SIM.dim, 8, "right");
 
     // ── pressure profile strip ──
     const yP = h - 26;
@@ -267,7 +286,13 @@ export default function TrainTunnelSim() {
     const xP1 = w - 14;
     const P = (x: number) => {
       if (x > nose) return amp * Math.exp(-(x - nose) / 120);
-      if (x > tail) return -amp * 0.45 * Math.sin((Math.PI * (x - tail)) / (nose - tail));
+      if (x > tail) {
+        const sN = (x - tail) / (nose - tail);
+        // suction along the annulus, blending continuously into the tail wake and
+        // rising through the stagnation zone into the nose compression peak
+        const along = 0.45 * Math.sin(Math.PI * sN) + 0.85 * (1 - sN);
+        return amp * (Math.exp(-(nose - x) / 26) - along);
+      }
       return -amp * 0.85 * Math.exp(-(tail - x) / 140);
     };
     label(ctx, "static pressure along tunnel", 14, h - 42, SIM.dim, 9);
