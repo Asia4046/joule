@@ -24,11 +24,28 @@ export default function StandingWaveSim() {
   const harmonic = odd ? 2 * n - 1 : n; // physical harmonic number
   const fn = harmonic * f1;
   const lambdaN = odd ? (4 * len) / harmonic : (2 * len) / harmonic;
-  // displacement shape S(x) on x ∈ [0,1]: string/closed → sin(kx) · open–open → cos(kx)
-  const k = harmonic * Math.PI;
+  // Displacement shape S(x) on x ∈ [0,1]:
+  //   string (fixed–fixed)  sin(nπx)     — nodes at both ends
+  //   closed (closed–open)  sin(nπx/2)   — node at the closed end, ANTINODE at the open end (n odd)
+  //   open (open–open)      cos(nπx)     — antinodes at both ends
+  const k = harmonic * (mode === "closed" ? Math.PI / 2 : Math.PI);
   const shape = (x: number) => (mode === "open" ? Math.cos(k * x) : Math.sin(k * x));
-  const dShape = (x: number) => (mode === "open" ? -Math.sin(k * x) : Math.cos(k * x)); // ∝ pressure profile
+  const dShape = (x: number) => (mode === "open" ? -Math.sin(k * x) : Math.cos(k * x)); // ∂S/∂x — pressure (pipes) / velocity (string) profile
   const probeAmp = Math.abs(shape(probe));
+
+  // marker positions for this system: displacement nodes (pressure antinodes) and antinodes
+  const nodeXs: number[] = [];
+  const antiXs: number[] = [];
+  if (mode === "string") {
+    for (let j = 0; j <= harmonic; j++) nodeXs.push(j / harmonic);
+    for (let j = 0; j < harmonic; j++) antiXs.push((j + 0.5) / harmonic);
+  } else if (mode === "closed") {
+    for (let j = 0; j <= Math.floor(harmonic / 2); j++) nodeXs.push((2 * j) / harmonic);
+    for (let j = 0; j <= Math.floor((harmonic - 1) / 2); j++) antiXs.push((2 * j + 1) / harmonic);
+  } else {
+    for (let j = 0; j < harmonic; j++) nodeXs.push((j + 0.5) / harmonic);
+    for (let j = 0; j <= harmonic; j++) antiXs.push(j / harmonic);
+  }
 
   const state = useRef({ t: 0 });
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
@@ -39,8 +56,10 @@ export default function StandingWaveSim() {
     const px0 = 44, px1 = w - 158;
     const midY = h / 2 - 10;
     const amp = (h / 2 - 58) * 0.72;
-    const phase = s.t * 2.6;
-    const env = Math.abs(Math.cos(phase)) * 0.35 + 0.65;
+    // Real fₙ runs from ~16 Hz to ~3 kHz — far too fast to draw. Play back slowed, but
+    // rate ∝ √fₙ so T, µ, L and n all stay visibly coupled to the motion.
+    const displayHz = 1.1 * Math.sqrt(fn / 250);
+    const phase = s.t * 2 * Math.PI * displayHz;
 
     // envelope ±A
     ctx.save();
@@ -67,14 +86,14 @@ export default function StandingWaveSim() {
     ctx.beginPath();
     for (let i = 0; i <= 200; i++) {
       const x = px0 + (i / 200) * (px1 - px0);
-      const y = midY - shape(i / 200) * amp * env * Math.cos(phase);
+      const y = midY - shape(i / 200) * amp * Math.cos(phase);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
     ctx.restore();
 
-    // ── pressure wave: spatial derivative of displacement, shifted λ/4 ──
+    // ── pressure wave (pipes) / velocity profile (string): spatial derivative of displacement, λ/4 shifted ──
     ctx.save();
     ctx.strokeStyle = SIM.fuchsia;
     ctx.lineWidth = 1.5;
@@ -82,7 +101,7 @@ export default function StandingWaveSim() {
     ctx.beginPath();
     for (let i = 0; i <= 200; i++) {
       const x = px0 + (i / 200) * (px1 - px0);
-      const y = midY - dShape(i / 200) * amp * 0.55 * env * Math.cos(phase);
+      const y = midY - dShape(i / 200) * amp * 0.55 * Math.cos(phase);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -154,22 +173,17 @@ export default function StandingWaveSim() {
     }
 
     // displacement nodes (N) — pressure antinodes — and antinodes (A)
-    const nNodes = mode === "open" ? harmonic - 1 : harmonic + 1;
-    for (let j = 0; j < 1e4; j++) {
-      const x = mode === "open" ? (j + 0.5) / harmonic : j / harmonic;
-      if (x > 1.0001) break;
+    nodeXs.forEach((x) => {
       ctx.save();
       ctx.fillStyle = SIM.red;
       ctx.beginPath();
       ctx.arc(px0 + x * (px1 - px0), midY, 3.2, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
-    }
-    for (let j = 0; j < harmonic + 1; j++) {
-      const x = mode === "open" ? j / harmonic : (j + 0.5) / harmonic;
-      if (x > 1) break;
+    });
+    antiXs.forEach((x) => {
       label(ctx, "A", px0 + x * (px1 - px0), midY - amp - 10, SIM.green, 9, "center");
-    }
+    });
     label(
       ctx,
       mode === "string"
@@ -179,11 +193,18 @@ export default function StandingWaveSim() {
           : `harmonic ${harmonic}: open–open mirrors the string · λₙ = 2L/n`,
       (px0 + px1) / 2, h - 12, SIM.dim, 9, "center"
     );
-    label(ctx, "displacement (indigo) · pressure (pink) — locked λ/4 apart", px0, 16, SIM.dim, 9);
+    label(
+      ctx,
+      mode === "string"
+        ? "displacement (indigo) · velocity profile (pink) — a quarter cycle out of step"
+        : "displacement (indigo) · pressure (pink) — locked λ/4 apart",
+      px0, 16, SIM.dim, 9
+    );
+    label(ctx, `playback slowed ∝ √fₙ · true fₙ = ${fn.toFixed(0)} Hz`, px1, 16, SIM.dim, 9, "right");
 
     // ── probe ──
     const probeX = px0 + probe * (px1 - px0);
-    const probeY = midY - shape(probe) * amp * env * Math.cos(phase);
+    const probeY = midY - shape(probe) * amp * Math.cos(phase);
     ctx.save();
     ctx.strokeStyle = "rgba(56,189,248,0.5)";
     ctx.setLineDash([3, 4]);
@@ -226,7 +247,7 @@ export default function StandingWaveSim() {
   return (
     <SimFrame
       title="Standing waves — strings & pipes"
-      about="Three boundary conditions, the pressure wave drawn λ/4 out of phase, and a probe that finds the dead spots"
+      about="Three boundary conditions with the right shapes, the pressure/velocity profile drawn a quarter step out of phase, and a probe that finds the dead spots"
       height={320}
       canvas={<canvas ref={canvasRef} />}
       controls={

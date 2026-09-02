@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import SimFrame from "@/components/concepts/SimFrame";
 import { LabeledSlider, Readout, SimControls, ResetButton } from "@/components/concepts/controls";
-import { useCanvas, SIM, clearPanel, label, circle } from "@/components/concepts/useCanvas";
+import { useCanvas, SIM, clearPanel, label, circle, arrow } from "@/components/concepts/useCanvas";
 
 /** Drift velocity: wire with electron dots, battery and bulb; V and R set current. */
 export default function DriftSim() {
@@ -17,6 +17,8 @@ export default function DriftSim() {
 
   const I = V / R;
   const P = (I * I * R);
+  // v_d = I/(nAe) for a copper wire of cross-section 1 mm²
+  const VD_MM_S = (I / (8.5e28 * 1e-6 * 1.6e-19)) * 1000;
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
@@ -27,12 +29,14 @@ export default function DriftSim() {
     const wx0 = w * 0.18;
     const wx1 = w * 0.82;
 
-    // circuit rectangle
+    // circuit rectangle — the left wire is split to make room for the battery
     ctx.save();
     ctx.strokeStyle = SIM.axis;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(wx0, wireY - 60);
+    ctx.lineTo(wx0, wireY - 9);
+    ctx.moveTo(wx0, wireY + 9);
     ctx.lineTo(wx0, wireY + 60);
     ctx.moveTo(wx1, wireY - 60);
     ctx.lineTo(wx1, wireY + 60);
@@ -43,22 +47,23 @@ export default function DriftSim() {
     ctx.stroke();
     ctx.restore();
 
-    // battery (left)
+    // battery (left) — plates perpendicular to the wire: long thin = + (top), short thick = −
     ctx.save();
     ctx.strokeStyle = SIM.amber;
-    ctx.lineWidth = 3;
-    const bx = wx0 + 2;
     ctx.beginPath();
-    ctx.moveTo(bx, wireY - 26);
-    ctx.lineTo(bx, wireY + 26);
+    ctx.lineWidth = 2.5;
+    ctx.moveTo(wx0 - 13, wireY - 9);
+    ctx.lineTo(wx0 + 13, wireY - 9);
     ctx.stroke();
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.moveTo(bx + 10, wireY - 14);
-    ctx.lineTo(bx + 10, wireY + 14);
+    ctx.moveTo(wx0 - 6, wireY + 9);
+    ctx.lineTo(wx0 + 6, wireY + 9);
     ctx.stroke();
     ctx.restore();
-    label(ctx, `ε = ${V.toFixed(1)} V`, bx - 6, wireY + 46, SIM.amber, 11, "center");
+    label(ctx, "+", wx0 - 20, wireY - 9, SIM.amber, 12, "center");
+    label(ctx, "−", wx0 - 18, wireY + 9, SIM.amber, 12, "center");
+    label(ctx, `ε = ${V.toFixed(1)} V`, wx0 - 34, wireY + 46, SIM.amber, 11, "center");
 
     // resistor (right) — vertical zigzag on the right wire
     ctx.save();
@@ -109,6 +114,11 @@ export default function DriftSim() {
     drawRun(wireY - 60, -1); // electrons oppose conventional current
     drawRun(wireY + 60, 1);
 
+    // conventional current direction (amber): + terminal is at the top of the battery,
+    // so I flows left→right along the top wire — opposite to the electron dots there
+    arrow(ctx, cx + 60, wireY - 78, cx + 100, wireY - 78, SIM.amber, 2);
+    label(ctx, "conventional I", cx + 80, wireY - 90, SIM.amber, 10, "center");
+
     label(ctx, `I = ε/R = ${I.toFixed(2)} A   ·   electron drift (blue dots) opposes conventional current`, w / 2, h - 18, SIM.sky, 11, "center");
     label(ctx, "electrons actually drift mm/s — the field propagates near c", w / 2, 26, SIM.dim, 10, "center");
   });
@@ -123,13 +133,15 @@ export default function DriftSim() {
         <SimControls>
           <LabeledSlider label="EMF ε (V)" value={V} min={1} max={12} step={0.1} decimals={1} onChange={setV} color="#E6C384" />
           <LabeledSlider label="Resistance R (Ω)" value={R} min={1} max={20} step={0.1} decimals={1} onChange={setR} color="#98BB6C" />
-          <ResetButton onClick={() => { state.current = { offsets: Array.from({ length: 64 }, () => Math.random()), phase: 0 }; }} />        </SimControls>
+          <ResetButton onClick={() => { state.current = { offsets: Array.from({ length: 64 }, () => Math.random()), phase: 0 }; }} />
+        </SimControls>
       }
       readouts={
         <>
           <Readout label="Current I" value={`${I.toFixed(2)} A`} color="#7FB4CA" />
           <Readout label="Power P = I²R" value={`${P.toFixed(1)} W`} color="#E6C384" />
-          <Readout label="Drift speed" value="∝ I (fixed wire)" />
+          <Readout label="Drift speed v_d = I/nAe" value={`${VD_MM_S < 0.01 ? VD_MM_S.toExponential(1) : VD_MM_S.toFixed(2)} mm/s`} color="#7FB4CA" />
+          <Readout label="Wire assumed" value="copper · A = 1 mm²" />
         </>
       }
     />

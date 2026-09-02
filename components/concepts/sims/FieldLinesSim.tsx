@@ -9,7 +9,7 @@ import { useCanvas, SIM, clearPanel, label, circle } from "@/components/concepts
 export default function FieldLinesSim() {
   const [q1, setQ1] = useState(1);
   const [q2, setQ2] = useState(-1);
-  const state = useRef({ probes: [] as { x: number; y: number; vx: number; vy: number }[] });
+  const state = useRef({ probes: [] as { x: number; y: number; life: number }[] });
 
   const canvasRef = useCanvas((ctx, w, h, _t, dt) => {
     const s = state.current;
@@ -17,11 +17,15 @@ export default function FieldLinesSim() {
     const p2 = { x: w * 0.68, y: h / 2 };
     const Q1 = q1 * 60;
     const Q2 = q2 * 60;
+    const charges = [
+      { p: p1, Q: Q1, q: q1 },
+      { p: p2, Q: Q2, q: q2 },
+    ] as const;
 
     const Efield = (x: number, y: number) => {
       let ex = 0, ey = 0;
-      const softening = 16; // px^2 softening to avoid singularity
-      for (const [p, Q] of [[p1, Q1], [p2, Q2]] as const) {
+      const softening = 16; // px² softening to avoid singularity
+      for (const { p, Q } of charges) {
         const dx = x - p.x;
         const dy = y - p.y;
         const r2 = dx * dx + dy * dy;
@@ -35,37 +39,76 @@ export default function FieldLinesSim() {
 
     clearPanel(ctx, w, h);
 
-    // field lines: from positive charges (or inward to negatives if no positive)
+    // Field lines: traced outward from positive charges along E (or inward-to-E from negatives
+    // when no positive exists). Line count per charge scales with |q| — "density ∝ strength".
+    const fromPositive = Q1 > 0 || Q2 > 0;
+    const dir = fromPositive ? 1 : -1;
     const seeds: { x: number; y: number }[] = [];
-    if (Q1 > 0 || Q2 > 0) {
-      if (Q1 > 0) for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) seeds.push({ x: p1.x + Math.cos(a) * 12, y: p1.y + Math.sin(a) * 12 });
-      if (Q2 > 0) for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) seeds.push({ x: p2.x + Math.cos(a) * 12, y: p2.y + Math.sin(a) * 12 });
-    } else {
-      if (Q1 < 0) for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) seeds.push({ x: p1.x + Math.cos(a) * 12, y: p1.y + Math.sin(a) * 12 });
-      if (Q2 < 0) for (let a = 0; a < Math.PI * 2; a += Math.PI / 8) seeds.push({ x: p2.x + Math.cos(a) * 12, y: p2.y + Math.sin(a) * 12 });
+    for (const { p, Q } of charges) {
+      const mag = Math.abs(Q);
+      if ((fromPositive ? Q > 0 : Q < 0) && mag > 0) {
+        const n = Math.max(6, Math.round((8 * mag) / 60)); // 8 lines per unit charge
+        for (let i = 0; i < n; i++) {
+          const a = (i / n) * Math.PI * 2;
+          seeds.push({ x: p.x + Math.cos(a) * 12, y: p.y + Math.sin(a) * 12 });
+        }
+      }
     }
 
     ctx.save();
     ctx.lineWidth = 1.2;
-    seeds.forEach((seed) => {
-      const dir = Q1 > 0 || Q2 > 0 ? 1 : -1;
+    ctx.strokeStyle = "rgba(129,140,248,0.55)";
+    const trace = (seed: { x: number; y: number }) => {
       let { x, y } = seed;
-      ctx.strokeStyle = "rgba(129,140,248,0.55)";
+      let px = 0, py = 0; // previous unit step, to detect stalls at neutral points
+      const pts: { x: number; y: number }[] = [{ x, y }];
       ctx.beginPath();
       ctx.moveTo(x, y);
-      for (let i = 0; i < 220; i++) {
+      for (let i = 0; i < 400; i++) {
         const { ex, ey } = Efield(x, y);
         const m = Math.hypot(ex, ey);
-        if (m < 1e-4) break;
-        x += (dir * ex * 3) / m;
-        y += (dir * ey * 3) / m;
+        if (m < 1e-5) break;
+        const sx = (dir * ex) / m;
+        const sy = (dir * ey) / m;
+        // A field line cannot reverse — a sign flip means we hit a neutral point;
+        // stop instead of jittering in place (old code drew a stuck 3px blob there).
+        if (i > 0 && sx * px + sy * py < 0) break;
+        px = sx;
+        py = sy;
+        x += sx * 2.5;
+        y += sy * 2.5;
         if (x < 0 || x > w || y < 0 || y > h) break;
-        if (Math.hypot(x - p1.x, y - p1.y) < 11 && dir === 1 && Q1 < 0) break;
-        if (Math.hypot(x - p2.x, y - p2.y) < 11 && dir === 1 && Q2 < 0) break;
+        // Lines terminate only on the opposite sign of the tracing direction:
+        // outward from + they end on −, inward-to-E from − they end on +.
+        let hitSink = false;
+        for (const { p, Q } of charges) {
+          if ((dir === 1 && Q < 0) || (dir === -1 && Q > 0)) {
+            if (Math.hypot(x - p.x, y - p.y) < 12) { hitSink = true; break; }
+          }
+        }
+        if (hitSink) {
+          ctx.lineTo(x, y);
+          pts.push({ x, y });
+          break;
+        }
         ctx.lineTo(x, y);
+        if (i % 4 === 0) pts.push({ x, y });
       }
       ctx.stroke();
-    });
+      // direction chevron at the midpoint — lines leave + and enter −
+      if (pts.length > 4) {
+        const mid = pts[Math.floor(pts.length / 2)];
+        const prev = pts[Math.floor(pts.length / 2) - 1];
+        const next = pts[Math.floor(pts.length / 2) + 1];
+        const a = Math.atan2(next.y - prev.y, next.x - prev.x);
+        ctx.beginPath();
+        ctx.moveTo(mid.x - 4 * Math.cos(a - 0.45), mid.y - 4 * Math.sin(a - 0.45));
+        ctx.lineTo(mid.x, mid.y);
+        ctx.lineTo(mid.x - 4 * Math.cos(a + 0.45), mid.y - 4 * Math.sin(a + 0.45));
+        ctx.stroke();
+      }
+    };
+    seeds.forEach(trace);
     ctx.restore();
 
     // charges
@@ -78,21 +121,28 @@ export default function FieldLinesSim() {
     drawQ(p1, q1);
     drawQ(p2, q2);
 
-    // test charges drifting along E
+    // test charges: positive probes accelerating along E, speed ∝ |E| (clamped),
+    // recirculating so they don't all pile up on the negative charge
     if (s.probes.length === 0) {
-      for (let i = 0; i < 26; i++) {
-        s.probes.push({ x: Math.random() * w, y: Math.random() * h, vx: 0, vy: 0 });
+      for (let i = 0; i < 34; i++) {
+        s.probes.push({ x: Math.random() * w, y: Math.random() * h, life: Math.random() * 8 });
       }
     }
     s.probes.forEach((pr) => {
       const { ex, ey } = Efield(pr.x, pr.y);
-      pr.vx = ex * 14;
-      pr.vy = ey * 14;
-      pr.x += pr.vx * dt;
-      pr.y += pr.vy * dt;
-      if (pr.x < 0 || pr.x > w || pr.y < 0 || pr.y > h || Math.hypot(pr.vx, pr.vy) < 0.05) {
+      const m = Math.hypot(ex, ey);
+      pr.life -= dt;
+      if (m > 1e-6) {
+        // px/s: |E| ≈ 0.003 at mid-range → ~15 px/s; clamped so slingshots stay readable
+        const speed = Math.min(150, Math.max(7, m * 5000));
+        pr.x += ((ex / m) * speed) * dt;
+        pr.y += ((ey / m) * speed) * dt;
+      }
+      const nearCharge = charges.some(({ p }) => Math.hypot(pr.x - p.x, pr.y - p.y) < 18);
+      if (pr.life <= 0 || pr.x < 0 || pr.x > w || pr.y < 0 || pr.y > h || nearCharge) {
         pr.x = Math.random() * w;
         pr.y = Math.random() * h;
+        pr.life = 5 + Math.random() * 7;
       }
       circle(ctx, pr.x, pr.y, 1.6, "rgba(241,245,249,0.75)");
     });
@@ -108,8 +158,8 @@ export default function FieldLinesSim() {
       canvas={<canvas ref={canvasRef} />}
       controls={
         <SimControls>
-          <LabeledSlider label="Charge q₁ (+ right)" value={q1} min={-3} max={3} step={0.1} decimals={1} onChange={setQ1} color="#E46876" />
-          <LabeledSlider label="Charge q₂ (+ right)" value={q2} min={-3} max={3} step={0.1} decimals={1} onChange={setQ2} color="#7FB4CA" />
+          <LabeledSlider label="Charge q₁" value={q1} min={-3} max={3} step={0.1} decimals={1} onChange={setQ1} color="#E46876" />
+          <LabeledSlider label="Charge q₂" value={q2} min={-3} max={3} step={0.1} decimals={1} onChange={setQ2} color="#7FB4CA" />
           <ResetButton onClick={() => { state.current.probes = []; }} />
         </SimControls>
       }
