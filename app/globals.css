@@ -59,6 +59,81 @@ body::after {
   animation: jee-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Stamp / print-in — heatmap cells and other small marks landing on paper.
+ * Pair with an inline animation-delay for column-by-column printing. */
+@keyframes jee-print {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Dossier print motifs ───────────────────────────────────────────── */
+
+/* Barcode strip — irregular vertical ink bars, colored via currentColor. */
+.jee-barcode {
+  background-image: repeating-linear-gradient(
+    90deg,
+    currentColor 0 2px,
+    transparent 2px 4px,
+    currentColor 4px 5px,
+    transparent 5px 9px,
+    currentColor 9px 12px,
+    transparent 12px 14px
+  );
+}
+
+/* Rubber stamp — bordered mono caps, set slightly off-square like a hand
+ * strike. Color via currentColor; size/position at the call site. */
+.jee-stamp {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  padding: 3px 7px;
+  transform: rotate(-4deg);
+  user-select: none;
+}
+
+/* Dashboard barcode → preparation-report link. Plain <a> so it can render
+ * straight from a Server Component; the taffy lift lives here in CSS. */
+.jee-barcode-link {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 92px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.jee-barcode-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+.jee-barcode-link:hover .jee-barcode {
+  opacity: 0.85;
+}
+.jee-barcode-link:focus-visible {
+  outline: 2px solid #ac3e70;
+  outline-offset: 3px;
+}
+[data-jee-theme="dark"] .jee-barcode-link:focus-visible {
+  outline-color: #f2a9cb;
+}
+/* the hero is tight on phones — the report stays reachable from Settings */
+@media (max-width: 599px) {
+  .jee-barcode-link {
+    display: none;
+  }
+}
+
 /* Scrolling ticker — track holds exactly two copies; edges masked. */
 .jee-marquee {
   overflow: hidden;
@@ -114,5 +189,56 @@ body::after {
   }
   .jee-pulse {
     animation: none !important;
+  }
+}
+
+/* ── Preparation report — dark dossier + print ────────────────────── */
+/* The report — preview and PDF alike — is permanently set in the dark
+ * "licorice" palette regardless of the app theme. Colored elements take a
+ * bean pair via --bean/--bean-dark custom properties; the report scope pins
+ * them to the pastel dark variants, print keeps those colors with
+ * print-color-adjust and drops screen-only affordances. */
+
+.jee-bean-el { background-color: var(--bean); }
+.jee-ink-el { color: var(--bean); }
+[data-jee-theme="dark"] .jee-bean-el { background-color: var(--bean-dark); }
+[data-jee-theme="dark"] .jee-ink-el { color: var(--bean-dark); }
+
+/* the report page reads dark under either app theme */
+.jee-report-dark .jee-bean-el { background-color: var(--bean-dark); }
+.jee-report-dark .jee-ink-el { color: var(--bean-dark); }
+.jee-report-dark.jee-paper-grid {
+  background-image: radial-gradient(circle, rgba(222,213,198,0.055) 1px, transparent 1.4px);
+}
+
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  .jee-report-print {
+    background: #0A0908 !important;
+    background-image: none !important; /* clean plates: no dot grid */
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  /* screen affordances off — crisp 1px borders carry the dossier on paper */
+  .jee-report-print .jee-tile {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  .jee-report-print .jee-barcode {
+    opacity: 0.9 !important; /* full ink, stamps read at arm's length */
+  }
+  .jee-report-print .jee-stamp {
+    opacity: 1 !important;
+    break-inside: avoid;
+  }
+  .jee-report-print .jee-sec {
+    break-after: avoid;
+    break-inside: avoid;
+  }
+  .jee-report-print table {
+    break-inside: avoid;
   }
 }

@@ -7,8 +7,23 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
 import { DEFAULT_REVISION_INTERVALS, DEMO_EMAIL } from "@/lib/constants";
 import { customizationSchema, DASHBOARD_WIDGETS } from "@/lib/customization";
+import { regenerateReport } from "@/lib/report";
 
 export type ActionState = { error?: string; ok?: boolean } | undefined;
+
+// ---------- preparation report ----------
+
+export async function regenerateReportAction(_prev: ActionState, _formData: FormData): Promise<ActionState> {
+  const user = await requireUser();
+  try {
+    await regenerateReport(user.id);
+  } catch {
+    return { error: "Could not regenerate the report — check the database connection." };
+  }
+  revalidatePath("/settings");
+  revalidatePath("/report");
+  return { ok: true };
+}
 
 // ---------- journal ----------
 

@@ -17,6 +17,7 @@ model User {
 
   profile        Profile        ?
   preferences    UserPreference ?
+  reportCache    ReportCache?
   chapterStates  ChapterState[]
   sessions       StudySession[]
   journalEntries JournalEntry[]
@@ -57,6 +58,16 @@ model UserPreference {
 }
 
 // ---------- Syllabus (global, seeded) ----------
+
+// Cached preparation-report snapshot — regenerated when older than 10 days
+// or on demand from Settings.
+model ReportCache {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  data        Json
+  generatedAt DateTime @default(now())
+}
 
 model Chapter {
   id                 String  @id @default(cuid())

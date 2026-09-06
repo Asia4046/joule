@@ -5,15 +5,18 @@ import { PageHeader } from "@/components/ui";
 import SettingsView from "@/components/settings/SettingsView";
 import { DEFAULT_REVISION_INTERVALS } from "@/lib/constants";
 import { mergeCustomization } from "@/lib/customization";
+import { reportCacheMeta } from "@/lib/report";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const [profile, prefs] = await Promise.all([
+  const [profile, prefs, reportCache] = await Promise.all([
     prisma.profile.findUnique({ where: { userId: user.id } }),
     prisma.userPreference.findUnique({ where: { userId: user.id } }),
+    prisma.reportCache.findUnique({ where: { userId: user.id }, select: { generatedAt: true } }),
   ]);
+  const report = reportCacheMeta(reportCache);
 
   return (
     <Box>
@@ -40,6 +43,7 @@ export default async function SettingsPage() {
           notifyMockTests: prefs?.notifyMockTests ?? true,
         }}
         customization={mergeCustomization(prefs?.customization)}
+        report={report}
       />
     </Box>
   );

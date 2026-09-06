@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Divider from "@mui/material/Divider";
-import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
@@ -30,7 +29,7 @@ import {
 } from "@/lib/analytics";
 import { SUBJECTS, subjectBarSx } from "@/lib/constants";
 import { mergeCustomization } from "@/lib/customization";
-import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend } from "@/components/ui";
+import { StatCard, StudyHeatmap, EmptyState, LinkButton, HeatLegend, CountUp, Bar } from "@/components/ui";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 
 export const dynamic = "force-dynamic";
@@ -97,6 +96,17 @@ export default async function DashboardPage() {
       {/* hero */}
       {dash.hero && (
       <Card sx={{ gridColumn: { xs: "1 / -1", md: "span 8" }, position: "relative", overflow: "hidden" }}>
+        <Link
+          href="/report"
+          aria-label="Open your preparation report"
+          title="Open your preparation report"
+          className="jee-barcode-link"
+        >
+          <Box aria-hidden className="jee-barcode" sx={{ width: "100%", height: 40, opacity: 0.55, transition: "opacity .15s ease" }} />
+          <Typography aria-hidden className="jee-mono" sx={{ mt: 0.5, fontSize: "0.56rem", fontWeight: 700, letterSpacing: "0.22em", color: "text.secondary" }}>
+            JEE·DOSSIER
+          </Typography>
+        </Link>
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
             <Box sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: "#D77BA6" }} aria-hidden />
@@ -125,6 +135,7 @@ export default async function DashboardPage() {
       <Card
         sx={{
           gridColumn: { xs: "1 / -1", md: "span 4" },
+          position: "relative",
           bgcolor: "#F2A9CB",
           border: "1.5px solid #221F1A",
           boxShadow: "5px 5px 0 rgba(0,0,0,0.28)",
@@ -145,25 +156,22 @@ export default async function DashboardPage() {
             <WhatshotOutlinedIcon sx={{ color: "#221F1A" }} fontSize="small" />
           </Stack>
           <Typography variant="h2" className="jee-display jee-num" sx={{ mt: 1, color: "#221F1A", lineHeight: 1.05, fontWeight: 700 }}>
-            {streak}
+            <CountUp to={streak} />
             <Typography component="span" className="jee-display" sx={{ fontSize: "1.2rem", fontWeight: 700, ml: 1 }}>
               day{streak === 1 ? "" : "s"}
             </Typography>
           </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={Math.min(100, (todayMinutes / target) * 100)}
-            sx={{
-              mt: 1.5,
-              height: 6,
-              bgcolor: "rgba(34,31,26,0.18)",
-              "& .MuiLinearProgress-bar": { backgroundColor: "#221F1A" },
-            }}
+          <Bar
+            value={(todayMinutes / target) * 100}
+            sx={{ mt: 1.5, bgcolor: "rgba(34,31,26,0.18)", "& .MuiLinearProgress-bar": { backgroundColor: "#221F1A" } }}
           />
           <Typography variant="caption" sx={{ display: "block", mt: 0.75, fontWeight: 600, color: "rgba(34,31,26,0.76)" }}>
             {todayMinutes > 0 ? `${fmtHours(todayMinutes)} of ${fmtHours(target)} today` : `Target ${fmtHours(target)} today`}
           </Typography>
         </CardContent>
+        <Box aria-hidden className="jee-stamp" sx={{ position: "absolute", bottom: 14, right: 16, fontSize: "0.56rem", color: "#221F1A", opacity: 0.7 }}>
+          On record
+        </Box>
       </Card>)}
 
       {/* stat tiles */}
@@ -171,7 +179,7 @@ export default async function DashboardPage() {
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
         <StatCard
           label="Today's study"
-          value={fmtHours(todayMinutes)}
+          value={<CountUp to={todayMinutes} mode="duration" />}
           sub={`Target ${fmtHours(target)}`}
           icon={<ScheduleOutlinedIcon fontSize="small" />}
         />
@@ -179,16 +187,16 @@ export default async function DashboardPage() {
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
         <StatCard
           label="Questions solved"
-          value={totalQuestions.toLocaleString("en-IN")}
+          value={<CountUp to={totalQuestions} />}
           sub={acc != null ? `${acc}% accuracy (30d)` : "No accuracy data yet"}
           icon={<QuizOutlinedIcon fontSize="small" />}
         />
       </Box>
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
-        <StatCard label="Mock average" value={avg != null ? `${avg}%` : "—"} sub="Across all tests" icon={<LeaderboardOutlinedIcon fontSize="small" />} />
+        <StatCard label="Mock average" value={avg != null ? <CountUp to={avg} maxDecimals={1} suffix="%" /> : "—"} sub="Across all tests" icon={<LeaderboardOutlinedIcon fontSize="small" />} />
       </Box>
       <Box sx={{ gridColumn: { xs: "1 / -1", md: "span 3" } }}>
-        <StatCard label="Best percentile" value={bestPct != null ? bestPct.toFixed(2) : "—"} sub={tests.length ? `${tests.length} tests recorded` : "No tests yet"} icon={<LeaderboardOutlinedIcon fontSize="small" />} />
+        <StatCard label="Best percentile" value={bestPct != null ? <CountUp to={bestPct} decimals={2} /> : "—"} sub={tests.length ? `${tests.length} tests recorded` : "No tests yet"} icon={<LeaderboardOutlinedIcon fontSize="small" />} />
       </Box>
       </>)}
 
@@ -204,11 +212,7 @@ export default async function DashboardPage() {
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>{subject}</Typography>
                   <Typography variant="body2" className="jee-num" color="text.secondary">{pct}%</Typography>
                 </Stack>
-                <LinearProgress
-                  variant="determinate"
-                  value={pct}
-                  sx={{ height: 8, bgcolor: "action.hover", ...subjectBarSx(subject) }}
-                />
+                <Bar value={pct} height={8} sx={{ bgcolor: "action.hover", ...subjectBarSx(subject) }} />
               </Box>
             ))}
           </Stack>
@@ -244,12 +248,7 @@ export default async function DashboardPage() {
                         {g.metric === "hours" ? `${g.current}/${g.target}h` : `${Math.round(g.current)}/${g.target}`}
                       </Typography>
                     </Stack>
-                    <LinearProgress
-                      variant="determinate"
-                      value={Math.min(100, (g.current / g.target) * 100)}
-                      color={done ? "success" : "secondary"}
-                      sx={{ height: 6, mt: 0.5 }}
-                    />
+                    <Bar value={(g.current / g.target) * 100} color={done ? "success" : "secondary"} sx={{ mt: 0.5 }} />
                   </Box>
                 );
               })}

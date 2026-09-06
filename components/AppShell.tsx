@@ -27,6 +27,7 @@ import SearchIcon from "@mui/icons-material/SearchOutlined";
 import SearchCommand from "@/components/SearchCommand";
 import NotificationBell from "@/components/NotificationBell";
 import UserAvatar from "@/components/UserAvatar";
+import ScrollProgress from "@/components/ScrollProgress";
 import { ClockCard, QuoteCard } from "@/components/SidebarWidgets";
 import { useThemeMode, useAccent } from "@/components/Providers";
 import { NAV, MOBILE_NAV } from "@/lib/nav";
@@ -380,9 +381,10 @@ export default function AppShell({
               </IconButton>
             </Tooltip>
           </Toolbar>
+          <ScrollProgress />
         </AppBar>
 
-        <Box component="main" sx={{ p: { xs: 1.5, sm: 2.5, md: 3 }, maxWidth: 1280, mx: "auto" }}>
+        <Box component="main" className="jee-paper-grid" sx={{ p: { xs: 1.5, sm: 2.5, md: 3 }, maxWidth: 1280, mx: "auto" }}>
           <Box key={pathname} className="jee-page-enter">
             {children}
           </Box>

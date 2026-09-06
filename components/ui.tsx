@@ -7,13 +7,14 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme, alpha, type Theme } from "@mui/material/styles";
-import type { ReactNode } from "react";
-import { J, HEAT_LIGHT, HEAT_DARK, type Bean } from "@/lib/jellybeans";
+import { useEffect, useState, type ReactNode } from "react";
+import { J, HEAT_LIGHT, HEAT_DARK, withA, type Bean } from "@/lib/jellybeans";
 import { sectionIndexFor } from "@/lib/nav";
 
 /** Shared Recharts tooltip contentStyle — dossier tile. */
@@ -37,6 +38,91 @@ export function chartGridProps(theme: Theme) {
   return { strokeDasharray: "3 3", stroke: theme.palette.divider, vertical: false };
 }
 
+/**
+ * Eased count from 0 to `to` on mount (rAF, easeOutExpo). Under
+ * prefers-reduced-motion it lands on the value immediately. Only numbers —
+ * formatting stays with the caller.
+ */
+export function useCountUp(to: number, duration = 900) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot sync: skip animation entirely
+      setV(to);
+      return;
+    }
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / duration);
+      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      setV(to * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [to, duration]);
+  return v;
+}
+
+const fmtCountDuration = (minutes: number) => {
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return m ? `${h}h ${m}m` : `${h}h`;
+};
+
+/**
+ * Stat value that prints its number like a meter reading — 0 → value on mount.
+ * Server-Component friendly: props are serializable only.
+ */
+export function CountUp({
+  to,
+  decimals = 0,
+  maxDecimals,
+  prefix = "",
+  suffix = "",
+  /** "duration" renders minutes as "3h 20m" while counting. */
+  mode = "number",
+}: {
+  to: number;
+  /** Minimum fraction digits (keeps a fixed "87.50" percentile reading). */
+  decimals?: number;
+  /** Maximum fraction digits — defaults to `decimals`. */
+  maxDecimals?: number;
+  prefix?: string;
+  suffix?: string;
+  mode?: "number" | "duration";
+}) {
+  const v = useCountUp(to);
+  const text =
+    mode === "duration"
+      ? fmtCountDuration(v)
+      : v.toLocaleString("en-IN", {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: maxDecimals ?? decimals,
+        });
+  return <span className="jee-num">{`${prefix}${text}${suffix}`}</span>;
+}
+
+/**
+ * Determinate progress bar that fills from 0 on mount instead of rendering
+ * at its final width. Same candy pill as the theme's MuiLinearProgress.
+ */
+export function Bar({
+  value,
+  height = 6,
+  color,
+  sx,
+}: {
+  value: number;
+  height?: number;
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "info" | "inherit";
+  sx?: object;
+}) {
+  const v = useCountUp(Math.min(100, Math.max(0, value)), 1100);
+  return <LinearProgress variant="determinate" value={v} color={color} sx={{ height, ...sx }} />;
+}
+
 /** Button that navigates — safe to render from Server Components (no function props cross the boundary). */
 export function LinkButton({ href, children, ...rest }: { href: string; children: ReactNode } & ButtonProps) {
   return (
@@ -48,7 +134,9 @@ export function LinkButton({ href, children, ...rest }: { href: string; children
 
 /**
  * Dossier page header — mono section index ("03 // PRACTICE") with the
- * section's bean, Space Grotesk title, hairline rule underneath.
+ * section's bean, a Space Grotesk title, and a ghosted outlined sheet
+ * numeral floating right; a dashed perforation tears the header off from
+ * the content below.
  */
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
   const pathname = usePathname();
@@ -57,41 +145,66 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
   const meta = sectionIndexFor(pathname);
   const bean = meta ? J.bean[meta.bean] : J.bean.bubblegum;
   const beanColor = dark ? bean.fill : bean.deep;
+  const ink = dark ? J.boneDark : J.inkLight;
 
   return (
-    <Stack
-      direction={{ xs: "column", sm: "row" }}
-      justifyContent="space-between"
-      alignItems={{ xs: "flex-start", sm: "center" }}
-      spacing={1.5}
-      sx={{ mb: 3, pb: 2, borderBottom: "1px solid", borderBottomColor: "divider" }}
-    >
-      <Box>
-        {meta && (
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
-            <Box
-              sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: beanColor }}
-              aria-hidden
-            />
-            <Typography
-              className="jee-mono"
-              sx={{ fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.16em", color: beanColor, textTransform: "uppercase" }}
-            >
-              {`${meta.index} // ${meta.section}`}
-            </Typography>
-          </Stack>
-        )}
-        <Typography variant="h4" component="h1">
-          {title}
+    <Box sx={{ position: "relative", mb: 3.5 }}>
+      {meta && (
+        <Typography
+          aria-hidden
+          sx={{
+            position: "absolute",
+            top: "-0.35em",
+            right: 0,
+            zIndex: 0,
+            fontFamily: "var(--font-display), sans-serif",
+            fontWeight: 700,
+            fontSize: { xs: "4.5rem", md: "7rem" },
+            lineHeight: 1,
+            letterSpacing: "-0.04em",
+            color: "transparent",
+            WebkitTextStroke: `1.5px ${withA(ink, dark ? 0.14 : 0.2)}`,
+            userSelect: "none",
+            pointerEvents: "none",
+          }}
+        >
+          {meta.index}
         </Typography>
-        {subtitle && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {subtitle}
+      )}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={1.5}
+        sx={{ position: "relative", zIndex: 1, pb: 2.5, borderBottom: "1px dashed", borderBottomColor: "divider" }}
+      >
+        <Box>
+          {meta && (
+            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+              <Box
+                sx={{ width: 9, height: 9, borderRadius: 999, bgcolor: beanColor }}
+                aria-hidden
+              />
+              <Typography
+                className="jee-mono"
+                sx={{ fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.16em", color: beanColor, textTransform: "uppercase" }}
+              >
+                {`${meta.index} // ${meta.section}`}
+              </Typography>
+            </Stack>
+          )}
+          <Typography variant="h4" component="h1" sx={{ fontSize: { xs: "1.4rem", sm: "1.65rem" }, letterSpacing: "-0.03em" }}>
+            {title}
           </Typography>
-        )}
-      </Box>
-      {action}
-    </Stack>
+          {subtitle && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+        {action}
+      </Stack>
+    </Box>
   );
 }
 
@@ -191,6 +304,8 @@ export function ProgressRing({
   label?: ReactNode;
 }) {
   const theme = useTheme();
+  // sweep in from zero on mount — the needle winds up like a gauge
+  const v = useCountUp(Math.min(100, Math.max(0, value)), 1000);
   return (
     <Box sx={{ position: "relative", display: "inline-flex" }}>
       <CircularProgress
@@ -202,7 +317,7 @@ export function ProgressRing({
       />
       <CircularProgress
         variant="determinate"
-        value={Math.min(100, Math.max(0, value))}
+        value={v}
         size={size}
         thickness={thickness}
         sx={{ color: theme.palette.secondary.main, "& .MuiCircularProgress-circle": { strokeLinecap: "butt" } }}
@@ -217,7 +332,7 @@ export function ProgressRing({
         }}
       >
         <Typography variant="caption" sx={{ fontWeight: 700 }}>
-          {label ?? `${Math.round(value)}%`}
+          {label ?? `${Math.round(v)}%`}
         </Typography>
       </Box>
     </Box>
@@ -239,7 +354,7 @@ export function EmptyState({
   const dark = theme.palette.mode === "dark";
   const accent = dark ? J.bean.bubblegum.fill : J.bean.bubblegum.deep;
   return (
-    <Card>
+    <Card sx={{ outline: "1px dashed", outlineColor: "divider", outlineOffset: -8 }}>
       <CardContent sx={{ py: 6, textAlign: "center" }}>
         {icon && (
           <Box
@@ -260,7 +375,13 @@ export function EmptyState({
             {icon}
           </Box>
         )}
-        <Typography variant="h6">{title}</Typography>
+        <Typography
+          className="jee-mono"
+          sx={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.18em", color: "text.secondary", textTransform: "uppercase" }}
+        >
+          No records on file
+        </Typography>
+        <Typography variant="h6" sx={{ mt: 0.5 }}>{title}</Typography>
         {description && (
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 420, mx: "auto" }}>
             {description}
@@ -340,6 +461,9 @@ export function StudyHeatmap({ data }: { data: { date: string; minutes: number }
                       outlineOffset: "-0.5px",
                       transition: "transform .12s ease",
                       "&:hover": { transform: "scale(1.35)" },
+                      // print-in: weeks stamp onto the paper column by column
+                      animation: "jee-print .4s cubic-bezier(0.22, 1, 0.36, 1) both",
+                      animationDelay: `${wi * 24}ms`,
                     }}
                   />
                 </Tooltip>

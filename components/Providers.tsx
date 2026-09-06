@@ -69,11 +69,38 @@ const skin = (theme: Theme, accent: Bean) => {
       defaultProps: { elevation: 0 },
       styleOverrides: {
         root: {
+          position: "relative",
           borderRadius: 2,
           border: `1px solid ${hair}`,
           backgroundColor: card,
           boxShadow: "none",
           transition: "border-color .18s ease, box-shadow .18s ease, transform .18s ease",
+          // print crop marks — two opposite corners fade in as the plate is
+          // hovered, like a sheet aligned on a press bed
+          "&::before, &::after": {
+            content: '""',
+            position: "absolute",
+            width: 9,
+            height: 9,
+            opacity: 0,
+            transition: "opacity .2s ease",
+            pointerEvents: "none",
+            backgroundRepeat: "no-repeat",
+            backgroundImage: `linear-gradient(${ink}, ${ink}), linear-gradient(${ink}, ${ink})`,
+          },
+          "&::before": {
+            top: 4,
+            left: 4,
+            backgroundSize: "9px 1px, 1px 9px",
+            backgroundPosition: "top left, top left",
+          },
+          "&::after": {
+            bottom: 4,
+            right: 4,
+            backgroundSize: "9px 1px, 1px 9px",
+            backgroundPosition: "bottom right, bottom right",
+          },
+          "&:hover::before, &:hover::after": { opacity: dark ? 0.55 : 0.4 },
         },
       },
     },
@@ -146,6 +173,12 @@ const skin = (theme: Theme, accent: Bean) => {
           letterSpacing: "0.01em",
           border: `1px solid ${hairStrong}`,
         },
+        // clickable beans press like taffy — lift on hover, squash on press
+        clickable: {
+          transition: "transform .15s ease, background-color .15s ease, border-color .15s ease, color .15s ease",
+          "&:hover": { transform: "translateY(-1px)" },
+          "&:active": { transform: "scale(0.96)" },
+        },
       },
     },
     MuiLink: {
@@ -154,7 +187,18 @@ const skin = (theme: Theme, accent: Bean) => {
         root: {
           color: dark ? accent.fill : accent.deep,
           fontWeight: 500,
-          "&:hover": { color: dark ? withA(accent.fill, 0.72) : withA(accent.deep, 0.8) },
+          // ink rule draws in from the left on hover (replaces static underline)
+          textDecoration: "none",
+          "&.MuiLink-underlineHover": { textDecoration: "none" },
+          backgroundImage: "linear-gradient(currentColor, currentColor)",
+          backgroundSize: "0% 1px",
+          backgroundPosition: "0 100%",
+          backgroundRepeat: "no-repeat",
+          transition: "color .18s ease, background-size .28s cubic-bezier(0.22, 1, 0.36, 1)",
+          "&:hover": {
+            color: dark ? withA(accent.fill, 0.72) : withA(accent.deep, 0.8),
+            backgroundSize: "100% 1px",
+          },
         },
       },
     },
@@ -329,9 +373,25 @@ function GlobalThemeStyles({ accent }: { accent: Bean }) {
           ".jee-display": { fontFamily: DISPLAY, fontWeight: 700, letterSpacing: "-0.02em" },
           ".jee-mono": { fontFamily: MONO },
           ".jee-num": { fontVariantNumeric: "tabular-nums lining-nums" },
+          // inline text links (bare <a> from next/link — MUI components carry
+          // classes and are excluded): an ink rule draws in from the left
+          'a:not([class])': {
+            textDecoration: "none",
+            backgroundImage: "linear-gradient(currentColor, currentColor)",
+            backgroundSize: "0% 1px",
+            backgroundPosition: "0 100%",
+            backgroundRepeat: "no-repeat",
+            transition: "background-size .28s cubic-bezier(0.22, 1, 0.36, 1)",
+            "&:hover": { backgroundSize: "100% 1px" },
+          },
           // accessible dimmed text for raw (non-MUI) tables — mode-aware
           ".jee-dim": {
             color: dark ? J.boneMidDark : J.inkMidLight,
+          },
+          // spec-sheet dot grid — the print bed under every sheet of content
+          ".jee-paper-grid": {
+            backgroundImage: `radial-gradient(circle, ${dark ? "rgba(222,213,198,0.05)" : "rgba(34,31,26,0.05)"} 1px, transparent 1.4px)`,
+            backgroundSize: "26px 26px",
           },
         };
       }}

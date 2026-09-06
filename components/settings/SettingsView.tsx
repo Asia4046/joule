@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { useRouter } from "next/navigation";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -28,6 +27,7 @@ import {
   updateCustomizationAction,
   changePasswordAction,
   deleteAccountAction,
+  regenerateReportAction,
   type ActionState,
 } from "@/app/actions/data";
 import {
@@ -247,22 +247,30 @@ export default function SettingsView({
   profile,
   prefs,
   customization,
+  report,
 }: {
   email: string;
   name: string;
   profile: ProfileProps;
   prefs: PrefsProps;
   customization: Customization;
+  report: { generatedAt: string; validUntil: string; expired: boolean } | null;
 }) {
   const [tab, setTab] = useState(0);
   const { mode, setMode } = useThemeMode();
-  const router = useRouter();
   const isDemo = email === DEMO_EMAIL;
 
   const [profileState, profileAction, profilePending] = useActionState<ActionState, FormData>(updateProfileAction, undefined);
   const [prefsState, prefsAction, prefsPending] = useActionState<ActionState, FormData>(updatePreferencesAction, undefined);
   const [pwState, pwAction, pwPending] = useActionState<ActionState, FormData>(changePasswordAction, undefined);
   const [delState, delAction, delPending] = useActionState<ActionState, FormData>(deleteAccountAction, undefined);
+  const [reportState, reportAction, reportPending] = useActionState<ActionState, FormData>(regenerateReportAction, undefined);
+
+  const reportGen = report ? new Date(report.generatedAt) : null;
+  const reportValid = report ? new Date(report.validUntil) : null;
+  const reportExpired = report?.expired ?? true;
+  const reportStamp = (dt: Date) =>
+    dt.toLocaleString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 
   return (
     <Card>
@@ -279,6 +287,7 @@ export default function SettingsView({
           <Tab label="Appearance" />
           <Tab label="Study preferences" />
           <Tab label="Notifications" />
+          <Tab label="Report" />
           <Tab label="Account" />
         </Tabs>
 
@@ -365,6 +374,46 @@ export default function SettingsView({
         )}
 
         {tab === 4 && (
+          <Stack spacing={2} sx={{ maxWidth: 520 }}>
+            {reportState?.error && <Alert severity="error">{reportState.error}</Alert>}
+            {reportState?.ok && <Alert severity="success">Report regenerated — a fresh snapshot is on file.</Alert>}
+            <Typography variant="body2" color="text.secondary">
+              The preparation report is a dossier-style snapshot of your entire preparation — open it by
+              clicking the barcode on the dashboard. One copy is cached and served for 10 days; regenerating
+              re-prints it from live data.
+            </Typography>
+            <Box sx={{ p: 1.5, border: "1px dashed", borderColor: "divider", borderRadius: "2px" }}>
+              <Typography className="jee-mono" sx={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.12em" }}>
+                {reportGen ? `GENERATED ${reportStamp(reportGen).toUpperCase()}` : "NO REPORT ON FILE YET"}
+              </Typography>
+              <Typography
+                className="jee-mono"
+                sx={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.12em", mt: 0.5, color: reportExpired ? "warning.main" : "text.secondary" }}
+              >
+                {reportGen
+                  ? reportExpired
+                    ? "EXPIRED — OPENING OR REGENERATING WILL RE-PRINT IT"
+                    : `VALID THRU ${reportStamp(reportValid!).toUpperCase()}`
+                  : "OPENING THE REPORT GENERATES IT"}
+              </Typography>
+            </Box>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+              <Button component="a" href="/report" variant="outlined" size="small">
+                View report
+              </Button>
+              <Button component="a" href="/api/report/pdf" variant="outlined" size="small">
+                Download PDF
+              </Button>
+              <form action={reportAction}>
+                <Button type="submit" variant="contained" size="small" disabled={reportPending}>
+                  {reportPending ? "Reprinting…" : "Regenerate report"}
+                </Button>
+              </form>
+            </Stack>
+          </Stack>
+        )}
+
+        {tab === 5 && (
           <Stack spacing={3} sx={{ maxWidth: 520 }}>
             <Stack spacing={0.5}>
               <Typography variant="body2"><strong>Account:</strong> {email}</Typography>

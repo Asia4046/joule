@@ -22,6 +22,7 @@
     "@mui/material": "^6",
     "@mui/material-nextjs": "^6",
     "@prisma/client": "^6",
+    "@react-pdf/renderer": "^4.9.0",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
     "jose": "^6.2.9",
