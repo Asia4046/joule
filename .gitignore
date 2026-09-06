@@ -42,3 +42,6 @@ next-env.d.ts
 
 # database backups
 /backups/
+
+# joule tui build cache
+/.tui/

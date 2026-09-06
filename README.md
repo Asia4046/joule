@@ -134,6 +134,7 @@ proxy.ts              Auth redirects for protected paths
 ### Prerequisites
 
 - **Node.js 20+** (Node 26 used in development) and `yarn 1.22` (or npm).
+- **Go 1.22+** — `./joule.sh` is a [Bubble Tea](https://github.com/charmbracelet/bubbletea) terminal UI; the launcher compiles it once and caches the binary in `.tui/`.
 - **PostgreSQL 14+** running locally or reachable remotely.
 - A domain + reverse proxy (optional, for HTTPS).
 
@@ -298,6 +299,7 @@ npm start
 - **Next.js 16** — this codebase uses the modern conventions for this version (e.g., a top-level `proxy.ts` for request interception, `next dev`-managed agent rules). Consult the bundled docs in `node_modules/next/dist/docs/` before changing framework behaviour.
 - Pages are `force-dynamic` since they reflect real-time user data against PostgreSQL.
 - Concept sims are client components; authored concept text/formulas are server-side content rendered with KaTeX.
+- The `./joule.sh` terminal UI is Go ([Bubble Tea](https://github.com/charmbracelet/bubbletea) + Lip Gloss) in `tui/` — the shell script is just the launcher that builds and execs it.
 
 ## Brand
 
